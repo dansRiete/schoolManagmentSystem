@@ -20,9 +20,13 @@ public class MyBatisService {
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
     }
 
-    public static SqlSessionFactory getSqlSessionFactory() throws IOException {
+    public static SqlSessionFactory getSqlSessionFactory() {
         if(sqlSessionFactory == null){
-            initFactory();
+            try {
+                initFactory();
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage());
+            }
         }
         return sqlSessionFactory;
     }

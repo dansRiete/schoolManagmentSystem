@@ -6,10 +6,17 @@ import exceptions.IllegalTitleException;
  * Created by nromanen on 7/24/2017.
  */
 public class Subject {
+    abstract class So{}
 
-    private final String title;
+    private Long id;
+    private String title;
 
     private Subject(String title) {
+        this.title = title;
+    }
+
+    public Subject(Long id, String title) {
+        this.id = id;
         this.title = title;
     }
 
