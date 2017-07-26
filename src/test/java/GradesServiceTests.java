@@ -138,18 +138,21 @@ public class GradesServiceTests {
     @Test(expected = AddingGradeException.class)
     public void addGradeInPastYearThrowsException() throws IllegalTitleException, AddingGradeException {
         LocalDate dateInPastYear = LocalDate.of(2016, 1, 1);
-        gradesService.addGrade(mock(Subject.class), dateInPastYear, 3);
+        Grade grade = new Grade(mock(Subject.class), dateInPastYear, 3);
+        gradesService.addGrade(grade);
     }
 
     @Test(expected = AddingGradeException.class)
     public void addGradeInTomorowThrowsException() throws IllegalTitleException, AddingGradeException {
         LocalDate tomorowDate = LocalDate.now().plusDays(1);
-        gradesService.addGrade(mock(Subject.class), tomorowDate, 3);
+        Grade grade = new Grade(mock(Subject.class), tomorowDate, 3);
+        gradesService.addGrade(grade);
     }
 
     @Test(expected = AddingGradeException.class)
     public void addGradeInAlreadyExistException() throws IllegalTitleException, AddingGradeException {
         LocalDate subjectOnThisDateAlreadyGraded = LocalDate.of(2016, 5, 24);
-        gradesService.addGrade(mock(Subject.class), subjectOnThisDateAlreadyGraded, 3);
+        Grade grade = new Grade(mock(Subject.class), subjectOnThisDateAlreadyGraded, 3);
+        gradesService.addGrade(grade);
     }
 }

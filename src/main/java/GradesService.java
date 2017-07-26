@@ -2,6 +2,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import dao.GradeDao;
+import dao.SubjectDao;
 import exceptions.AddingGradeException;
 import model.Grade;
 import model.Subject;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
 public class GradesService {
 
     private List<Grade> grades = new ArrayList<>();
+    private GradeDao gradeDao = new GradeDao();
+    private SubjectDao subjectDao = new SubjectDao();
     private static final Type REVIEW_TYPE = new TypeToken<List<Grade>>() {}.getType();
 
     public List<Grade> readFromFile(String fileName) throws IOException {
@@ -42,7 +46,17 @@ public class GradesService {
         }
     }
 
-    public void addGrade(Subject subject, LocalDate date, int grade) throws AddingGradeException {
+    public void addGrade(Grade grade) throws AddingGradeException {
+        validate(grade.getDate(), grade.getSubject());
+        grades.add(grade);
+    }
+
+    public void addGradeToDb(Grade grade) throws AddingGradeException {
+        validate(grade.getDate(), grade.getSubject());
+        gradeDao.create(grade);
+    }
+
+    private void validate(LocalDate date, Subject subject) throws AddingGradeException {
         if(date.isBefore(LocalDate.now().withDayOfMonth(1).withDayOfYear(1))){
             throw new AddingGradeException("Grade date can not be before beginning of the year");
         }
@@ -52,7 +66,10 @@ public class GradesService {
         if(isAlreadyGraded(subject, date)){
             throw new AddingGradeException("There can not be two grades on the same subject on the same day");
         }
-        grades.add(new Grade(subject, date, grade));
+    }
+
+    private void isValid(LocalDate date){
+
     }
 
     public List<Grade> getGrades(){

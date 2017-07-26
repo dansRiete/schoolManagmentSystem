@@ -15,7 +15,7 @@
         </environment>
     </environments>
     <mappers>
-        <mapper resource="GradeMapper.xml"/>
-        <mapper resource="SubjectMapper.xml"/>
+        <mapper class="mappers.SubjectMapper"/>
+        <mapper class="mappers.GradeMapper"/>
     </mappers>
 </configuration>

@@ -13,7 +13,7 @@ public class Grade {
     private Subject subject;
     private int mark;
 
-    public Grade(Long id, Timestamp date, Integer mark) {
+    public Grade() {
     }
 
     public Grade(Subject subject, LocalDate date, int mark) {
@@ -24,7 +24,7 @@ public class Grade {
 
     @Override
     public String toString() {
-        return "Subject: " + subject + ", Date: " + date + ", Grade: " + mark;
+        return "Subject: " + subject + ", Date: " + date + ", Mark: " + mark;
     }
 
     public Subject getSubject() {

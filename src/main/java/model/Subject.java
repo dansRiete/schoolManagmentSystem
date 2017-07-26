@@ -6,7 +6,6 @@ import exceptions.IllegalTitleException;
  * Created by nromanen on 7/24/2017.
  */
 public class Subject {
-    abstract class So{}
 
     private Long id;
     private String title;
@@ -15,9 +14,7 @@ public class Subject {
         this.title = title;
     }
 
-    public Subject(Long id, String title) {
-        this.id = id;
-        this.title = title;
+    public Subject() {
     }
 
     public static Subject compose(String title) throws IllegalTitleException {
@@ -34,10 +31,6 @@ public class Subject {
         return title;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if(!(obj instanceof Subject)){
@@ -47,5 +40,17 @@ public class Subject {
             return true;
         }
         return ((Subject) obj).getTitle().equals(this.getTitle());
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
