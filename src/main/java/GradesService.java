@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 public class GradesService {
 
     private List<Grade> grades = new ArrayList<>();
-    private GradeDao gradeDao = new GradeDao();
-    private SubjectDao subjectDao = new SubjectDao();
+//    private GradeDao gradeDao = new GradeDao();
+//    private SubjectDao subjectDao = new SubjectDao();
     private static final Type REVIEW_TYPE = new TypeToken<List<Grade>>() {}.getType();
 
     public List<Grade> readFromFile(String fileName) throws IOException {
@@ -53,7 +53,7 @@ public class GradesService {
 
     public void addGradeToDb(Grade grade) throws AddingGradeException {
         validate(grade.getDate(), grade.getSubject());
-        gradeDao.create(grade);
+//        gradeDao.create(grade);
     }
 
     private void validate(LocalDate date, Subject subject) throws AddingGradeException {

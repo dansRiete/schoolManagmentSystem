@@ -4,6 +4,7 @@ import exceptions.AddingGradeException;
 import exceptions.IllegalTitleException;
 import model.Grade;
 import model.Subject;
+import services.MyBatisService;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -20,14 +21,14 @@ public class Demo {
 
     public static void main(String[] args) throws AddingGradeException {
 
-        SubjectDao subjectDao = new SubjectDao();
-        GradeDao gradeDao = new GradeDao();
+        SubjectDao subjectDao = new SubjectDao(MyBatisService.getSqlSessionFactory());
+        GradeDao gradeDao = new GradeDao(MyBatisService.getSqlSessionFactory());
 
-        Grade grade = gradeDao.getAll().get(0);
+        /*Grade grade = gradeDao.getAll().get(0);
         grade.getSubject().setTitle("Changed");
-        gradeDao.update(grade);
+        gradeDao.update(grade);*/
 
-        /*Subject subject = subjectDao.getAll().get(1);
+        Subject subject = subjectDao.getAll().get(1);
         Random random = new Random();
         gradeDao.create(
                 Arrays.asList(
@@ -40,6 +41,6 @@ public class Demo {
                         new Grade(subject, LocalDate.now(), random.nextInt(10)),
                         new Grade(subject, LocalDate.now(), random.nextInt(10)),
                         new Grade(subject, LocalDate.now(), random.nextInt(10))
-                ));*/
+                ));
     }
 }
