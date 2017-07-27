@@ -28,7 +28,6 @@ public class GradesDaoTests {
     private static List<Subject> initSubjects;
     private static List<Grade> initGrades;
     private final static Comparator<Grade> gradeByIdComparator = Comparator.comparing(Grade::getId);
-//    final static Logger logger = Logger.getLogger(GradesDaoTests.class);
 
     @BeforeClass
     public static void populate() throws IllegalTitleException {
@@ -108,7 +107,7 @@ public class GradesDaoTests {
         LocalDate checkedDate = LocalDate.of(2017, 5, 15);
         List<Grade> expectedGrades = new ArrayList<>();
         expectedGrades.add(initGrades.get(3));
-        expectedGrades.add(initGrades.get(5));
+        expectedGrades.add(initGrades.get(4));
         expectedGrades.add(initGrades.get(7));
         List<Grade> receivedGrades = gradeDao.getOnDate(checkedDate);
         Assert.assertEquals(receivedGrades.size(), expectedGrades.size());

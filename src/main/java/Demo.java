@@ -1,16 +1,12 @@
 import dao.GradeDao;
 import dao.SubjectDao;
 import exceptions.AddingGradeException;
-import exceptions.IllegalTitleException;
 import model.Grade;
 import model.Subject;
+import services.GradesService;
 import services.MyBatisService;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Created by nromanen on 7/24/2017.
