@@ -6,9 +6,9 @@ import java.time.LocalDate;
 /**
  * Created by nromanen on 7/24/2017.
  */
-public class Grade {
+public class Grade{
 
-    private long id;
+    private Long id;
     private LocalDate date;
     private Subject subject;
     private int mark;
@@ -46,16 +46,18 @@ public class Grade {
 
         Grade grade1 = (Grade) o;
 
-        if (mark != grade1.mark) return false;
-        if (date != null ? !date.equals(grade1.date) : grade1.date != null) return false;
+        if (mark != grade1.mark)
+            return false;
+        if (date != null ? !date.equals(grade1.date) : grade1.date != null)
+            return false;
         return subject != null ? subject.equals(grade1.subject) : grade1.subject == null;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

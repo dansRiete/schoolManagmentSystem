@@ -17,30 +17,36 @@ import java.util.Random;
  */
 public class Demo {
 
-    private static final String FILENAME = "grades.json";
+//    private static final String FILENAME = "grades.json";
 
     public static void main(String[] args) throws AddingGradeException {
 
         SubjectDao subjectDao = new SubjectDao(MyBatisService.getSqlSessionFactory());
         GradeDao gradeDao = new GradeDao(MyBatisService.getSqlSessionFactory());
 
-        /*Grade grade = gradeDao.getAll().get(0);
-        grade.getSubject().setTitle("Changed");
-        gradeDao.update(grade);*/
-
-        Subject subject = subjectDao.getAll().get(1);
+        /*Subject subject = subjectDao.getAll().get(1);
         Random random = new Random();
+        Grade someGrade = null;
         gradeDao.create(
                 Arrays.asList(
                         new Grade(subject, LocalDate.now(), random.nextInt(10)),
+                        someGrade = new Grade(subject, LocalDate.now(), random.nextInt(10)),
+                        new Grade(subject, LocalDate.now().withDayOfMonth(random.nextInt(30)), random.nextInt(10)),
+                        new Grade(subject, LocalDate.now().withDayOfMonth(random.nextInt(30)), random.nextInt(10)),
                         new Grade(subject, LocalDate.now(), random.nextInt(10)),
                         new Grade(subject, LocalDate.now(), random.nextInt(10)),
-                        new Grade(subject, LocalDate.now(), random.nextInt(10)),
-                        new Grade(subject, LocalDate.now(), random.nextInt(10)),
-                        new Grade(subject, LocalDate.now(), random.nextInt(10)),
-                        new Grade(subject, LocalDate.now(), random.nextInt(10)),
-                        new Grade(subject, LocalDate.now(), random.nextInt(10)),
-                        new Grade(subject, LocalDate.now(), random.nextInt(10))
-                ));
+                        new Grade(subject, LocalDate.now().withDayOfMonth(random.nextInt(30)), random.nextInt(10)),
+                        new Grade(subject, LocalDate.now().withDayOfMonth(random.nextInt(30)), random.nextInt(10)),
+                        new Grade(subject, LocalDate.now().withDayOfMonth(random.nextInt(30)), random.nextInt(10))
+                ));*/
+
+//        Subject neededSubject = subjectDao.getAll().get(1);
+//        System.out.println("Need subj: " + neededSubject);
+//        System.out.println(gradeDao.getOnSubject(neededSubject));
+        GradesService gradesService = new GradesService();
+        Subject subject = subjectDao.getAll().get(1);
+        gradesService.addGradeToDb(new Grade(subject, LocalDate.now().minusDays(3), 3));
+        gradesService.addGradeToDb(new Grade(subject, LocalDate.now().minusDays(5), 3));
+
     }
 }

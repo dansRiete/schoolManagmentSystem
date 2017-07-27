@@ -7,6 +7,8 @@ import dao.SubjectDao;
 import exceptions.AddingGradeException;
 import model.Grade;
 import model.Subject;
+import services.MyBatisService;
+
 import java.io.*;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
@@ -21,8 +23,8 @@ import java.util.stream.Collectors;
 public class GradesService {
 
     private List<Grade> grades = new ArrayList<>();
-//    private GradeDao gradeDao = new GradeDao();
-//    private SubjectDao subjectDao = new SubjectDao();
+    private GradeDao gradeDao = new GradeDao(MyBatisService.getSqlSessionFactory());
+    private SubjectDao subjectDao = new SubjectDao(MyBatisService.getSqlSessionFactory());
     private static final Type REVIEW_TYPE = new TypeToken<List<Grade>>() {}.getType();
 
     public List<Grade> readFromFile(String fileName) throws IOException {
@@ -51,11 +53,6 @@ public class GradesService {
         grades.add(grade);
     }
 
-    public void addGradeToDb(Grade grade) throws AddingGradeException {
-        validate(grade.getDate(), grade.getSubject());
-//        gradeDao.create(grade);
-    }
-
     private void validate(LocalDate date, Subject subject) throws AddingGradeException {
         if(date.isBefore(LocalDate.now().withDayOfMonth(1).withDayOfYear(1))){
             throw new AddingGradeException("Grade date can not be before beginning of the year");
@@ -63,17 +60,23 @@ public class GradesService {
         if(date.isAfter(LocalDate.now())){
             throw new AddingGradeException("Grade date can not be after today");
         }
-        if(isAlreadyGraded(subject, date)){
+        if(isAlreadyGraded(subject, this.grades)){
             throw new AddingGradeException("There can not be two grades on the same subject on the same day");
         }
     }
 
-    private void isValid(LocalDate date){
-
+    public void addGradeToDb(Grade grade) throws AddingGradeException {
+        List<Grade> persistedGrades = gradeDao.getAll();
+        validate(grade.getDate(), grade.getSubject(), persistedGrades);
+        gradeDao.create(grade);
     }
 
     public List<Grade> getGrades(){
         return new ArrayList<>(grades);
+    }
+
+    public List<Grade> getGradesFromDb(){
+        return gradeDao.getAll();
     }
 
     public List<Grade> getGrades(LocalDate date){
@@ -82,10 +85,20 @@ public class GradesService {
         return gradesOnDate;
     }
 
+    public List<Grade> getGradesFromDb(LocalDate date){
+        return gradeDao.getOnDate(date);
+    }
+
     public List<Grade> getGrades(Subject subject, boolean ascendingDate){
-        List<Grade> gradesOnDate = retrieveGradesBySubject(subject);
+        List<Grade> gradesOnDate = retrieveGradesBySubject(subject, this.grades);
         sortByDate(gradesOnDate, ascendingDate);
         return gradesOnDate;
+    }
+
+    public List<Grade> getGradesFromDb(Subject subject, boolean ascendingDate){
+        List<Grade> gradesOnSubject = gradeDao.getOnSubject(subject);
+        sortByDate(gradesOnSubject, ascendingDate);
+        return gradesOnSubject;
     }
 
     public void setGrades(List<Grade> grades) {
@@ -94,17 +107,36 @@ public class GradesService {
 
     public double calculateAvgGrade(Subject subject){
         final double[] averageGrade = {0};
-        List<Grade> subjectGrades = retrieveGradesBySubject(subject);
+        List<Grade> subjectGrades = retrieveGradesBySubject(subject, this.grades);
         subjectGrades.forEach(grade -> averageGrade[0] += grade.getMark());
         return subjectGrades.isEmpty() ? 0 : averageGrade[0] / subjectGrades.size();
     }
 
-    private boolean isAlreadyGraded(Subject subject, LocalDate date){
-        return !retrieveGradesBySubject(subject).isEmpty();
+    public double calculateAvgGradeOnDb(Subject subject){ //todo
+        final double[] averageGrade = {0};
+        List<Grade> subjectGrades = gradeDao.getOnSubject(subject);
+        subjectGrades.forEach(grade -> averageGrade[0] += grade.getMark());
+        return subjectGrades.isEmpty() ? 0 : averageGrade[0] / subjectGrades.size();
     }
 
-    private List<Grade> retrieveGradesBySubject(Subject subject){
-        return this.grades.stream()
+    private void validate(LocalDate date, Subject subject, List<Grade> grades) throws AddingGradeException {
+        if(date.isBefore(LocalDate.now().withDayOfMonth(1).withDayOfYear(1))){
+            throw new AddingGradeException("Grade date can not be before beginning of the year");
+        }
+        if(date.isAfter(LocalDate.now())){
+            throw new AddingGradeException("Grade date can not be after today");
+        }
+        if(isAlreadyGraded(subject, grades)){
+            throw new AddingGradeException("There can not be two grades on the same subject on the same day");
+        }
+    }
+
+    private boolean isAlreadyGraded(Subject subject/*, LocalDate date*/, List<Grade> grades) {
+        return grades.isEmpty() || !retrieveGradesBySubject(subject, grades).isEmpty();
+    }
+
+    private List<Grade> retrieveGradesBySubject(Subject subject, List<Grade> grades){
+        return grades.stream()
                 .filter(currentGrade -> currentGrade.getSubject().equals(subject))
                 .collect(Collectors.toList());
     }

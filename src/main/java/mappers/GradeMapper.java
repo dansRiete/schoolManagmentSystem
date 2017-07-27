@@ -1,8 +1,10 @@
 package mappers;
 
 import model.Grade;
+import model.Subject;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -12,9 +14,10 @@ public interface GradeMapper {
 
     String TABLE_NAME = "grades";
 
+    //todo orede
     @Select("select id, subject_id, mark, date from grades where grades.id = #{id}")
     @Results({
-            @Result(id=true, property = "id", column = "subject_id"),
+            @Result(id=true, property = "id", column = "id"),
             @Result(property = "mark", column = "mark"),
             @Result(property = "date", column = "date"),
             @Result(property="subject", column="subject_id",
@@ -22,15 +25,25 @@ public interface GradeMapper {
     })
     Grade getById(Long id);
 
-    @Select("SELECT * FROM " + TABLE_NAME + "")
+    @Select("SELECT * FROM " + TABLE_NAME)
     @Results({
-            @Result(id=true, property = "id", column = "subject_id"),
+            @Result(id=true, property = "id", column = "id"),
             @Result(property = "mark", column = "mark"),
             @Result(property = "date", column = "date"),
             @Result(property="subject", column="subject_id",
                     one=@One(select="mappers.SubjectMapper.getById"))
     })
     List<Grade> getAll();
+
+    @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate}")
+    @Results({
+            @Result(id=true, property = "id", column = "id"),
+            @Result(property = "mark", column = "mark"),
+            @Result(property = "date", column = "date"),
+            @Result(property="subject", column="subject_id",
+                    one=@One(select="mappers.SubjectMapper.getById"))
+    })
+    List<Grade> getOnDate(LocalDate requestedDate);
 
     @Insert("INSERT INTO " + TABLE_NAME + " (date, subject_id, mark) VALUES (#{date}, #{subject.id}, #{mark})")
     void create(Grade entity);
@@ -41,5 +54,17 @@ public interface GradeMapper {
     @Delete("DELETE FROM " + TABLE_NAME + " WHERE id = #{id}")
     void delete(Grade entity);
 
+    @Delete("DELETE FROM " + TABLE_NAME)
+    void deleteAll();
 
+    //todo Provide
+    @Select("SELECT * FROM " + TABLE_NAME + " WHERE subject_id = #{id}")
+    @Results({
+            @Result(id=true, property = "id", column = "id"),
+            @Result(property = "mark", column = "mark"),
+            @Result(property = "date", column = "date"),
+            @Result(property="subject", column="subject_id",
+                    one=@One(select="mappers.SubjectMapper.getById"))
+    })
+    List<Grade> getOnSubject(Subject requestedSubject);
 }

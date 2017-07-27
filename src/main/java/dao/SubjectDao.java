@@ -102,4 +102,18 @@ public class SubjectDao implements DaoInterface<Subject, Long> {
             }
         }
     }
+
+    @Override
+    public void deleteAll() {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.getMapper(SubjectMapper.class).deleteAll();
+            sqlSession.commit();
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
 }

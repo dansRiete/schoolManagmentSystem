@@ -13,5 +13,6 @@ public interface DaoInterface<T, Id> {
     void create(List<T> entities);
     void update(T entity);
     void delete (T entity);
+    void deleteAll();
 
 }

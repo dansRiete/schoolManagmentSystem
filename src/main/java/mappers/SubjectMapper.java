@@ -24,9 +24,12 @@ public interface SubjectMapper {
     @Insert("INSERT INTO " + TABLE_NAME + " (title) VALUES (#{title})")
     void create(Subject entity);
 
-    @Update("UPDATE " + TABLE_NAME + " SET title = #{title} WHERE subjects.id = #{id}")
+    @Update("UPDATE " + TABLE_NAME + " SET title = #{title} WHERE id = #{id}")
     void update(Subject entity);
 
     @Delete("DELETE FROM " + TABLE_NAME + " WHERE id = #{id}")
     void delete(Subject entity);
+
+    @Delete("DELETE FROM " + TABLE_NAME)
+    void deleteAll();
 }

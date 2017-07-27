@@ -29,12 +29,12 @@ import static org.junit.Assert.assertTrue;
 public class GradesServiceTests {
 
     private static GradesService gradesService = new GradesService();
-    private final static String INIT_FILENAME = "src\\test\\resources\\grades.json";
+    private final static String INIT_FILENAME = "src\\test\\resources\\Grades.json";
     private final static String TEMP_FILENAME = "src\\test\\resources\\tmp.json";
     private final static String GRADES_ON_2017_05_15 =
-                    "[Subject: Geographic, Date: 2017-05-15, Grade: 2, " +
-                    "Subject: History, Date: 2017-05-15, Grade: 4, " +
-                    "Subject: Math, Date: 2017-05-15, Grade: 3]";
+                    "[Subject: Geographic, Date: 2017-05-15, Mark: 2, " +
+                    "Subject: History, Date: 2017-05-15, Mark: 4, " +
+                    "Subject: Math, Date: 2017-05-15, Mark: 3]";
     private final static String EMPTY_GRADES = "[]";
     private final static LocalDate DATE_2017_05_15 = LocalDate.of(2017, 5, 15);
     private final static LocalDate ABSENT_DATE = LocalDate.of(2015, 5, 15);
@@ -44,15 +44,15 @@ public class GradesServiceTests {
         gradesService.setGrades(gradesService.readFromFile(INIT_FILENAME));
         String actualGradesRepresentation = gradesService.getGrades().toString();
         String expectedGradesRepresentation =
-                "[Subject: Math, Date: 2016-05-24, Grade: 5, " +
-                "Subject: History, Date: 2017-03-12, Grade: 3, " +
-                "Subject: Geographic, Date: 2017-04-22, Grade: 9, " +
-                "Subject: Geographic, Date: 2017-03-22, Grade: 7, " +
-                "Subject: Math, Date: 2017-05-15, Grade: 3, " +
-                "Subject: History, Date: 2017-05-15, Grade: 4, " +
-                "Subject: Geographic, Date: 2017-01-15, Grade: 3, " +
-                "Subject: Geographic, Date: 2017-05-15, Grade: 2, " +
-                "Subject: History, Date: 2017-02-20, Grade: 9]";
+                "[Subject: Math, Date: 2017-05-24, Mark: 5, " +
+                "Subject: History, Date: 2017-03-12, Mark: 3, " +
+                "Subject: Geographic, Date: 2017-04-22, Mark: 9, " +
+                "Subject: Geographic, Date: 2017-03-22, Mark: 7, " +
+                "Subject: Math, Date: 2017-05-15, Mark: 3, " +
+                "Subject: History, Date: 2017-05-15, Mark: 4, " +
+                "Subject: Geographic, Date: 2017-01-15, Mark: 3, " +
+                "Subject: Geographic, Date: 2017-05-15, Mark: 2, " +
+                "Subject: History, Date: 2017-02-20, Mark: 9]";
 
         assertEquals(expectedGradesRepresentation, actualGradesRepresentation);
     }
@@ -98,10 +98,10 @@ public class GradesServiceTests {
         when(GEOGRAPHIC.getTitle()).thenReturn("Geographic");
         String actualGradesRepresentation = gradesService.getGrades(GEOGRAPHIC, true).toString();
         String expectedGradesRepresentation =
-                "[Subject: Geographic, Date: 2017-01-15, Grade: 3, " +
-                "Subject: Geographic, Date: 2017-03-22, Grade: 7, " +
-                "Subject: Geographic, Date: 2017-04-22, Grade: 9, " +
-                "Subject: Geographic, Date: 2017-05-15, Grade: 2]";
+                "[Subject: Geographic, Date: 2017-01-15, Mark: 3, " +
+                "Subject: Geographic, Date: 2017-03-22, Mark: 7, " +
+                "Subject: Geographic, Date: 2017-04-22, Mark: 9, " +
+                "Subject: Geographic, Date: 2017-05-15, Mark: 2]";
         assertEquals(expectedGradesRepresentation, actualGradesRepresentation);
     }
 
@@ -111,10 +111,10 @@ public class GradesServiceTests {
         when(GEOGRAPHIC.getTitle()).thenReturn("Geographic");
         String actualGradesRepresentation = gradesService.getGrades(GEOGRAPHIC, false).toString();
         String expectedGradesRepresentation =
-                "[Subject: Geographic, Date: 2017-05-15, Grade: 2, " +
-                "Subject: Geographic, Date: 2017-04-22, Grade: 9, " +
-                "Subject: Geographic, Date: 2017-03-22, Grade: 7, " +
-                "Subject: Geographic, Date: 2017-01-15, Grade: 3]";
+                "[Subject: Geographic, Date: 2017-05-15, Mark: 2, " +
+                "Subject: Geographic, Date: 2017-04-22, Mark: 9, " +
+                "Subject: Geographic, Date: 2017-03-22, Mark: 7, " +
+                "Subject: Geographic, Date: 2017-01-15, Mark: 3]";
         assertEquals(expectedGradesRepresentation, actualGradesRepresentation);
     }
 

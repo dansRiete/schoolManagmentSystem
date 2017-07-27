@@ -4,10 +4,12 @@ import mappers.GradeMapper;
 import mappers.GradeMapper;
 import model.Grade;
 import model.Grade;
+import model.Subject;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import services.MyBatisService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -40,6 +42,30 @@ public class GradeDao implements DaoInterface <Grade, Long>{
         try{
             sqlSession = sqlSessionFactory.openSession();
             return sqlSession.getMapper(GradeMapper.class).getAll();
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public List<Grade> getOnDate(LocalDate requestedDate) {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).getOnDate(requestedDate);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public List<Grade> getOnSubject(Subject requestedSubject) {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).getOnSubject(requestedSubject);
         }finally {
             if(sqlSession != null){
                 sqlSession.close();
@@ -96,6 +122,20 @@ public class GradeDao implements DaoInterface <Grade, Long>{
         try{
             sqlSession = sqlSessionFactory.openSession();
             sqlSession.getMapper(GradeMapper.class).delete(entity);
+            sqlSession.commit();
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    @Override
+    public void deleteAll() {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.getMapper(GradeMapper.class).deleteAll();
             sqlSession.commit();
         }finally {
             if(sqlSession != null){
