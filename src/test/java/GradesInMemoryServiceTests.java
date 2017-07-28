@@ -2,13 +2,13 @@ import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import exceptions.AddingGradeException;
-import exceptions.IllegalTitleException;
+import exceptions.IllegalSubjectTitleException;
 import model.Grade;
 import model.Subject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import services.GradesService;
+import services.GradesInMemoryService;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -27,9 +27,9 @@ import static org.junit.Assert.assertTrue;
  */
 
 @RunWith(DataProviderRunner.class)
-public class GradesServiceTests {
+public class GradesInMemoryServiceTests {
 
-    private static GradesService gradesService = new GradesService();
+    private static GradesInMemoryService gradesService = new GradesInMemoryService("grades.json");
     private final static String INIT_FILENAME = "src\\test\\resources\\Grades.json";
     private final static String TEMP_FILENAME = "src\\test\\resources\\tmp.json";
     private final static String GRADES_ON_2017_05_15 =
@@ -42,8 +42,10 @@ public class GradesServiceTests {
 
     @BeforeClass
     public static void populate() throws IOException {
-        gradesService.setGrades(gradesService.readFromFile(INIT_FILENAME));
-        String actualGradesRepresentation = gradesService.getGrades().toString();
+        List<Grade> referenceGrades = gradesService.readFromFile(INIT_FILENAME);
+        gradesService.setGrades(referenceGrades);
+        String actualGradesRepresentation = gradesService.fetchAllGrades().toString();
+        System.out.println(actualGradesRepresentation);
         String expectedGradesRepresentation =
                 "[Subject: Math, Date: 2017-05-24, Mark: 5, " +
                 "Subject: History, Date: 2017-03-12, Mark: 3, " +
@@ -59,7 +61,7 @@ public class GradesServiceTests {
     }
 
     @Test
-    public void jsonWriteReadTest() throws IllegalTitleException, IOException {
+    public void jsonWriteReadTest() throws IllegalSubjectTitleException, IOException {
         List<Grade> initGrades = new ArrayList<>();
         LocalDate date = LocalDate.now();
         initGrades.add(new Grade(Subject.compose("Subject1"), date, 5));
@@ -71,7 +73,7 @@ public class GradesServiceTests {
     }
 
     @Test
-    public void jsonWriteReadEmptyTest() throws IllegalTitleException, IOException {
+    public void jsonWriteReadEmptyTest() throws IllegalSubjectTitleException, IOException {
         List<Grade> initGrades = new ArrayList<>();
         gradesService.writeToFile(TEMP_FILENAME, initGrades);
         List<Grade> deserializedGrades = gradesService.readFromFile(TEMP_FILENAME);
@@ -90,14 +92,14 @@ public class GradesServiceTests {
     @Test
     @UseDataProvider("gradesOnDate")
     public void getGradesOnDate(LocalDate date, String result) {
-        assertEquals(gradesService.getGrades(date).toString(), result);
+        assertEquals(gradesService.fetchByDate(date).toString(), result);
     }
 
     @Test
     public void getGradesBySubjectAscendingByDate() {
         Subject GEOGRAPHIC = mock(Subject.class);
         when(GEOGRAPHIC.getTitle()).thenReturn("Geographic");
-        String actualGradesRepresentation = gradesService.getGrades(GEOGRAPHIC, true).toString();
+        String actualGradesRepresentation = gradesService.fetchBySubject(GEOGRAPHIC, true).toString();
         String expectedGradesRepresentation =
                 "[Subject: Geographic, Date: 2017-01-15, Mark: 3, " +
                 "Subject: Geographic, Date: 2017-03-22, Mark: 7, " +
@@ -110,7 +112,7 @@ public class GradesServiceTests {
     public void getGradesBySubjectDescendingByDate() {
         Subject GEOGRAPHIC = mock(Subject.class);
         when(GEOGRAPHIC.getTitle()).thenReturn("Geographic");
-        String actualGradesRepresentation = gradesService.getGrades(GEOGRAPHIC, false).toString();
+        String actualGradesRepresentation = gradesService.fetchBySubject(GEOGRAPHIC, false).toString();
         String expectedGradesRepresentation =
                 "[Subject: Geographic, Date: 2017-05-15, Mark: 2, " +
                 "Subject: Geographic, Date: 2017-04-22, Mark: 9, " +
@@ -130,29 +132,29 @@ public class GradesServiceTests {
 
     @Test
     @UseDataProvider("averageGradesData")
-    public void calculateAverageGradeBySubject(String input, Double expectedValue) throws IllegalTitleException {
+    public void calculateAverageGradeBySubject(String input, Double expectedValue) throws IllegalSubjectTitleException {
         Subject subject = mock(Subject.class);
         when(subject.getTitle()).thenReturn(input);
         assertThat(gradesService.calculateAvgGrade(subject), is(expectedValue));
     }
 
     @Test(expected = AddingGradeException.class)
-    public void addGradeInPastYearThrowsException() throws IllegalTitleException, AddingGradeException {
+    public void addGradeInPastYearThrowsException() throws IllegalSubjectTitleException, AddingGradeException {
         LocalDate dateInPastYear = LocalDate.of(2016, 1, 1);
         Grade grade = new Grade(mock(Subject.class), dateInPastYear, 3);
         gradesService.addGrade(grade);
     }
 
     @Test(expected = AddingGradeException.class)
-    public void addGradeInTomorowThrowsException() throws IllegalTitleException, AddingGradeException {
+    public void addGradeInTomorowThrowsException() throws IllegalSubjectTitleException, AddingGradeException {
         LocalDate tomorowDate = LocalDate.now().plusDays(1);
         Grade grade = new Grade(mock(Subject.class), tomorowDate, 3);
         gradesService.addGrade(grade);
     }
 
     @Test(expected = AddingGradeException.class)
-    public void addGradeInAlreadyExistException() throws IllegalTitleException, AddingGradeException {
-        LocalDate subjectOnThisDateAlreadyGraded = LocalDate.of(2016, 5, 24);
+    public void addGradeInAlreadyExistException() throws IllegalSubjectTitleException, AddingGradeException {
+        LocalDate subjectOnThisDateAlreadyGraded = LocalDate.of(2015, 5, 24);
         Grade grade = new Grade(mock(Subject.class), subjectOnThisDateAlreadyGraded, 3);
         gradesService.addGrade(grade);
     }

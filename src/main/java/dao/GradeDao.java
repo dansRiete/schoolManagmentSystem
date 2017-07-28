@@ -1,13 +1,10 @@
 package dao;
 
 import mappers.GradeMapper;
-import mappers.GradeMapper;
-import model.Grade;
 import model.Grade;
 import model.Subject;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import services.MyBatisService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -61,11 +58,11 @@ public class GradeDao implements DaoInterface <Grade, Long>{
         }
     }
 
-    public List<Grade> getOnSubject(Subject requestedSubject) {
+    public List<Grade> getOnSubject(Subject requestedSubject, boolean ascending) {
         SqlSession sqlSession = null;
         try{
             sqlSession = sqlSessionFactory.openSession();
-            return sqlSession.getMapper(GradeMapper.class).getOnSubject(requestedSubject);
+            return sqlSession.getMapper(GradeMapper.class).getOnSubject(requestedSubject, ascending);
         }finally {
             if(sqlSession != null){
                 sqlSession.close();
@@ -88,13 +85,37 @@ public class GradeDao implements DaoInterface <Grade, Long>{
     }
 
     @Override
-    public void create(List<Grade> grades) {
+    public void createAll(List<Grade> grades) {
         SqlSession sqlSession = null;
         try{
             sqlSession = sqlSessionFactory.openSession();
             GradeMapper gradeMapper = sqlSession.getMapper(GradeMapper.class);
             grades.forEach(gradeMapper::create);
             sqlSession.commit();
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public Double averageGrade(Subject subject){
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).averageGrade(subject);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public Boolean isGraded(Subject subject, LocalDate date){
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).isGraded(subject, date);
         }finally {
             if(sqlSession != null){
                 sqlSession.close();

@@ -1,11 +1,9 @@
 package dao;
 
-import mappers.GradeMapper;
 import mappers.SubjectMapper;
 import model.Subject;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import services.MyBatisService;
 
 import java.util.List;
 
@@ -61,7 +59,7 @@ public class SubjectDao implements DaoInterface<Subject, Long> {
     }
 
     @Override
-    public void create(List<Subject> subjects) {
+    public void createAll(List<Subject> subjects) {
         SqlSession sqlSession = null;
         try{
             sqlSession = sqlSessionFactory.openSession();

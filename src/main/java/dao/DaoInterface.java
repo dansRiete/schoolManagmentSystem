@@ -10,7 +10,7 @@ public interface DaoInterface<T, Id> {
     T getById(Id id);
     List<T> getAll();
     void create(T entity);
-    void create(List<T> entities);
+    void createAll(List<T> entities);
     void update(T entity);
     void delete (T entity);
     void deleteAll();

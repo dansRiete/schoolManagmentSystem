@@ -1,12 +1,19 @@
 import dao.GradeDao;
 import dao.SubjectDao;
 import exceptions.AddingGradeException;
+import exceptions.IllegalSubjectTitleException;
+import jdk.internal.dynalink.linker.LinkerServices;
 import model.Grade;
 import model.Subject;
+import services.BaseGradesService;
+import services.GradesInMemoryService;
 import services.GradesService;
-import services.MyBatisService;
+import datasources.DataSource;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by nromanen on 7/24/2017.
@@ -17,32 +24,16 @@ public class Demo {
 
     public static void main(String[] args) throws AddingGradeException {
 
-        SubjectDao subjectDao = new SubjectDao(MyBatisService.getSqlSessionFactory());
-        GradeDao gradeDao = new GradeDao(MyBatisService.getSqlSessionFactory());
+        GradesInMemoryService gradesInMemoryService = new GradesInMemoryService("grades.json");
 
-        /*Subject subject = subjectDao.getAll().get(1);
-        Random random = new Random();
-        Grade someGrade = null;
-        gradeDao.create(
-                Arrays.asList(
-                        new Grade(subject, LocalDate.now(), random.nextInt(10)),
-                        someGrade = new Grade(subject, LocalDate.now(), random.nextInt(10)),
-                        new Grade(subject, LocalDate.now().withDayOfMonth(random.nextInt(30)), random.nextInt(10)),
-                        new Grade(subject, LocalDate.now().withDayOfMonth(random.nextInt(30)), random.nextInt(10)),
-                        new Grade(subject, LocalDate.now(), random.nextInt(10)),
-                        new Grade(subject, LocalDate.now(), random.nextInt(10)),
-                        new Grade(subject, LocalDate.now().withDayOfMonth(random.nextInt(30)), random.nextInt(10)),
-                        new Grade(subject, LocalDate.now().withDayOfMonth(random.nextInt(30)), random.nextInt(10)),
-                        new Grade(subject, LocalDate.now().withDayOfMonth(random.nextInt(30)), random.nextInt(10))
-                ));*/
+        System.out.println(gradesInMemoryService.fetchAllGrades());
+        List<Subject> subjects = gradesInMemoryService.fetchAllSubjects();
+        System.out.println(subjects);
 
-//        Subject neededSubject = subjectDao.getAll().get(1);
-//        System.out.println("Need subj: " + neededSubject);
-//        System.out.println(gradeDao.getOnSubject(neededSubject));
-        GradesService gradesService = new GradesService();
-        Subject subject = subjectDao.getAll().get(1);
-        gradesService.addGradeToDb(new Grade(subject, LocalDate.now().minusDays(3), 3));
-        gradesService.addGradeToDb(new Grade(subject, LocalDate.now().minusDays(5), 3));
+        Grade addedGrade = new Grade(subjects.get(0), LocalDate.now(), 5);
+        System.out.println("Added grade = " + addedGrade);
+//        gradesInMemoryService.addGrade(addedGrade);
 
+        System.out.println(BaseGradesService.represent(gradesInMemoryService.fetchAllGrades()));
     }
 }

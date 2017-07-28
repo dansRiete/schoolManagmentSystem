@@ -6,12 +6,11 @@
          pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <jsp:useBean id="gradesService" class="services.GradesService" scope="session"/>
-<jsp:useBean id="grade" class="model.Grade" scope="session"/>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Grades Web-Application</title>
-    <style>
+    <style type="text/css">
         table, th, td {
             border: 1px solid black;
         }
@@ -21,17 +20,23 @@
 
 <table>
     <tbody>
+
+    <%
+        List<Grade> grades = gradesService.getGradesFromDb();
+        pageContext.setAttribute("grades", grades);
+    %>
+
     <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Role</th>
+        <th>Id</th>
+        <th>Date</th>
+        <th>Subject</th>
+        <th>Mark</th>
     </tr>
-
-
-    <c:forEach items="${gradesService.gradesFromDb}" var="currentGrade">
+    <c:forEach items="${grades}" var="currentGrade">
         <tr>
-            <td><c:out value="${currentGrade.subject}"/></td>
+            <td><c:out value="${currentGrade.id}"/></td>
             <td><c:out value="${currentGrade.date}"/></td>
+            <td><c:out value="${currentGrade.subject}"/></td>
             <td><c:out value="${currentGrade.mark}"/></td>
         </tr>
     </c:forEach>

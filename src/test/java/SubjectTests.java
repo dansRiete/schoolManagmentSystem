@@ -1,4 +1,4 @@
-import exceptions.IllegalTitleException;
+import exceptions.IllegalSubjectTitleException;
 import model.Subject;
 import org.junit.Test;
 
@@ -7,18 +7,18 @@ import org.junit.Test;
  */
 public class SubjectTests {
 
-    @Test(expected = IllegalTitleException.class)
-    public void composeSubjectWithEmptyTitleThrowsException() throws IllegalTitleException {
+    @Test(expected = IllegalSubjectTitleException.class)
+    public void composeSubjectWithEmptyTitleThrowsException() throws IllegalSubjectTitleException {
         Subject.compose("");
     }
 
-    @Test(expected = IllegalTitleException.class)
-    public void composeSubjectWithSpacesThrowsException() throws IllegalTitleException {
+    @Test(expected = IllegalSubjectTitleException.class)
+    public void composeSubjectWithSpacesThrowsException() throws IllegalSubjectTitleException {
         Subject.compose("Some subject");
     }
 
-    @Test(expected = IllegalTitleException.class)
-    public void composeSubjectWithNullTitleThrowsException() throws IllegalTitleException {
+    @Test(expected = IllegalSubjectTitleException.class)
+    public void composeSubjectWithNullTitleThrowsException() throws IllegalSubjectTitleException {
         Subject.compose(null);
     }
 }

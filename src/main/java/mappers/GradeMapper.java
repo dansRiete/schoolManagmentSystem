@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Aleks on 26.07.2017.
@@ -14,14 +15,23 @@ public interface GradeMapper {
 
     String TABLE_NAME = "grades";
 
-    //todo orede
+    class SqlProvider{
+        public String getOrderedByDate(Map<String, Object> map){
+            long subject_id = ((Subject) map.get("id")).getId();
+            boolean ascending = ((Boolean) map.get("ascending"));
+            String sql =    "SELECT * FROM " + TABLE_NAME +
+                            " WHERE subject_id = "+ subject_id +
+                            " ORDER BY DATE" + (ascending ? "" : " DESC");
+            return sql;
+        }
+    }
+
     @Select("select id, subject_id, mark, date from grades where grades.id = #{id}")
     @Results({
             @Result(id=true, property = "id", column = "id"),
             @Result(property = "mark", column = "mark"),
             @Result(property = "date", column = "date"),
-            @Result(property="subject", column="subject_id",
-            one=@One(select="mappers.SubjectMapper.getById"))
+            @Result(property="subject", column="subject_id", one=@One(select="mappers.SubjectMapper.getById"))
     })
     Grade getById(Long id);
 
@@ -30,8 +40,7 @@ public interface GradeMapper {
             @Result(id=true, property = "id", column = "id"),
             @Result(property = "mark", column = "mark"),
             @Result(property = "date", column = "date"),
-            @Result(property="subject", column="subject_id",
-                    one=@One(select="mappers.SubjectMapper.getById"))
+            @Result(property="subject", column="subject_id", one=@One(select="mappers.SubjectMapper.getById"))
     })
     List<Grade> getAll();
 
@@ -40,8 +49,7 @@ public interface GradeMapper {
             @Result(id=true, property = "id", column = "id"),
             @Result(property = "mark", column = "mark"),
             @Result(property = "date", column = "date"),
-            @Result(property="subject", column="subject_id",
-                    one=@One(select="mappers.SubjectMapper.getById"))
+            @Result(property="subject", column="subject_id", one=@One(select="mappers.SubjectMapper.getById"))
     })
     List<Grade> getOnDate(LocalDate requestedDate);
 
@@ -57,14 +65,20 @@ public interface GradeMapper {
     @Delete("DELETE FROM " + TABLE_NAME)
     void deleteAll();
 
-    //todo Provide
-    @Select("SELECT * FROM " + TABLE_NAME + " WHERE subject_id = #{id}")
+    //todo Provider
+    @SelectProvider(type = SqlProvider.class, method = "getOrderedByDate")
     @Results({
             @Result(id=true, property = "id", column = "id"),
             @Result(property = "mark", column = "mark"),
             @Result(property = "date", column = "date"),
-            @Result(property="subject", column="subject_id",
-                    one=@One(select="mappers.SubjectMapper.getById"))
+            @Result(property="subject", column="subject_id", one=@One(select="mappers.SubjectMapper.getById"))
     })
-    List<Grade> getOnSubject(Subject requestedSubject);
+    List<Grade> getOnSubject(@Param("id") Subject requestedSubject, @Param("ascending") boolean ascending);
+
+    @Select("SELECT avg(grades.mark) FROM grades WHERE subject_id = #{id}")
+    Double averageGrade(Subject requestedSubject);
+
+    @Select("SELECT CASE WHEN (SELECT count(*) FROM grades WHERE subject_id = #{subject.id} AND date = #{date} ) > 0 THEN TRUE ELSE FALSE END")
+    Boolean isGraded(@Param("subject") Subject subject, @Param("date")LocalDate date);
+
 }

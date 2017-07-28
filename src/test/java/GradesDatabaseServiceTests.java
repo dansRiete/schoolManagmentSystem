@@ -1,16 +1,14 @@
 import dao.GradeDao;
 import dao.SubjectDao;
-import exceptions.IllegalTitleException;
+import exceptions.IllegalSubjectTitleException;
 import model.Grade;
 import model.Subject;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import services.MyBatisTestService;
+import datasources.DataSourceTest;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -21,22 +19,22 @@ import java.util.*;
 
 @SuppressWarnings("Duplicates")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class GradesDaoTests {
+public class GradesDatabaseServiceTests {
 
-    private static GradeDao gradeDao = new GradeDao(MyBatisTestService.getSqlSessionFactory());
-    private static SubjectDao subjectDao = new SubjectDao(MyBatisTestService.getSqlSessionFactory());
+    private static GradeDao gradeDao = new GradeDao(DataSourceTest.getSqlSessionFactory());
+    private static SubjectDao subjectDao = new SubjectDao(DataSourceTest.getSqlSessionFactory());
     private static List<Subject> initSubjects;
     private static List<Grade> initGrades;
     private final static Comparator<Grade> gradeByIdComparator = Comparator.comparing(Grade::getId);
 
     @BeforeClass
-    public static void populate() throws IllegalTitleException {
+    public static void populate() throws IllegalSubjectTitleException {
         gradeDao.deleteAll();
         subjectDao.deleteAll();
         initSubjects = Arrays.asList(
                 Subject.compose("Math"), Subject.compose("Geographic"), Subject.compose("History")
         );
-        subjectDao.create(initSubjects);
+        subjectDao.createAll(initSubjects);
         initSubjects = subjectDao.getAll();
         initGrades = Arrays.asList(
                 new Grade(initSubjects.get(0), LocalDate.of(2017, 5, 24), 5),
@@ -49,7 +47,7 @@ public class GradesDaoTests {
                 new Grade(initSubjects.get(1), LocalDate.of(2017, 5, 15), 2),
                 new Grade(initSubjects.get(2), LocalDate.of(2017, 2, 20), 9)
         );
-        gradeDao.create(initGrades);
+        gradeDao.createAll(initGrades);
         initGrades = gradeDao.getAll();
 //        List<Grade> receivedGrades = gradeDao.getAll();
 //        List<Grade> sortedInitGrades = new ArrayList<>(initGrades);
@@ -117,7 +115,7 @@ public class GradesDaoTests {
     }
 
     @Test
-    public void getBySubjectTest(){
+    public void getBySubjectTest(){//todo ascending
         List<Grade> initGrades = gradeDao.getAll();
         Subject checkedSubject = initSubjects.get(1);
         List<Grade> expectedGrades = new ArrayList<>();
@@ -126,7 +124,7 @@ public class GradesDaoTests {
                 expectedGrades.add(grade);
             }
         });
-        List<Grade> receivedGrades = gradeDao.getOnSubject(checkedSubject);
+        List<Grade> receivedGrades = gradeDao.getOnSubject(checkedSubject, true);
         Assert.assertEquals(receivedGrades.size(), expectedGrades.size());
         receivedGrades.sort(gradeByIdComparator);
         expectedGrades.sort(gradeByIdComparator);

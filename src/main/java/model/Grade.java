@@ -53,6 +53,11 @@ public class Grade{
         return subject != null ? subject.equals(grade1.subject) : grade1.subject == null;
     }
 
+    @Override
+    public int hashCode() {
+        return subject.hashCode() * (date.hashCode() + mark);
+    }
+
     public Long getId() {
         return id;
     }

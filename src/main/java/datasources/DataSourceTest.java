@@ -1,4 +1,4 @@
-package services;
+package datasources;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -8,14 +8,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by Aleks on 25.07.2017.
+ * Created by Aleks on 26.07.2017.
  */
-public class MyBatisService {
-
+public class DataSourceTest {
     private static SqlSessionFactory sqlSessionFactory;
 
     private static void initFactory() throws IOException {
-        String resource = "mybatis-config.xml";
+        String resource = "mybatis-config-test.xml";
         InputStream inputStream = Resources.getResourceAsStream(resource);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
     }

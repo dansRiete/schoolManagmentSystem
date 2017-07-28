@@ -1,13 +1,11 @@
 import dao.SubjectDao;
-import exceptions.IllegalTitleException;
-import model.Subject;
+import exceptions.IllegalSubjectTitleException;
 import model.Subject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import services.MyBatisTestService;
+import datasources.DataSourceTest;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -19,13 +17,13 @@ import java.util.List;
 @SuppressWarnings("Duplicates")
 public class SubjectsDaoTests {
     
-    private static SubjectDao subjectDao = new SubjectDao(MyBatisTestService.getSqlSessionFactory());
+    private static SubjectDao subjectDao = new SubjectDao(DataSourceTest.getSqlSessionFactory());
     private static List<Subject> initSubjects;
     private final static Comparator<Subject> subjectByIdComparator = Comparator.comparing(Subject::getId);
 //    final static Logger logger = Logger.getLogger(SubjectsDaoTests.class);
 
     @BeforeClass
-    public static void populate() throws IllegalTitleException {
+    public static void populate() throws IllegalSubjectTitleException {
         subjectDao.deleteAll();
         initSubjects = Arrays.asList(
                 Subject.compose("Math"),
@@ -34,7 +32,7 @@ public class SubjectsDaoTests {
                 Subject.compose("Literature"),
                 Subject.compose("History")
         );
-        subjectDao.create(initSubjects);
+        subjectDao.createAll(initSubjects);
         initSubjects = subjectDao.getAll();
         List<Subject> sortedInitSubjects = new ArrayList<>(initSubjects);
         sortedInitSubjects.sort(subjectByIdComparator);
@@ -58,7 +56,7 @@ public class SubjectsDaoTests {
     }
 
     @Test
-    public void createTest() throws IllegalTitleException {
+    public void createTest() throws IllegalSubjectTitleException {
         List<Subject> subjects = subjectDao.getAll();
         Subject createdSubject = Subject.compose("SomeSubject");
         subjectDao.create(createdSubject);
