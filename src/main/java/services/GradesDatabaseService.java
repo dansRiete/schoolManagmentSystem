@@ -37,7 +37,7 @@ public class GradesDatabaseService extends BaseGradesService {
     }
 
     @Override
-    List<Grade> fetchAllGrades() {
+    public List<Grade> fetchAllGrades() {
         return gradeDao.getAll();
     }
 
