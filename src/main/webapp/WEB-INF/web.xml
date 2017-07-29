@@ -4,6 +4,6 @@
          version="3.0">
     <display-name>Grades Web Application</display-name>
     <welcome-file-list>
-        <welcome-file>start</welcome-file>
+        <welcome-file>table</welcome-file>
     </welcome-file-list>
 </web-app>

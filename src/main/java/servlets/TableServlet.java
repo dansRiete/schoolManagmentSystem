@@ -14,8 +14,8 @@ import java.io.IOException;
 /**
  * Created by Aleks on 28.07.2017.
  */
-@WebServlet(urlPatterns = "/start")
-public class Start extends HttpServlet{
+@WebServlet(urlPatterns = "/table")
+public class TableServlet extends HttpServlet{
 
     GradesDatabaseService gradesInMemoryService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
 

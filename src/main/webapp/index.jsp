@@ -15,12 +15,12 @@
 
 <table>
     <tbody>
-
     <tr>
         <th>Id</th>
         <th>Date</th>
         <th>Subject</th>
         <th>Mark</th>
+        <th>Action</th>
     </tr>
     <c:forEach items="${requestScope.allGrades}" var="currentGrade">
         <tr>
@@ -28,9 +28,18 @@
             <td><c:out value="${currentGrade.date}"/></td>
             <td><c:out value="${currentGrade.subject}"/></td>
             <td><c:out value="${currentGrade.mark}"/></td>
+            <td>
+                <a href ="delete?deleteId=${currentGrade.id}">Delete</a>
+            </td>
         </tr>
     </c:forEach>
     </tbody>
 </table>
+
+<form method="POST" action="addServlet">
+    <input name="subject" type="text" class="form-control" /> <BR />
+    <input name="mark" type="text" class="form-control" /> <BR />
+    <input name="add" type="submit" class="btn btn-success" value="Submit" />
+</form>
 </body>
 </html>
