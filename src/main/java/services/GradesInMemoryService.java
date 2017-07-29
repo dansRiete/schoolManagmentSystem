@@ -76,6 +76,16 @@ public class GradesInMemoryService extends BaseGradesService {
     }
 
     @Override
+    public Subject fetchSubject(long id) {
+        for(Subject subject : fetchAllSubjects()){
+            if(subject.getId().equals(id)){
+                return subject;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public double calculateAvgGrade(Subject subject) {
         final double[] averageGrade = {0};
         List<Grade> subjectGrades = retrieveGradesBySubject(subject, this.grades);

@@ -13,29 +13,32 @@ import java.util.List;
  */
 public abstract class BaseGradesService {
 
-    final static String TWO_GRADES_ON_DAY_MSG = "There can not be two grades on the same subject on the same day";
-    private final static String AFTER_TODAY_GRADE_MSG = "Grade date can not be after today";
-    private final static String PAST_YEAR_GRADE_MSG = "Grade date can not be before beginning of the year";
+    final static String TWO_GRADES_ON_DAY_MSG = "There can not be more than one grade on the same subject on the same day";
+    final static String AFTER_TODAY_GRADE_MSG = "Grade date can not be after today";
+    final static String PAST_YEAR_GRADE_MSG = "Grade date can not be before beginning of the year";
 
-    abstract void addGrade(Grade addedGrade) throws AddingGradeException;
-    abstract List<Grade> fetchAllGrades();
-    abstract List<Grade> fetchBySubject(Subject subject, boolean ascendingByDate);
-    abstract List<Grade> fetchByDate(LocalDate date);
-    abstract List<Subject> fetchAllSubjects();
-    abstract double calculateAvgGrade(Subject subject);
-    abstract boolean isGraded(Subject subject, LocalDate date);
+    public abstract void addGrade(Grade addedGrade) throws AddingGradeException;
+    public abstract List<Grade> fetchAllGrades();
+    public abstract List<Grade> fetchBySubject(Subject subject, boolean ascendingByDate);
+    public abstract List<Grade> fetchByDate(LocalDate date);
+    public abstract List<Subject> fetchAllSubjects();
+    public abstract Subject fetchSubject(long id);
+    public abstract double calculateAvgGrade(Subject subject);
+    public abstract boolean isGraded(Subject subject, LocalDate date);
 
-    void validateDate(LocalDate date) throws AddingGradeException {
-        if(date.isBefore(LocalDate.now().withDayOfMonth(1).withDayOfYear(1))){
+    void validateDate(LocalDate validatedDate) throws AddingGradeException {
+        if(validatedDate.getYear() < LocalDate.now().getYear()){
             throw new AddingGradeException(PAST_YEAR_GRADE_MSG);
         }
-        if(date.isAfter(LocalDate.now())){
+        if(validatedDate.isAfter(LocalDate.now())){
             throw new AddingGradeException(AFTER_TODAY_GRADE_MSG);
         }
     }
 
     public static String represent(Grade gradeToPrint) {
-        return "Subject: " + gradeToPrint.getSubject() + ", Date: " + gradeToPrint.getDate() + ", Mark: " + gradeToPrint.getMark();
+        return  "Subject: " + gradeToPrint.getSubject() +
+                ", Date: " + gradeToPrint.getDate() +
+                ", Mark: " + gradeToPrint.getMark();
     }
 
     public static String represent(List<Grade> gradesToPrint) {

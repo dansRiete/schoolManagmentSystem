@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  */
 public class GradesService {
 
-    private List<Grade> grades = new ArrayList<>();
+    /*private List<Grade> grades = new ArrayList<>();
     private GradeDao gradeDao;
     private final static String TWO_GRADES_ON_DAY_MSG = "There can not be two grades on the same subject on the same day";
     private final static String AFTER_TODAY_GRADE_MSG = "Grade date can not be after today";
@@ -135,6 +135,6 @@ public class GradesService {
         }else {
             gradesOnDate.sort((o1, o2) -> o2.getDate().compareTo(o1.getDate()));
         }
-    }
+    }*/
 
 }

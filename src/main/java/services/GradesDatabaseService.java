@@ -20,19 +20,23 @@ public class GradesDatabaseService extends BaseGradesService {
 
     public GradesDatabaseService(SqlSessionFactory sqlSessionFactory) {
         this.gradeDao = new GradeDao(sqlSessionFactory);
+        this.subjectDao = new SubjectDao(sqlSessionFactory);
     }
 
     @Override
-    void addGrade(Grade addedGrade) throws AddingGradeException {
+    public void addGrade(Grade addedGrade) throws AddingGradeException {
         Subject subject = addedGrade.getSubject();
         LocalDate date = addedGrade.getDate();
-
         validateDate(date);
 
-        if(!isGraded(subject, date)){
-            gradeDao.create(addedGrade);
-        }else {
+        if(subject == null){
+            throw new AddingGradeException("Subject can not be null");
+        }else if(date == null){
+            throw new AddingGradeException("Date can not be null");
+        }else if(isGraded(subject, date)){
             throw new AddingGradeException(TWO_GRADES_ON_DAY_MSG);
+        }else {
+            gradeDao.create(addedGrade);
         }
     }
 
@@ -42,27 +46,32 @@ public class GradesDatabaseService extends BaseGradesService {
     }
 
     @Override
-    List<Grade> fetchBySubject(Subject subject, boolean ascendingByDate) {
+    public List<Grade> fetchBySubject(Subject subject, boolean ascendingByDate) {
         return gradeDao.getOnSubject(subject, ascendingByDate);
     }
 
     @Override
-    List<Grade> fetchByDate(LocalDate date) {
+    public List<Grade> fetchByDate(LocalDate date) {
         return gradeDao.getOnDate(date);
     }
 
     @Override
-    List<Subject> fetchAllSubjects() {
+    public List<Subject> fetchAllSubjects() {
         return subjectDao.getAll();
     }
 
     @Override
-    double calculateAvgGrade(Subject subject) {
+    public Subject fetchSubject(long id) {
+        return subjectDao.getById(id);
+    }
+
+    @Override
+    public double calculateAvgGrade(Subject subject) {
         return gradeDao.averageGrade(subject);
     }
 
     @Override
-    boolean isGraded(Subject subject, LocalDate date) {
+    public boolean isGraded(Subject subject, LocalDate date) {
         return gradeDao.isGraded(subject, date);
     }
 
