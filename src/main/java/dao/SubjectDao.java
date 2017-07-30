@@ -88,11 +88,11 @@ public class SubjectDao implements DaoInterface<Subject, Long> {
     }
 
     @Override
-    public void delete(Subject entity) {
+    public void delete(long id) {
         SqlSession sqlSession = null;
         try{
             sqlSession = sqlSessionFactory.openSession();
-            sqlSession.getMapper(SubjectMapper.class).delete(entity);
+            sqlSession.getMapper(SubjectMapper.class).delete(id);
             sqlSession.commit();
         }finally {
             if(sqlSession != null){

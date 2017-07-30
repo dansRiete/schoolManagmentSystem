@@ -17,7 +17,7 @@ public interface GradeMapper {
 
     class SqlProvider{
         public String getOrderedByDate(Map<String, Object> map){
-            long subject_id = ((Subject) map.get("id")).getId();
+            long subject_id = (Long) map.get("id");
             boolean ascending = ((Boolean) map.get("ascending"));
             String sql =    "SELECT * FROM " + TABLE_NAME +
                             " WHERE subject_id = "+ subject_id +
@@ -60,12 +60,11 @@ public interface GradeMapper {
     void update(Grade entity);
 
     @Delete("DELETE FROM " + TABLE_NAME + " WHERE id = #{id}")
-    void delete(Grade entity);
+    void delete(long id);
 
     @Delete("DELETE FROM " + TABLE_NAME)
     void deleteAll();
 
-    //todo Provider
     @SelectProvider(type = SqlProvider.class, method = "getOrderedByDate")
     @Results({
             @Result(id=true, property = "id", column = "id"),
@@ -73,10 +72,10 @@ public interface GradeMapper {
             @Result(property = "date", column = "date"),
             @Result(property="subject", column="subject_id", one=@One(select="mappers.SubjectMapper.getById"))
     })
-    List<Grade> getOnSubject(@Param("id") Subject requestedSubject, @Param("ascending") boolean ascending);
+    List<Grade> getOnSubject(@Param("id") Long requestedSubjectId, @Param("ascending") boolean ascending);
 
     @Select("SELECT avg(grades.mark) FROM grades WHERE subject_id = #{id}")
-    Double averageGrade(Subject requestedSubject);
+    Double averageGrade(long requestedSubject);
 
     @Select("SELECT CASE WHEN (SELECT count(*) FROM grades WHERE subject_id = #{subject.id} AND date = #{date} ) > 0 THEN TRUE ELSE FALSE END")
     Boolean isGraded(@Param("subject") Subject subject, @Param("date")LocalDate date);

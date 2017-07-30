@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 
 /**
  * Created by Aleks on 29.07.2017.
@@ -20,8 +21,9 @@ public class DeleteServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("Delete ID: " + request.getParameter("deleteId"));
-        response.sendRedirect("/table");
+        Long deletedGradeId = Long.valueOf(request.getParameter("deletedSubjectId"));
+        gradesInMemoryService.deleteGrade(deletedGradeId);
+        response.sendRedirect("/display");
     }
 
 }

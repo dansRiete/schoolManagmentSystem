@@ -6,6 +6,8 @@ import model.Grade;
 import model.Subject;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -19,11 +21,12 @@ public abstract class BaseGradesService {
 
     public abstract void addGrade(Grade addedGrade) throws AddingGradeException;
     public abstract List<Grade> fetchAllGrades();
-    public abstract List<Grade> fetchBySubject(Subject subject, boolean ascendingByDate);
+    public abstract List<Grade> fetchBySubject(long subjectId, boolean ascendingByDate);
     public abstract List<Grade> fetchByDate(LocalDate date);
     public abstract List<Subject> fetchAllSubjects();
     public abstract Subject fetchSubject(long id);
-    public abstract double calculateAvgGrade(Subject subject);
+    public abstract void deleteGrade(long id);
+    public abstract double calculateAvgGrade(long subject);
     public abstract boolean isGraded(Subject subject, LocalDate date);
 
     void validateDate(LocalDate validatedDate) throws AddingGradeException {
@@ -33,6 +36,12 @@ public abstract class BaseGradesService {
         if(validatedDate.isAfter(LocalDate.now())){
             throw new AddingGradeException(AFTER_TODAY_GRADE_MSG);
         }
+    }
+
+    public List<Subject> extractSubjects(List<Grade> grades){
+        HashSet<Subject> allSubjects = new HashSet<>();
+        grades.forEach(currentGrade -> allSubjects.add(currentGrade.getSubject()));
+        return new ArrayList<>(allSubjects);
     }
 
     public static String represent(Grade gradeToPrint) {

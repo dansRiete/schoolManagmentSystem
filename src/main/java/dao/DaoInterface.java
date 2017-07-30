@@ -12,7 +12,7 @@ public interface DaoInterface<T, Id> {
     void create(T entity);
     void createAll(List<T> entities);
     void update(T entity);
-    void delete (T entity);
+    void delete (long id);
     void deleteAll();
 
 }

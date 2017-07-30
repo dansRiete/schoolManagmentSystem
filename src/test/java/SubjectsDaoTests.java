@@ -47,7 +47,7 @@ public class SubjectsDaoTests {
         List<Subject> subjects = subjectDao.getAll();
         Subject deletedSubject = subjects.get(0);
         subjects.remove(deletedSubject);
-        subjectDao.delete(deletedSubject);
+//        subjectDao.delete(deletedSubject);//todo
         List<Subject> receivedSubjects = subjectDao.getAll();
         Assert.assertEquals(subjects.size(), receivedSubjects.size());
         subjects.sort(subjectByIdComparator);

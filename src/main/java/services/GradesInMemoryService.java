@@ -55,7 +55,7 @@ public class GradesInMemoryService extends BaseGradesService {
     }
 
     @Override
-    public List<Grade> fetchBySubject(Subject subject, boolean ascendingByDate) {
+    public List<Grade> fetchBySubject(long subject, boolean ascendingByDate) {
         List<Grade> gradesOnDate = retrieveGradesBySubject(subject, this.grades);
         sortByDate(gradesOnDate, ascendingByDate);
         return gradesOnDate;
@@ -86,14 +86,24 @@ public class GradesInMemoryService extends BaseGradesService {
     }
 
     @Override
-    public double calculateAvgGrade(Subject subject) {
+    public void deleteGrade(long id) {
+
+    }
+
+    @Override
+    public double calculateAvgGrade(long subject) {
         final double[] averageGrade = {0};
         List<Grade> subjectGrades = retrieveGradesBySubject(subject, this.grades);
         subjectGrades.forEach(grade -> averageGrade[0] += grade.getMark());
         return subjectGrades.isEmpty() ? 0 : averageGrade[0] / subjectGrades.size();
     }
 
+    @Override
     public boolean isGraded(Subject subject, LocalDate date) {
+        return false;
+    }
+
+    public boolean isGraded(long subject, LocalDate date) {
         return grades.isEmpty() || !retrieveGradesBySubject(subject, grades).isEmpty();
     }
 
@@ -101,7 +111,7 @@ public class GradesInMemoryService extends BaseGradesService {
         this.grades = grades;
     }
 
-    private List<Grade> retrieveGradesBySubject(Subject subject, List<Grade> grades){
+    private List<Grade> retrieveGradesBySubject(long subject, List<Grade> grades){
         return grades.stream()
                 .filter(currentGrade -> currentGrade.getSubject().equals(subject))
                 .collect(Collectors.toList());

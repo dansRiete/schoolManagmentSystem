@@ -58,11 +58,11 @@ public class GradeDao implements DaoInterface <Grade, Long>{
         }
     }
 
-    public List<Grade> getOnSubject(Subject requestedSubject, boolean ascending) {
+    public List<Grade> getOnSubject(long requestedSubjectId, boolean ascending) {
         SqlSession sqlSession = null;
         try{
             sqlSession = sqlSessionFactory.openSession();
-            return sqlSession.getMapper(GradeMapper.class).getOnSubject(requestedSubject, ascending);
+            return sqlSession.getMapper(GradeMapper.class).getOnSubject(requestedSubjectId, ascending);
         }finally {
             if(sqlSession != null){
                 sqlSession.close();
@@ -99,7 +99,7 @@ public class GradeDao implements DaoInterface <Grade, Long>{
         }
     }
 
-    public Double averageGrade(Subject subject){
+    public Double averageGrade(long subject){
         SqlSession sqlSession = null;
         try{
             sqlSession = sqlSessionFactory.openSession();
@@ -138,11 +138,11 @@ public class GradeDao implements DaoInterface <Grade, Long>{
     }
 
     @Override
-    public void delete(Grade entity) {
+    public void delete(long id) {
         SqlSession sqlSession = null;
         try{
             sqlSession = sqlSessionFactory.openSession();
-            sqlSession.getMapper(GradeMapper.class).delete(entity);
+            sqlSession.getMapper(GradeMapper.class).delete(id);
             sqlSession.commit();
         }finally {
             if(sqlSession != null){

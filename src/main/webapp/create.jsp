@@ -14,10 +14,11 @@
                 <c:forEach items="${requestScope.subjects}" var="subject">
                     <option ${requestScope.selectedSubjectId eq subject.id ? 'selected' : ''} value="${subject.id}">${subject}</option>
                 </c:forEach>
+            </select>
                 <input name="date" type="date" value="${requestScope.date}" class="form-control" />
                 <input name="mark" type="number" value="${requestScope.mark}" class="form-control" /> <br/><br/>
                 <input name="add" type="submit" class="btn btn-success" value="Submit" />
-            </select>
+
         </label>
 
     </form>

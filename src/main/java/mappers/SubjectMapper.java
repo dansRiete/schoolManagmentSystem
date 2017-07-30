@@ -28,7 +28,7 @@ public interface SubjectMapper {
     void update(Subject entity);
 
     @Delete("DELETE FROM " + TABLE_NAME + " WHERE id = #{id}")
-    void delete(Subject entity);
+    void delete(long id);
 
     @Delete("DELETE FROM " + TABLE_NAME)
     void deleteAll();

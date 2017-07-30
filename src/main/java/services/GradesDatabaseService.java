@@ -46,8 +46,8 @@ public class GradesDatabaseService extends BaseGradesService {
     }
 
     @Override
-    public List<Grade> fetchBySubject(Subject subject, boolean ascendingByDate) {
-        return gradeDao.getOnSubject(subject, ascendingByDate);
+    public List<Grade> fetchBySubject(long subjectId, boolean ascendingByDate) {
+        return gradeDao.getOnSubject(subjectId, ascendingByDate);
     }
 
     @Override
@@ -66,7 +66,12 @@ public class GradesDatabaseService extends BaseGradesService {
     }
 
     @Override
-    public double calculateAvgGrade(Subject subject) {
+    public void deleteGrade(long id) {
+        gradeDao.delete(id);
+    }
+
+    @Override
+    public double calculateAvgGrade(long subject) {
         return gradeDao.averageGrade(subject);
     }
 
