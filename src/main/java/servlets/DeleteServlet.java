@@ -20,8 +20,8 @@ public class DeleteServlet extends HttpServlet {
     GradesDatabaseService gradesInMemoryService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long deletedGradeId = Long.valueOf(request.getParameter("deletedSubjectId"));
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long deletedGradeId = Long.valueOf(request.getParameter("deletedGradeId"));
         gradesInMemoryService.deleteGrade(deletedGradeId);
         response.sendRedirect("/display");
     }

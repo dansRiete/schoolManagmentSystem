@@ -20,16 +20,17 @@ import java.time.format.DateTimeParseException;
  * Created by Aleks on 29.07.2017.
  */
 
-@WebServlet(urlPatterns = "/create")
-public class CreateServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/create/grade")
+public class CreateGradeServlet extends HttpServlet {
 
-    Logger logger = Logger.getLogger(CreateServlet.class);
+    Logger logger = Logger.getLogger(CreateGradeServlet.class);
     GradesDatabaseService gradesService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("subjects", gradesService.fetchAllSubjects());
-        req.getRequestDispatcher("/create.jsp").forward(req, resp);
+        req.setAttribute("page", "createGrade");
+        req.getRequestDispatcher("/createGrade.jsp").forward(req, resp);
     }
 
     @Override
@@ -39,14 +40,17 @@ public class CreateServlet extends HttpServlet {
         Integer mark = null;
         LocalDate date = null;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        Grade addedGrade = null;
 
         try {
             selectedSubjectId = Long.valueOf(req.getParameter("selectedSubject"));
             mark = Integer.valueOf(req.getParameter("mark"));
             date = LocalDate.parse(req.getParameter("date"), formatter);
             Subject subject = gradesService.fetchSubject(selectedSubjectId);
-            gradesService.addGrade(new Grade(subject, date, mark));
-            resp.sendRedirect("/display");
+            addedGrade = new Grade(subject, date, mark);
+            gradesService.addGrade(addedGrade);
+            req.setAttribute("message", "Grade \" " + addedGrade + "\" has been successfully created");
+            req.getRequestDispatcher("/createGrade.jsp").forward(req, resp);
         }catch (NumberFormatException e){
             logger.error(e.getMessage());
             req.setAttribute("message", "Error: " + e.getLocalizedMessage());
@@ -54,7 +58,7 @@ public class CreateServlet extends HttpServlet {
             req.setAttribute("date", req.getParameter("date"));
             req.setAttribute("mark", req.getParameter("mark"));
             req.setAttribute("subjects", gradesService.fetchAllSubjects());
-            req.getRequestDispatcher("/create.jsp").forward(req, resp);
+            req.getRequestDispatcher("/createGrade.jsp").forward(req, resp);
         }catch (AddingGradeException e) {
             logger.error(e.getMessage());
             req.setAttribute("message", "Error: " + e.getLocalizedMessage());
@@ -62,7 +66,7 @@ public class CreateServlet extends HttpServlet {
             req.setAttribute("date", date);
             req.setAttribute("mark", mark);
             req.setAttribute("subjects", gradesService.fetchAllSubjects());
-            req.getRequestDispatcher("/create.jsp").forward(req, resp);
+            req.getRequestDispatcher("/createGrade.jsp").forward(req, resp);
         }catch (DateTimeParseException e) {
             logger.error(e.getMessage());
             req.setAttribute("message", "Enter a date");
@@ -70,7 +74,7 @@ public class CreateServlet extends HttpServlet {
             req.setAttribute("date", date);
             req.setAttribute("mark", mark);
             req.setAttribute("subjects", gradesService.fetchAllSubjects());
-            req.getRequestDispatcher("/create.jsp").forward(req, resp);
+            req.getRequestDispatcher("/createGrade.jsp").forward(req, resp);
         }
     }
 }

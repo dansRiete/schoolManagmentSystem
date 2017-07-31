@@ -50,6 +50,11 @@ public class GradesInMemoryService extends BaseGradesService {
     }
 
     @Override
+    public void addSubject(Subject subject) {
+        //TODO implement
+    }
+
+    @Override
     public List<Grade> fetchAllGrades() {
         return new ArrayList<>(grades);
     }

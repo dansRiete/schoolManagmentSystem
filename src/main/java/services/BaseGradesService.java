@@ -16,10 +16,12 @@ import java.util.List;
 public abstract class BaseGradesService {
 
     final static String TWO_GRADES_ON_DAY_MSG = "There can not be more than one grade on the same subject on the same day";
-    final static String AFTER_TODAY_GRADE_MSG = "Grade date can not be after today";
-    final static String PAST_YEAR_GRADE_MSG = "Grade date can not be before beginning of the year";
+    final static String NEGATIVE_MARK_MSG = "Mark can not be negative value";
+    final static String AFTER_TODAY_GRADE_MSG = "Grade's date can not be after today";
+    final static String PAST_YEAR_GRADE_MSG = "Grade's date can not be before beginning of the year";
 
     public abstract void addGrade(Grade addedGrade) throws AddingGradeException;
+    public abstract void addSubject(Subject subject);
     public abstract List<Grade> fetchAllGrades();
     public abstract List<Grade> fetchBySubject(long subjectId, boolean ascendingByDate);
     public abstract List<Grade> fetchByDate(LocalDate date);

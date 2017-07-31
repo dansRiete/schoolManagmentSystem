@@ -27,6 +27,7 @@ public class GradesDatabaseService extends BaseGradesService {
     public void addGrade(Grade addedGrade) throws AddingGradeException {
         Subject subject = addedGrade.getSubject();
         LocalDate date = addedGrade.getDate();
+        int mark = addedGrade.getMark();
         validateDate(date);
 
         if(subject == null){
@@ -35,9 +36,16 @@ public class GradesDatabaseService extends BaseGradesService {
             throw new AddingGradeException("Date can not be null");
         }else if(isGraded(subject, date)){
             throw new AddingGradeException(TWO_GRADES_ON_DAY_MSG);
+        }else if(mark < 0){
+            throw new AddingGradeException(NEGATIVE_MARK_MSG);
         }else {
             gradeDao.create(addedGrade);
         }
+    }
+
+    @Override
+    public void addSubject(Subject subject) {
+        subjectDao.create(subject);
     }
 
     @Override

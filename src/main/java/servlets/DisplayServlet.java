@@ -41,6 +41,7 @@ public class DisplayServlet extends HttpServlet{
         }
 
         request.setAttribute("allGrades", grades);
+        request.setAttribute("page", "display");
         request.setAttribute("allSubjects", subjects);
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
