@@ -7,6 +7,7 @@ import model.Grade;
 import model.Subject;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -43,7 +44,6 @@ public class GradesDatabaseService extends BaseGradesService {
         }
     }
 
-    @Override
     public void addSubject(Subject subject) {
         subjectDao.create(subject);
     }
@@ -79,6 +79,11 @@ public class GradesDatabaseService extends BaseGradesService {
     }
 
     @Override
+    public void deleteAll() {
+
+    }
+
+    @Override
     public double calculateAvgGrade(long subject) {
         return gradeDao.averageGrade(subject);
     }
@@ -86,6 +91,16 @@ public class GradesDatabaseService extends BaseGradesService {
     @Override
     public boolean isGraded(Subject subject, LocalDate date) {
         return gradeDao.isGraded(subject, date);
+    }
+
+    @Override
+    public void reloadFromFile(String fileName) throws IOException {
+
+    }
+
+    @Override
+    public void dumpToFile(String fileName) throws IOException {
+
     }
 
 }

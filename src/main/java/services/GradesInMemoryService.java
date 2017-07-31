@@ -1,18 +1,10 @@
 package services;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
 import exceptions.AddingGradeException;
 import model.Grade;
 import model.Subject;
 
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
-import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,13 +18,7 @@ import java.util.stream.Collectors;
 public class GradesInMemoryService extends BaseGradesService {
 
     private List<Grade> grades = new ArrayList<>();
-    private static final Type REVIEW_TYPE = new TypeToken<List<Grade>>() {}.getType();
-    private final String fileName;
-
-    public GradesInMemoryService(String fileName) {
-        this.fileName = fileName;
-        reloadFromFile();
-    }
+//    private final static String DEFAULT_FILE_NAME = "grades.json";
 
     @Override
     public void addGrade(Grade addedGrade) throws AddingGradeException {
@@ -43,15 +29,11 @@ public class GradesInMemoryService extends BaseGradesService {
         validateDate(date);
 
         if(!isGraded(subject, date)){
+            addedGrade.setId(getUId());
             grades.add(addedGrade);
         }else {
             throw new AddingGradeException(TWO_GRADES_ON_DAY_MSG);
         }
-    }
-
-    @Override
-    public void addSubject(Subject subject) {
-        //TODO implement
     }
 
     @Override
@@ -61,7 +43,7 @@ public class GradesInMemoryService extends BaseGradesService {
 
     @Override
     public List<Grade> fetchBySubject(long subject, boolean ascendingByDate) {
-        List<Grade> gradesOnDate = retrieveGradesBySubject(subject, this.grades);
+        List<Grade> gradesOnDate = retrieveGradesBySubject(subject);
         sortByDate(gradesOnDate, ascendingByDate);
         return gradesOnDate;
     }
@@ -92,71 +74,55 @@ public class GradesInMemoryService extends BaseGradesService {
 
     @Override
     public void deleteGrade(long id) {
+        for(int i = 0; i < this.grades.size(); i++){
+            if(grades.get(i).getId().equals(id)){
+                grades.remove(i);
+            }
+        }
+    }
 
+    @Override
+    public void deleteAll() {
+        this.grades = new ArrayList<>();
     }
 
     @Override
     public double calculateAvgGrade(long subject) {
         final double[] averageGrade = {0};
-        List<Grade> subjectGrades = retrieveGradesBySubject(subject, this.grades);
+        List<Grade> subjectGrades = retrieveGradesBySubject(subject);
         subjectGrades.forEach(grade -> averageGrade[0] += grade.getMark());
         return subjectGrades.isEmpty() ? 0 : averageGrade[0] / subjectGrades.size();
     }
 
     @Override
     public boolean isGraded(Subject subject, LocalDate date) {
-        return false;
+        return !retrieveGradesByDate(date, retrieveGradesBySubject(subject.getId())).isEmpty();
     }
 
-    public boolean isGraded(long subject, LocalDate date) {
-        return grades.isEmpty() || !retrieveGradesBySubject(subject, grades).isEmpty();
+    @Override
+    public void reloadFromFile(String fileName) throws IOException {
+        this.grades = readFromFile(fileName);
     }
 
-    public void setGrades(List<Grade> grades) {
-        this.grades = grades;
+    @Override
+    public void dumpToFile(String fileName) throws IOException {
+        saveToFile(fileName, this.grades);
     }
 
-    private List<Grade> retrieveGradesBySubject(long subject, List<Grade> grades){
+    private List<Grade> retrieveGradesBySubject(long subject){
         return grades.stream()
-                .filter(currentGrade -> currentGrade.getSubject().equals(subject))
+                .filter(currentGrade -> currentGrade.getSubject().getId().equals(subject))
                 .collect(Collectors.toList());
     }
 
-    private void reloadFromFile() {
-        Gson gson = new Gson();
-        try (
-                FileReader fileReader = new FileReader(this.fileName);
-                JsonReader jsonReader = new JsonReader(fileReader)
-        ){
-            this.grades = gson.fromJson(jsonReader, REVIEW_TYPE);
-        } catch (IOException e) {
-            throw new RuntimeException("Exception in reloadFromFile()");
-        }
-    }
-
-    public List<Grade> readFromFile(String fileName) throws IOException {
-        Gson gson = new Gson();
-        try (
-                FileReader fileReader = new FileReader(fileName);
-                JsonReader jsonReader = new JsonReader(fileReader)
-        ){
-            return gson.fromJson(jsonReader, REVIEW_TYPE);
-        } catch (IOException e) {
-            throw e;
-        }
-    }
-
-    public void writeToFile(String fileName, List<Grade> writtenGrades) throws IOException {
-        try (Writer writer = new FileWriter(fileName)) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            gson.toJson(writtenGrades, writer);
-        }catch (IOException e){
-            throw e;
-        }
-    }
-
     private List<Grade> retrieveGradesByDate(LocalDate date){
-        return this.grades.stream()
+        return grades.stream()
+                .filter(currentGrade -> currentGrade.getDate().equals(date))
+                .collect(Collectors.toList());
+    }
+
+    private List<Grade> retrieveGradesByDate(LocalDate date, List<Grade> grades){
+        return grades.stream()
                 .filter(currentGrade -> currentGrade.getDate().equals(date))
                 .collect(Collectors.toList());
     }
@@ -167,5 +133,15 @@ public class GradesInMemoryService extends BaseGradesService {
         }else {
             gradesOnDate.sort((o1, o2) -> o2.getDate().compareTo(o1.getDate()));
         }
+    }
+
+    private long getUId(){
+        long id = 0;
+        for(Grade grade : grades){
+            if(grade.getId() > id){
+                id = grade.getId();
+            }
+        }
+        return id == 0 ? 1 : id;
     }
 }

@@ -28,7 +28,7 @@ public class Subject {
 
     @Override
     public String toString() {
-        return title;
+        return id+"." + title;
     }
 
     @Override
@@ -57,5 +57,9 @@ public class Subject {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

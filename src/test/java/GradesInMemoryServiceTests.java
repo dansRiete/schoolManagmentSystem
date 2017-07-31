@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(DataProviderRunner.class)
 public class GradesInMemoryServiceTests {
 
-    private static GradesInMemoryService gradesService = new GradesInMemoryService("grades.json");
+    private static GradesInMemoryService gradesService = new GradesInMemoryService();
     private final static String INIT_FILENAME = "src\\test\\resources\\Grades.json";
     private final static String TEMP_FILENAME = "src\\test\\resources\\tmp.json";
     private final static String GRADES_ON_2017_05_15 =
@@ -42,8 +42,7 @@ public class GradesInMemoryServiceTests {
 
     @BeforeClass
     public static void populate() throws IOException {
-        List<Grade> referenceGrades = gradesService.readFromFile(INIT_FILENAME);
-        gradesService.setGrades(referenceGrades);
+        gradesService.reloadFromFile(INIT_FILENAME);
         String actualGradesRepresentation = gradesService.fetchAllGrades().toString();
         System.out.println(actualGradesRepresentation);
         String expectedGradesRepresentation =
@@ -67,7 +66,7 @@ public class GradesInMemoryServiceTests {
         initGrades.add(new Grade(Subject.compose("Subject1"), date, 5));
         initGrades.add(new Grade(Subject.compose("Subject2"), date, 5));
         initGrades.add(new Grade(Subject.compose("Subject3"), date, 5));
-        gradesService.writeToFile(TEMP_FILENAME, initGrades);
+        gradesService.saveToFile(TEMP_FILENAME, initGrades);
         List<Grade> deserializedGrades = gradesService.readFromFile(TEMP_FILENAME);
         assertEquals(initGrades, deserializedGrades);
     }
@@ -75,7 +74,7 @@ public class GradesInMemoryServiceTests {
     @Test
     public void jsonWriteReadEmptyTest() throws IllegalSubjectTitleException, IOException {
         List<Grade> initGrades = new ArrayList<>();
-        gradesService.writeToFile(TEMP_FILENAME, initGrades);
+        gradesService.saveToFile(TEMP_FILENAME, initGrades);
         List<Grade> deserializedGrades = gradesService.readFromFile(TEMP_FILENAME);
         assertEquals(initGrades, deserializedGrades);
     }
@@ -110,9 +109,9 @@ public class GradesInMemoryServiceTests {
 
     @Test
     public void getGradesBySubjectDescendingByDate() {
-        Subject GEOGRAPHIC = mock(Subject.class);
+        /*Subject GEOGRAPHIC = mock(Subject.class);
         when(GEOGRAPHIC.getTitle()).thenReturn("Geographic");
-        /*String actualGradesRepresentation = gradesService.fetchBySubject(GEOGRAPHIC, false).toString();
+        String actualGradesRepresentation = gradesService.fetchBySubject(GEOGRAPHIC, false).toString();
         String expectedGradesRepresentation =
                 "[Subject: Geographic, Date: 2017-05-15, Mark: 2, " +
                 "Subject: Geographic, Date: 2017-04-22, Mark: 9, " +

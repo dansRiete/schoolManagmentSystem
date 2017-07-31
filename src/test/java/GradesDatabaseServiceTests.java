@@ -1,5 +1,6 @@
 import dao.GradeDao;
 import dao.SubjectDao;
+import datasources.DataSourceH2Test;
 import exceptions.IllegalSubjectTitleException;
 import model.Grade;
 import model.Subject;
@@ -21,8 +22,8 @@ import java.util.*;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GradesDatabaseServiceTests {
 
-    private static GradeDao gradeDao = new GradeDao(DataSourceTest.getSqlSessionFactory());
-    private static SubjectDao subjectDao = new SubjectDao(DataSourceTest.getSqlSessionFactory());
+    private static GradeDao gradeDao = new GradeDao(DataSourceH2Test.getSqlSessionFactory());
+    private static SubjectDao subjectDao = new SubjectDao(DataSourceH2Test.getSqlSessionFactory());
     private static List<Subject> initSubjects;
     private static List<Grade> initGrades;
     private final static Comparator<Grade> gradeByIdComparator = Comparator.comparing(Grade::getId);

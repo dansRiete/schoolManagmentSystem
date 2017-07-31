@@ -18,7 +18,7 @@ public interface SubjectMapper {
     @Select("SELECT * FROM " + TABLE_NAME + " WHERE id = #{id}")
     Subject getById(long id);
 
-    @Select("SELECT * FROM " + TABLE_NAME + "")
+    @Select("SELECT * FROM " + TABLE_NAME)
     List<Subject> getAll();
 
     @Insert("INSERT INTO " + TABLE_NAME + " (title) VALUES (#{title})")
