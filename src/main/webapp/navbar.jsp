@@ -14,7 +14,7 @@
         </div>
         <ul class="nav navbar-nav">
             <li ${requestScope.page eq 'display' ? 'class="active"' : ''}>
-                <a href=<c:url value="/display"/>>Home</a>
+                <a href=<c:url value="/display"/>>Grades list</a>
             </li>
             <li ${requestScope.page eq 'createGrade' ? 'class="active"' : ''}>
                 <a href="<c:url value="/create/grade"/>">Add grade</a>
@@ -24,15 +24,26 @@
                 <a href="<c:url value="/create/subject"/>">Add subject</a>
             </li>
             <li ${requestScope.page ne 'display' ? 'class="hidden"' : ''}>
-                <form class="navbar-form" >
-                    <select name="selectedSubject" class="form-control">
-                        <c:forEach items="${requestScope.allSubjects}" var="subject">
-                            <option value="${subject.id}">${subject == null ? 'All' : subject.title}</option>
-                        </c:forEach>
-                    </select>
-                    <input type="submit" class="btn btn-success" value="Filter"/>
+                <form id="filterForm" class="navbar-form" >
+                    <label >
+                        <select id="subjectsSelect" name="selectedSubject" class="form-control">
+                            <c:forEach items="${requestScope.allSubjects}" var="subject">
+                                <option
+                                        <c:if test="${requestScope.selectedSubject == subject.id}">selected</c:if>
+                                        value="${subject.id}">${subject == null ? 'All subjects' : subject.title}
+                                </option>
+                            </c:forEach>
+                        </select>
+                        <input id="selectedDate" name="selectedDate" value="${requestScope.selectedDate}" type="date"  class="form-control"/>
+                        <input type="submit" class="btn btn-success" value="Filter"/>
+                        <input type="button" id="resetButton" class="btn btn-success" value="Reset"/>
+                        <input type="button" id="avgButton" class="btn btn-success" value="Avg"/>
+
+                    </label>
+
                 </form>
             </li>
         </ul>
     </div>
+
 </nav>

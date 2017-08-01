@@ -6,8 +6,10 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.sun.xml.internal.messaging.saaj.packaging.mime.util.LineInputStream;
 import exceptions.AddingGradeException;
+import exceptions.AddingSubjectException;
 import model.Grade;
 import model.Subject;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -24,23 +26,30 @@ public abstract class BaseGradesService {
     final static String TWO_GRADES_ON_DAY_MSG = "There can not be more than one grade on the same subject on the same day";
     final static String NEGATIVE_MARK_MSG = "Mark can not be negative value";
     final static String AFTER_TODAY_GRADE_MSG = "Grade's date can not be after today";
+    final static String DATE_CAN_NOT_BE_NULL_MSG = "Date can not be null";
     final static String PAST_YEAR_GRADE_MSG = "Grade's date can not be before beginning of the year";
     private static final Type REVIEW_TYPE = new TypeToken<List<Grade>>() {}.getType();
 
     public abstract void addGrade(Grade addedGrade) throws AddingGradeException;
+    public abstract void addSubject(String title) throws AddingSubjectException;
     public abstract List<Grade> fetchAllGrades();
     public abstract List<Grade> fetchBySubject(long subjectId, boolean ascendingByDate);
     public abstract List<Grade> fetchByDate(LocalDate date);
+    public abstract List<Grade> fetchBySubjectAndDate(long subjectId, LocalDate date);
     public abstract List<Subject> fetchAllSubjects();
     public abstract Subject fetchSubject(long id);
     public abstract void deleteGrade(long id);
-    public abstract void deleteAll();
+    public abstract void deleteAllGrades();
     public abstract double calculateAvgGrade(long subject);
     public abstract boolean isGraded(Subject subject, LocalDate date);
+    public abstract boolean isSubjectExists(String subjectTitle);
     public abstract void reloadFromFile(String fileName) throws IOException;
     public abstract void dumpToFile(String fileName) throws IOException;
 
     void validateDate(LocalDate validatedDate) throws AddingGradeException {
+        if(validatedDate == null){
+            throw new AddingGradeException(PAST_YEAR_GRADE_MSG);
+        }
         if(validatedDate.getYear() < LocalDate.now().getYear()){
             throw new AddingGradeException(PAST_YEAR_GRADE_MSG);
         }

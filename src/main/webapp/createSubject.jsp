@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--
   Created by IntelliJ IDEA.
   User: Aleks
@@ -9,6 +10,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="<c:url value="/css/bootstrap.min.css"/> " rel="stylesheet">
     <link href="<c:url value="/css/createGrade.css"/> " rel="stylesheet">
     <title>Create subject</title>
@@ -20,7 +22,9 @@
     </div>
     <div class="col-lg-6">
         <h2>Add subject</h2>
-        <p>${requestScope.message}</p>
+        <p <c:if test="${fn:startsWith(requestScope.message, 'Success')}">style="color: #3e8f3e" </c:if>>
+            ${requestScope.message}
+        </p>
         <form method="post" class="navbar-form" action="<c:url value="/create/subject"/>">
             <table class="table">
                 <tbody>
@@ -28,7 +32,7 @@
                     <th>Subject's title</th>
                 </tr>
                 <tr>
-                    <th><input type="text" class="form-control" name="subjectTitle" value="${requestScope.subjectTitle}"/></th>
+                    <th><input pattern="[^\s]{1,32}" required title="1 to 32 characters without slashes"type="text" class="form-control" name="subjectTitle" value="${requestScope.subjectTitle}"/></th>
                 </tr>
                 </tbody>
             </table> <br/>

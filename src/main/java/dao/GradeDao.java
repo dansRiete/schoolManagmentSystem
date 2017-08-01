@@ -58,6 +58,18 @@ public class GradeDao implements DaoInterface <Grade, Long>{
         }
     }
 
+    public List<Grade> getOnDateAndSubject(long subjectId, LocalDate requestedDate) {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).getOnDateAndSubject(subjectId, requestedDate);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
     public List<Grade> getOnSubject(long requestedSubjectId, boolean ascending) {
         SqlSession sqlSession = null;
         try{

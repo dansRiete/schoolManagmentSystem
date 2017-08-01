@@ -114,4 +114,16 @@ public class SubjectDao implements DaoInterface<Subject, Long> {
             }
         }
     }
+
+    public boolean isExists(String subjectTitle){
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(SubjectMapper.class).isExist(subjectTitle);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
 }

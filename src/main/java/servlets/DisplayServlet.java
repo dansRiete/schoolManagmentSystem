@@ -28,16 +28,32 @@ public class DisplayServlet extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        List<Grade> grades;
+        List<Grade> grades = null;
         List<Subject> subjects = new ArrayList<>();
         subjects.add(null);
         subjects.addAll(gradesInMemoryService.fetchAllSubjects());
+        String selectedSubject = request.getParameter("selectedSubject");
+        String selectedDate = request.getParameter("selectedDate");
 
-        if(request.getParameter("selectedSubject") == null || request.getParameter("selectedSubject").equals("")){
+
+        if((selectedSubject == null || selectedSubject.equals("")) && (selectedDate == null || selectedDate.equals(""))){
             grades = gradesInMemoryService.fetchAllGrades();
-        }else {
+        }else if((selectedSubject != null && !selectedSubject.equals("")) && (selectedDate == null || selectedDate.equals(""))){
             long requestedSubjectId = Long.parseLong(request.getParameter("selectedSubject"));
             grades = gradesInMemoryService.fetchBySubject(requestedSubjectId, true);
+            request.setAttribute("selectedSubject", selectedSubject);
+        }else if((selectedSubject == null || selectedSubject.equals("")) && (selectedDate != null && !selectedDate.equals(""))){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate requestedDate = LocalDate.parse(selectedDate, formatter);
+            request.setAttribute("selectedDate", selectedDate);
+            grades = gradesInMemoryService.fetchByDate(requestedDate);
+        }else {
+            long requestedSubjectId = Long.parseLong(request.getParameter("selectedSubject"));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate requestedDate = LocalDate.parse(selectedDate, formatter);
+            request.setAttribute("selectedSubject", selectedSubject);
+            request.setAttribute("selectedDate", selectedDate);
+            grades = gradesInMemoryService.fetchBySubjectAndDate(requestedSubjectId, requestedDate);
         }
 
         request.setAttribute("allGrades", grades);

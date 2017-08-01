@@ -1,11 +1,9 @@
 package mappers;
 
 import model.Subject;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -32,4 +30,7 @@ public interface SubjectMapper {
 
     @Delete("DELETE FROM " + TABLE_NAME)
     void deleteAll();
+
+    @Select("SELECT CASE WHEN (SELECT count(*) FROM subjects WHERE title = #{subjectTitle}) > 0 THEN TRUE ELSE FALSE END")
+    Boolean isExist(@Param("subjectTitle") String subjectTitle);
 }

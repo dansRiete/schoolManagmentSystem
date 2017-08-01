@@ -1,6 +1,6 @@
 package model;
 
-import exceptions.IllegalSubjectTitleException;
+import exceptions.AddingSubjectException;
 
 /**
  * Created by nromanen on 7/24/2017.
@@ -17,18 +17,18 @@ public class Subject {
     public Subject() {
     }
 
-    public static Subject compose(String title) throws IllegalSubjectTitleException {
+    public static Subject compose(String title) throws AddingSubjectException {
         if(title == null){
-            throw new IllegalSubjectTitleException("Title of subject can not be null");
+            throw new AddingSubjectException("Title of subject can not be null");
         }else if(title.contains(" ") || title.isEmpty()){
-            throw new IllegalSubjectTitleException("Title of subject can not contain spaces or be empty");
+            throw new AddingSubjectException("Title of subject can not contain spaces or be empty");
         }
         return new Subject(title);
     }
 
     @Override
     public String toString() {
-        return id+"." + title;
+        return title;
     }
 
     @Override

@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="ISO-8859-1" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -15,7 +15,9 @@
         </div>
         <div class="col-lg-6">
             <h2>Add grade</h2>
-            <p>${requestScope.message}</p>
+            <p <c:if test="${fn:startsWith(requestScope.message, 'Success')}">style="color: #3e8f3e" </c:if> >
+                ${requestScope.message}
+            </p>
             <form method="post" class="navbar-form" action="<c:url value="/create/grade"/>">
                 <table class="table">
                     <tbody>
@@ -49,6 +51,7 @@
             </form>
         </div>
     </div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>

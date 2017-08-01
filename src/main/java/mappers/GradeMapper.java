@@ -53,6 +53,17 @@ public interface GradeMapper {
     })
     List<Grade> getOnDate(LocalDate requestedDate);
 
+
+
+    @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate} AND subject_id = #{id}")
+    @Results({
+            @Result(id=true, property = "id", column = "id"),
+            @Result(property = "mark", column = "mark"),
+            @Result(property = "date", column = "date"),
+            @Result(property="subject", column="subject_id", one=@One(select="mappers.SubjectMapper.getById"))
+    })
+    List<Grade> getOnDateAndSubject(@Param("id")long id, @Param("requestedDate")LocalDate requestedDate);
+
     @Insert("INSERT INTO " + TABLE_NAME + " (date, subject_id, mark) VALUES (#{date}, #{subject.id}, #{mark})")
     void create(Grade entity);
 

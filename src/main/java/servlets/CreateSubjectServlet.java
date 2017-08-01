@@ -1,9 +1,7 @@
 package servlets;
 
 import datasources.DataSource;
-import exceptions.AddingGradeException;
-import exceptions.IllegalSubjectTitleException;
-import model.Grade;
+import exceptions.AddingSubjectException;
 import model.Subject;
 import org.apache.log4j.Logger;
 import services.GradesDatabaseService;
@@ -14,9 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 /**
  * Created by Aleks on 31.07.2017.
@@ -37,15 +32,16 @@ public class CreateSubjectServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        req.setAttribute("page", "createSubject");
         String subjectTitle = req.getParameter("subjectTitle");
         Subject addedSubject = null;
 
         try {
             addedSubject = Subject.compose(subjectTitle);
-            gradesService.addSubject(addedSubject);
-            req.setAttribute("message", "Subject \"" + addedSubject + "\" has been successfully created");
+            gradesService.addSubject(addedSubject.getTitle());
+            req.setAttribute("message", "Success: subject \"" + addedSubject + "\" has been successfully created");
             req.getRequestDispatcher("/createSubject.jsp").forward(req, resp);
-        }catch (IllegalSubjectTitleException e){
+        }catch (AddingSubjectException e){
             logger.error(e.getMessage());
             req.setAttribute("message", "Error: " + e.getLocalizedMessage());
             req.setAttribute("subjectTitle", subjectTitle);

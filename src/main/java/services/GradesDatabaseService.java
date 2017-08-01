@@ -3,9 +3,11 @@ package services;
 import dao.GradeDao;
 import dao.SubjectDao;
 import exceptions.AddingGradeException;
+import exceptions.AddingSubjectException;
 import model.Grade;
 import model.Subject;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -18,6 +20,7 @@ public class GradesDatabaseService extends BaseGradesService {
 
     private GradeDao gradeDao;
     private SubjectDao subjectDao;
+    private Logger logger = Logger.getLogger(GradesDatabaseService.class);
 
     public GradesDatabaseService(SqlSessionFactory sqlSessionFactory) {
         this.gradeDao = new GradeDao(sqlSessionFactory);
@@ -26,6 +29,7 @@ public class GradesDatabaseService extends BaseGradesService {
 
     @Override
     public void addGrade(Grade addedGrade) throws AddingGradeException {
+        logger.info("addGrade(Grade addedGrade) was called, addedGrade = " + addedGrade);
         Subject subject = addedGrade.getSubject();
         LocalDate date = addedGrade.getDate();
         int mark = addedGrade.getMark();
@@ -33,64 +37,106 @@ public class GradesDatabaseService extends BaseGradesService {
 
         if(subject == null){
             throw new AddingGradeException("Subject can not be null");
-        }else if(date == null){
-            throw new AddingGradeException("Date can not be null");
-        }else if(isGraded(subject, date)){
-            throw new AddingGradeException(TWO_GRADES_ON_DAY_MSG);
-        }else if(mark < 0){
-            throw new AddingGradeException(NEGATIVE_MARK_MSG);
-        }else {
-            gradeDao.create(addedGrade);
         }
+        if(isGraded(subject, date)){
+            throw new AddingGradeException(TWO_GRADES_ON_DAY_MSG);
+        }
+        if(mark < 0){
+            throw new AddingGradeException(NEGATIVE_MARK_MSG);
+        }
+        gradeDao.create(addedGrade);
+        logger.info("addGrade(Grade addedGrade) , grade successfully created");
     }
 
-    public void addSubject(Subject subject) {
-        subjectDao.create(subject);
+
+    public void addSubject(String title) throws AddingSubjectException {
+        logger.info("addSubject(String title) , title = " + title);
+        Subject createdSubject = Subject.compose(title);
+        if(isSubjectExists(title)){
+            throw new AddingSubjectException("There can not be two subjects with the same title");
+        }
+        subjectDao.create(createdSubject);
+        logger.info("addSubject(String title) , subject successfully created");
     }
 
     @Override
     public List<Grade> fetchAllGrades() {
-        return gradeDao.getAll();
+        logger.info("fetchAllGrades() was called");
+        List<Grade> fetchedGrades = gradeDao.getAll();
+        logger.info("fetchAllGrades() fetched " + fetchedGrades.size() + " grades");
+        return fetchedGrades;
     }
 
     @Override
     public List<Grade> fetchBySubject(long subjectId, boolean ascendingByDate) {
-        return gradeDao.getOnSubject(subjectId, ascendingByDate);
+        logger.info("fetchBySubject(long subjectId, boolean ascendingByDate) was called, subjectId = " + subjectId + ", ascendingByDate = " + ascendingByDate);
+        List<Grade> fetchedSubjects = gradeDao.getOnSubject(subjectId, ascendingByDate);
+        logger.info("fetchBySubject(long subjectId, boolean ascendingByDate) Fetched " + fetchedSubjects.size() + " grades");
+        return fetchedSubjects;
     }
 
     @Override
     public List<Grade> fetchByDate(LocalDate date) {
+        logger.info("fetchByDate(LocalDate date) was called, date = " + date);
+        List<Grade> fetchedGrades = gradeDao.getOnDate(date);
+        logger.info("fetchByDate(LocalDate date) fetched " + fetchedGrades.size() + " grsdes");
         return gradeDao.getOnDate(date);
     }
 
     @Override
+    public List<Grade> fetchBySubjectAndDate(long subjectId, LocalDate date) {
+        logger.info("fetchByDate(LocalDate date) was called, date = " + date + ", subjectId = " + subjectId);
+        return gradeDao.getOnDateAndSubject(subjectId, date);
+    }
+
+    @Override
     public List<Subject> fetchAllSubjects() {
+        logger.info("fetchAllSubjects() was called");
+        List<Subject> fetchedSubjects = subjectDao.getAll();
+        logger.info("fetchAllSubjects() fetched " + fetchedSubjects.size());
         return subjectDao.getAll();
     }
 
     @Override
     public Subject fetchSubject(long id) {
-        return subjectDao.getById(id);
+        logger.info("fetchSubject(long id) was called, id = " + id);
+        Subject fetchedSubject = subjectDao.getById(id);
+        logger.info("fetchSubject(long id), fetched subject = " + fetchedSubject);
+        return fetchedSubject;
     }
 
     @Override
     public void deleteGrade(long id) {
+        logger.info("deleteGrade(long id) was called, id = " + id);
         gradeDao.delete(id);
+        logger.info("deleteGrade(long id) was deleted)");
     }
 
     @Override
-    public void deleteAll() {
-
+    public void deleteAllGrades() {
+        logger.info("deleteAllGrades() was called");
+        gradeDao.deleteAll();
+        logger.info("All grades were deleted");
     }
 
     @Override
-    public double calculateAvgGrade(long subject) {
-        return gradeDao.averageGrade(subject);
+    public double calculateAvgGrade(long subjectId) {
+        logger.info("calculateAvgGrade(long subjectId) was called, subjectId = " + subjectId);
+        double averageGrade = gradeDao.averageGrade(subjectId);
+        logger.info("calculateAvgGrade(long subjectId); completed");
+        return averageGrade;
     }
 
     @Override
     public boolean isGraded(Subject subject, LocalDate date) {
+        logger.info("isGraded(Subject subject, LocalDate date) was called, subjectId = " + subject.getId() + ", date = " + date);
         return gradeDao.isGraded(subject, date);
+    }
+
+    @Override
+    public boolean isSubjectExists(String subjectTitle) {
+        logger.info("isSubjectExists(String subjectTitle) was called");
+        return subjectDao.isExists(subjectTitle);
     }
 
     @Override

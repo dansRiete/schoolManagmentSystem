@@ -23,6 +23,9 @@ public class DeleteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long deletedGradeId = Long.valueOf(request.getParameter("deletedGradeId"));
         gradesInMemoryService.deleteGrade(deletedGradeId);
+        System.out.println("request.getParameter(\"selectedSubject\") = " + request.getParameter("selectedSubject"));
+        request.setAttribute("selectedSubject", request.getParameter("selectedSubject"));
+        request.setAttribute("selectedDate", request.getParameter("selectedDate"));
         response.sendRedirect("/display");
     }
 
