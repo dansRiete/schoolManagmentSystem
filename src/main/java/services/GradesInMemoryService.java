@@ -91,7 +91,7 @@ public class GradesInMemoryService extends BaseGradesService {
         logger.info("fetchAllSubjects() was called");
         HashSet<Subject> allSubjects = new HashSet<>();
         grades.forEach(currentGrade -> allSubjects.add(currentGrade.getSubject()));
-        subjects.forEach(currentSubject -> allSubjects.add(currentSubject));
+        allSubjects.addAll(subjects);
         logger.info("fetchAllSubjects() fetched " + allSubjects.size());
         return new ArrayList<>(allSubjects);
     }

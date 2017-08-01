@@ -9,7 +9,7 @@
         },
         setListeners(){
             $("#resetButton").on("click", app.resetHandler);
-            $("#avgButton").on("click", app.showModal);
+            $("#avgButton").on("click", app.submit);
         },
         resetHandler(){
             console.log("click");
@@ -25,6 +25,22 @@
             console.log("inside showModal()");
             $('#myModal').modal({
                 show: true
+            });
+        }, submit(e){
+            e.preventDefault();
+            let form = $("#filterForm");
+            let link = $(location).attr("protocol") + "//" + $(location).attr("host") + "/average";
+            console.log("Link=" + link);
+            $.ajax({
+                url: link,
+                type: "POST",
+                data: form.serialize()
+            }).fail(function () {
+                console.log("Fail");
+            }).always(function (msg) {
+                console.log(msg["status"]);
+            }).done(function (msg) {
+                console.log(msg["status"]);
             });
         }
 
