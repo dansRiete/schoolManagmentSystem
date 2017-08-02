@@ -16,12 +16,20 @@ public interface GradeMapper {
     String TABLE_NAME = "grades";
 
     class SqlProvider{
+
         public String getOrderedByDate(Map<String, Object> map){
             long subject_id = (Long) map.get("id");
             boolean ascending = ((Boolean) map.get("ascending"));
             String sql =    "SELECT * FROM " + TABLE_NAME +
                             " WHERE subject_id = "+ subject_id +
                             " ORDER BY DATE" + (ascending ? "" : " DESC");
+            return sql;
+        }
+
+        public String deleteInId(Map<String, Object> map){
+            List<Long> ids = (List<Long>) map.get("ids");
+            String whereClause = ids.toString().replace('[', '(').replace(']', ')');
+            String sql = "DELETE FROM " + TABLE_NAME + " WHERE id IN " + whereClause;
             return sql;
         }
     }
@@ -72,6 +80,9 @@ public interface GradeMapper {
 
     @Delete("DELETE FROM " + TABLE_NAME + " WHERE id = #{id}")
     void delete(long id);
+
+    @SelectProvider(type = SqlProvider.class, method = "deleteInId")
+    void deleteInId(@Param("ids") List<Long> ids);
 
     @Delete("DELETE FROM " + TABLE_NAME)
     void deleteAll();

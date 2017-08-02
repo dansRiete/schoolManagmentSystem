@@ -15,8 +15,8 @@
         </div>
         <div class="col-lg-6">
             <h2>Add grade</h2>
-            <p <c:if test="${fn:startsWith(requestScope.message, 'Success')}">style="color: #3e8f3e" </c:if> >
-                ${requestScope.message}
+            <p <c:if test="${fn:startsWith(requestScope.statusMessage, 'Success')}">style="color: #3e8f3e" </c:if> >
+                ${requestScope.statusMessage}
             </p>
             <form method="post" class="navbar-form" action="<c:url value="/create/grade"/>">
                 <table class="table">

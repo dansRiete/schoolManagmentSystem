@@ -5,6 +5,7 @@ import exceptions.AddingGradeException;
 import model.Grade;
 import model.Subject;
 import org.apache.log4j.Logger;
+import services.BaseGradesService;
 import services.GradesDatabaseService;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -52,11 +53,11 @@ public class CreateGradeServlet extends HttpServlet {
             Subject subject = gradesService.fetchSubject(selectedSubjectId);
             addedGrade = new Grade(subject, date, mark);
             gradesService.addGrade(addedGrade);
-            req.setAttribute("message", "Success: Grade \" " + addedGrade + "\" has been successfully created");
+            req.setAttribute("statusMessage", "Success: Grade [" + BaseGradesService.represent(addedGrade) + "] has been successfully created");
             req.getRequestDispatcher("/createGrade.jsp").forward(req, resp);
         }catch (NumberFormatException e){
             logger.error("Add grade error " + e.getMessage());
-            req.setAttribute("message", "Error: " + e.getLocalizedMessage());
+            req.setAttribute("statusMessage", "Error: " + e.getLocalizedMessage());
             req.setAttribute("selectedSubjectId", selectedSubjectId);
             req.setAttribute("date", req.getParameter("date"));
             req.setAttribute("mark", req.getParameter("mark"));
@@ -64,7 +65,7 @@ public class CreateGradeServlet extends HttpServlet {
             req.getRequestDispatcher("/createGrade.jsp").forward(req, resp);
         }catch (AddingGradeException e) {
             logger.error("Add grade error " + e.getMessage());
-            req.setAttribute("message", "Error: " + e.getLocalizedMessage());
+            req.setAttribute("statusMessage", "Error: " + e.getLocalizedMessage());
             req.setAttribute("selectedSubjectId", selectedSubjectId);
             req.setAttribute("date", date);
             req.setAttribute("mark", mark);
@@ -72,7 +73,7 @@ public class CreateGradeServlet extends HttpServlet {
             req.getRequestDispatcher("/createGrade.jsp").forward(req, resp);
         }catch (DateTimeParseException e) {
             logger.error("Add grade error " + e.getMessage());
-            req.setAttribute("message", "Error: Enter a date");
+            req.setAttribute("statusMessage", "Error: Enter a date");
             req.setAttribute("selectedSubjectId", selectedSubjectId);
             req.setAttribute("date", date);
             req.setAttribute("mark", mark);

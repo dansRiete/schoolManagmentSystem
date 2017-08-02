@@ -8,17 +8,17 @@
 </head>
 
 <body>
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+<div class="modal fade" id="myModalDeleteSubject" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 id="modal-title-text" class="modal-title"></h4>
+                <h4 id="modalDS-title-text" class="modal-title"></h4>
             </div>
             <div class="modal-body">
-                <p id="modal-body-text"></p>
+                <p id="modalDS-body-text"></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -37,20 +37,16 @@
                 <tbody>
                 <tr>
                     <th>Id</th>
-                    <th>Date</th>
-                    <th>Subject</th>
-                    <th>Mark</th>
+                    <th>Subject's title</th>
                     <th>Action</th>
                 </tr>
-                <c:forEach items="${requestScope.allGrades}" var="currentGrade">
+                <c:forEach items="${requestScope.subjects}" var="currentSubject">
                     <tr>
-                        <td><c:out value="${currentGrade.id}"/></td>
-                        <td><c:out value="${currentGrade.date}"/></td>
-                        <td><c:out value="${currentGrade.subject}"/></td>
-                        <td><c:out value="${currentGrade.mark}"/></td>
+                        <td><c:out value="${currentSubject.id}"/></td>
+                        <td><c:out value="${currentSubject.title}"/></td>
                         <td>
-                            <form action="deleteGrade" method="post">
-                                <input type="hidden" name="deletedGradeId" value="${currentGrade.id}"/>
+                            <form action="<c:url value="/deleteSubject"/>" method="post">
+                                <input type="hidden" name="deletedSubjectId" value="${currentSubject.id}"/>
                                 <input type="submit" value="Delete">
                             </form>
                         </td>
@@ -65,6 +61,5 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>
-<script src="js/index.js"></script>
 </body>
 </html>

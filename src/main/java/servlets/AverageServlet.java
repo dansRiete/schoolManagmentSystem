@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import datasources.DataSource;
 import exceptions.NoGradesException;
-import org.apache.log4j.Logger;
 import services.GradesDatabaseService;
 
 import javax.servlet.annotation.WebServlet;
@@ -24,11 +23,12 @@ import java.util.Map;
  */
 @WebServlet("/average")
 public class AverageServlet extends HttpServlet {
-    GradesDatabaseService gradesDatabaseService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
+
+    private GradesDatabaseService gradesDatabaseService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    DecimalFormat df = new DecimalFormat("#.##");
-    Logger logger = Logger.getLogger(AverageServlet.class);
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private DecimalFormat averageGradeDecimalFormat = new DecimalFormat("#.##");
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -40,9 +40,9 @@ public class AverageServlet extends HttpServlet {
         Map<String, Object> result = new HashMap<>();
 
         try {
-            result.put("avg", df.format(gradesDatabaseService.calculateAvgGrade(selectedSubjectId, selectedDate)));
+            result.put("avg", averageGradeDecimalFormat.format(gradesDatabaseService.calculateAvgGrade(selectedSubjectId, selectedDate)));
         } catch (NoGradesException e) {
-            logger.info("Could not find any grades on this constraint");
+            result.put("avg", null);
         }
 
         result.put("subjectTitle", selectedSubjectTitle);

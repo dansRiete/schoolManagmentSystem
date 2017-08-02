@@ -2,6 +2,7 @@ package services;
 
 import exceptions.AddingGradeException;
 import exceptions.AddingSubjectException;
+import exceptions.DeletingSubjectException;
 import exceptions.NoGradesException;
 import model.Grade;
 import model.Subject;
@@ -121,6 +122,16 @@ public class GradesInMemoryService extends BaseGradesService {
             }
         }
         logger.info("deleteGrade(long id) grade with id = " + id + "was not deleted, since was not found");
+    }
+
+    @Override
+    public void deleteSubject(long subjectId) throws DeletingSubjectException {
+        //todo to implement
+    }
+
+    @Override
+    public void forceDeleteSubject(long subjectId) {
+        //todo to implement
     }
 
     @Override

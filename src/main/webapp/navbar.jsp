@@ -16,6 +16,9 @@
             <li ${requestScope.page eq 'display' ? 'class="active"' : ''}>
                 <a href=<c:url value="/display"/>>Grades list</a>
             </li>
+            <li ${requestScope.page eq 'displaySubjects' ? 'class="active"' : ''}>
+                <a href=<c:url value="/display/subjects"/>>Subjects list</a>
+            </li>
             <li ${requestScope.page eq 'createGrade' ? 'class="active"' : ''}>
                 <a href="<c:url value="/create/grade"/>">Add grade</a>
             </li>

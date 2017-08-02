@@ -14,8 +14,8 @@ import java.time.LocalDate;
 /**
  * Created by Aleks on 29.07.2017.
  */
-@WebServlet(urlPatterns = "/delete")
-public class DeleteServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/deleteGrade")
+public class DeleteGradeServlet extends HttpServlet {
 
     GradesDatabaseService gradesInMemoryService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
 

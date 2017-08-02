@@ -249,6 +249,19 @@ public class GradeDao implements DaoInterface <Grade, Long>{
         }
     }
 
+    public void delete(List<Long> ids) {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.getMapper(GradeMapper.class).deleteInId(ids);
+            sqlSession.commit();
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
     @Override
     public void deleteAll() {
         SqlSession sqlSession = null;

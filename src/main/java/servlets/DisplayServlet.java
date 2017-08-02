@@ -36,36 +36,43 @@ public class DisplayServlet extends HttpServlet{
         request.setAttribute("allSubjects", subjects);
         HttpSession httpSession = request.getSession();
 
-        String selectedSubjectRaw = request.getParameter("selectedSubjectId");
-        String selectedDateRaw = request.getParameter("selectedDate");
+        String requestSelectedSubject = request.getParameter("selectedSubjectId");
+        String requestSelectedDate = request.getParameter("selectedDate");
 
-        String selectedSubjectSession = httpSession.getAttribute("selectedSubject") == null ? null : httpSession.getAttribute("selectedSubject").toString();
-        String selectedDateSession = httpSession.getAttribute("selectedDate") == null ? null : httpSession.getAttribute("selectedDate").toString();
+        String sessionSelectedSubject = httpSession.getAttribute("selectedSubject") == null ? null : httpSession.getAttribute("selectedSubject").toString();
+        String sessionSelectedDate = httpSession.getAttribute("selectedDate") == null ? null : httpSession.getAttribute("selectedDate").toString();
 
-        String selectedSubject = selectedSubjectRaw == null || selectedSubjectRaw.equals("") ? selectedSubjectSession : selectedSubjectRaw;
-        String selectedDate = selectedDateRaw == null || selectedDateRaw.equals("") ? selectedDateSession : selectedDateRaw;
+        String selectedSubject = requestSelectedSubject == null ? sessionSelectedSubject : requestSelectedSubject;
+        String selectedDate = requestSelectedDate == null ? sessionSelectedDate : requestSelectedDate;
+
+        System.out.println("SESSION!!!! sessionSelectedSubject = " + sessionSelectedSubject + ", sessionSelectedDate = " + sessionSelectedDate);
+        System.out.println("REQUEST!!!! requestSelectedSubject = " + requestSelectedSubject + ", requestSelectedDate = " + requestSelectedDate);
 
 
         if((selectedSubject == null || selectedSubject.equals("")) && (selectedDate == null || selectedDate.equals(""))){
             grades = gradesInMemoryService.fetchAllGrades();
+            httpSession.setAttribute("selectedSubject", null);
+            httpSession.setAttribute("selectedDate", null);
         }else if((selectedSubject != null && !selectedSubject.equals("")) && (selectedDate == null || selectedDate.equals(""))){
             long requestedSubjectId = Long.parseLong(selectedSubject);
-            grades = gradesInMemoryService.fetchBySubject(requestedSubjectId, true);
             request.setAttribute("selectedSubject", selectedSubject);
+            httpSession.setAttribute("selectedDate", null);
             httpSession.setAttribute("selectedSubject", selectedSubject);
+            grades = gradesInMemoryService.fetchBySubject(requestedSubjectId, true);//todo select ascending-descending
         }else if((selectedSubject == null || selectedSubject.equals("")) && (selectedDate != null && !selectedDate.equals(""))){
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate requestedDate = LocalDate.parse(selectedDate, formatter);
             request.setAttribute("selectedDate", selectedDate);
             httpSession.setAttribute("selectedDate", selectedDate);
+            httpSession.setAttribute("selectedSubject", null);
             grades = gradesInMemoryService.fetchByDate(requestedDate);
         }else {
             long requestedSubjectId = Long.parseLong(selectedSubject);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate requestedDate = LocalDate.parse(selectedDate, formatter);
             request.setAttribute("selectedSubject", selectedSubject);
-            httpSession.setAttribute("selectedSubject", selectedSubject);
             request.setAttribute("selectedDate", selectedDate);
+            httpSession.setAttribute("selectedSubject", selectedSubject);
             httpSession.setAttribute("selectedDate", selectedDate);
             grades = gradesInMemoryService.fetchBySubjectAndDate(requestedSubjectId, requestedDate);
         }

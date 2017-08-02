@@ -4,6 +4,7 @@ import dao.GradeDao;
 import dao.SubjectDao;
 import exceptions.AddingGradeException;
 import exceptions.AddingSubjectException;
+import exceptions.DeletingSubjectException;
 import exceptions.NoGradesException;
 import model.Grade;
 import model.Subject;
@@ -12,7 +13,9 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Aleks on 28.07.2017.
@@ -80,7 +83,7 @@ public class GradesDatabaseService extends BaseGradesService {
     public List<Grade> fetchByDate(LocalDate date) {
         logger.info("fetchByDate(LocalDate date) was called, date = " + date);
         List<Grade> fetchedGrades = gradeDao.getOnDate(date);
-        logger.info("fetchByDate(LocalDate date) fetched " + fetchedGrades.size() + " grsdes");
+        logger.info("fetchByDate(LocalDate date) fetched " + fetchedGrades.size() + " grades");
         return gradeDao.getOnDate(date);
     }
 
@@ -111,6 +114,26 @@ public class GradesDatabaseService extends BaseGradesService {
         logger.info("deleteGrade(long id) was called, id = " + id);
         gradeDao.delete(id);
         logger.info("deleteGrade(long id) was deleted)");
+    }
+
+    @Override
+    public void deleteSubject(long subjectId) throws DeletingSubjectException{
+        logger.info("deleteSubject(long subjectId) was called, id = " + subjectId);
+        if(!fetchBySubject(subjectId, true).isEmpty()){
+            throw new DeletingSubjectException("There is one or more grades in this subject");
+        }
+        subjectDao.delete(subjectId);
+        logger.info("deleteSubject(long subjectId) completed");
+    }
+
+    @Override
+    public void forceDeleteSubject(long subjectId) {
+        logger.info("forceDeleteSubject(long subjectId) was called, id = " + subjectId);
+        List<Long> gradesIds = fetchBySubject(subjectId, true).stream().map(Grade::getId).collect(Collectors.toList());
+        gradeDao.delete(gradesIds);
+        subjectDao.delete(subjectId);
+        logger.info("forceDeleteSubject(long subjectId) completed");
+
     }
 
     @Override
