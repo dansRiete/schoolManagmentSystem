@@ -7,6 +7,7 @@ import com.google.gson.stream.JsonReader;
 import com.sun.xml.internal.messaging.saaj.packaging.mime.util.LineInputStream;
 import exceptions.AddingGradeException;
 import exceptions.AddingSubjectException;
+import exceptions.NoGradesException;
 import model.Grade;
 import model.Subject;
 import org.apache.log4j.Logger;
@@ -40,7 +41,8 @@ public abstract class BaseGradesService {
     public abstract Subject fetchSubject(long id);
     public abstract void deleteGrade(long id);
     public abstract void deleteAllGrades();
-    public abstract double calculateAvgGrade(long subject);
+    public abstract double calculateAvgGrade(long subjectId, LocalDate selectedDate) throws NoGradesException;
+
     public abstract boolean isGraded(Subject subject, LocalDate date);
     public abstract boolean isSubjectExists(String subjectTitle);
     public abstract void reloadFromFile(String fileName) throws IOException;

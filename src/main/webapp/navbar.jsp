@@ -26,7 +26,7 @@
             <li ${requestScope.page ne 'display' ? 'class="hidden"' : ''}>
                 <form id="filterForm" class="navbar-form" >
                     <label >
-                        <select id="subjectsSelect" name="selectedSubject" class="form-control">
+                        <select id="subjectsSelect" name="selectedSubjectId" class="form-control">
                             <c:forEach items="${requestScope.allSubjects}" var="subject">
                                 <option
                                         <c:if test="${requestScope.selectedSubject == subject.id}">selected</c:if>

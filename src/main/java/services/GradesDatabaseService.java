@@ -4,6 +4,7 @@ import dao.GradeDao;
 import dao.SubjectDao;
 import exceptions.AddingGradeException;
 import exceptions.AddingSubjectException;
+import exceptions.NoGradesException;
 import model.Grade;
 import model.Subject;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -120,16 +121,39 @@ public class GradesDatabaseService extends BaseGradesService {
     }
 
     @Override
-    public double calculateAvgGrade(long subjectId) {
-        logger.info("calculateAvgGrade(long subjectId) was called, subjectId = " + subjectId);
-        double averageGrade = gradeDao.averageGrade(subjectId);
-        logger.info("calculateAvgGrade(long subjectId); completed");
+    public double calculateAvgGrade(long subjectId, LocalDate selectedDate) throws NoGradesException{
+        logger.info("calculateAvgGrade(long subjectId, LocalDate selectedDate) was called, subjectId = " +
+                subjectId + ", selectedDate = " + selectedDate);
+        double averageGrade;
+        if(subjectId == 0 && selectedDate == null){
+            if(!gradeDao.areAnyGrades()){
+                throw new NoGradesException("There are no grades in database");
+            }
+            averageGrade = gradeDao.averageOfAll();
+        }else if(subjectId != 0 && selectedDate == null){
+            if(!gradeDao.areAnyGradesOnSubject(subjectId)){
+                throw new NoGradesException("There are no grades on selected subject in database");
+            }
+            averageGrade = gradeDao.averageGradeBySubject(subjectId);
+        }else if(subjectId == 0 && selectedDate != null){
+            if(!gradeDao.areAnyGradesOnDate(selectedDate)){
+                throw new NoGradesException("There are no grades on selected subject in database");
+            }
+            averageGrade = gradeDao.averageGradeByDate(selectedDate);
+        }else {
+            if(!gradeDao.areAnyGradesOnDateAndSubject(subjectId, selectedDate)){
+                throw new NoGradesException("There are no grades on selected subject in database");
+            }
+            averageGrade = gradeDao.averageGradeBySubjectAndDate(subjectId, selectedDate);
+        }
+        logger.info("calculateAvgGrade(long subjectId, LocalDate selectedDate); completed");
         return averageGrade;
     }
 
     @Override
     public boolean isGraded(Subject subject, LocalDate date) {
-        logger.info("isGraded(Subject subject, LocalDate date) was called, subjectId = " + subject.getId() + ", date = " + date);
+        logger.info("isGraded(Subject subject, LocalDate date) was called, subjectId = " + subject.getId() +
+                ", date = " + date);
         return gradeDao.isGraded(subject, date);
     }
 

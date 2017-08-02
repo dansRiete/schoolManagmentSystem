@@ -111,11 +111,49 @@ public class GradeDao implements DaoInterface <Grade, Long>{
         }
     }
 
-    public Double averageGrade(long subject){
+    public Double averageGradeBySubject(long subject){
         SqlSession sqlSession = null;
         try{
             sqlSession = sqlSessionFactory.openSession();
-            return sqlSession.getMapper(GradeMapper.class).averageGrade(subject);
+            return sqlSession.getMapper(GradeMapper.class).averageGradeBySubject(subject);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public double averageOfAll() {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).averageGradeOfAll();
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public double averageGradeByDate(LocalDate selectedDate) {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            GradeMapper gradeMapper = sqlSession.getMapper(GradeMapper.class);
+            double test = gradeMapper.averageGradeByDate(selectedDate);
+            return test;
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public double averageGradeBySubjectAndDate(long subjectId, LocalDate selectedDate) {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).averageGradeBySubjectAndDate(subjectId, selectedDate);
         }finally {
             if(sqlSession != null){
                 sqlSession.close();
@@ -128,6 +166,54 @@ public class GradeDao implements DaoInterface <Grade, Long>{
         try{
             sqlSession = sqlSessionFactory.openSession();
             return sqlSession.getMapper(GradeMapper.class).isGraded(subject, date);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public Boolean areAnyGradesOnDate(LocalDate date){
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).areAnyGradesOnDate(date);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public Boolean areAnyGradesOnSubject(long subjectId){
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).areAnyGradesOnSubject(subjectId);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public Boolean areAnyGradesOnDateAndSubject(long subjectId, LocalDate date){
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).areAnyGradesOnDateAndSubject(subjectId, date);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public Boolean areAnyGrades(){
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).areAnyGrades();
         }finally {
             if(sqlSession != null){
                 sqlSession.close();

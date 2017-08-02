@@ -2,6 +2,7 @@ package services;
 
 import exceptions.AddingGradeException;
 import exceptions.AddingSubjectException;
+import exceptions.NoGradesException;
 import model.Grade;
 import model.Subject;
 import org.apache.log4j.Logger;
@@ -127,7 +128,7 @@ public class GradesInMemoryService extends BaseGradesService {
         logger.info("deleteAllGrades() was called");
         this.grades = new ArrayList<>();
         logger.info("All grades were deleted");
-    }
+    }/*
 
     @Override
     public double calculateAvgGrade(long subjectId) {
@@ -137,6 +138,11 @@ public class GradesInMemoryService extends BaseGradesService {
         subjectGrades.forEach(grade -> averageGrade[0] += grade.getMark());
         logger.info("calculateAvgGrade(long subjectId); completed");
         return subjectGrades.isEmpty() ? 0 : averageGrade[0] / subjectGrades.size();
+    }*/
+
+    @Override
+    public double calculateAvgGrade(long subjectId, LocalDate selectedDate) throws NoGradesException{
+        return 0;//todo to implement
     }
 
     @Override

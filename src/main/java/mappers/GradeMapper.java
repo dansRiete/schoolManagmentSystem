@@ -85,10 +85,31 @@ public interface GradeMapper {
     })
     List<Grade> getOnSubject(@Param("id") Long requestedSubjectId, @Param("ascending") boolean ascending);
 
-    @Select("SELECT avg(grades.mark) FROM grades WHERE subject_id = #{id}")
-    Double averageGrade(long requestedSubject);
+    @Select("SELECT avg(grades.mark) FROM grades")
+    Double averageGradeOfAll();
+
+    @Select("SELECT avg(grades.mark) FROM grades WHERE subject_id = #{requestedSubject}")
+    Double averageGradeBySubject(long requestedSubject);
+
+    @Select("SELECT avg(grades.mark) FROM grades WHERE date = #{date}")
+    Double averageGradeByDate(@Param("date") LocalDate requestedDate);
+
+    @Select("SELECT avg(grades.mark) FROM grades WHERE subject_id = #{subjectId} AND date = #{date}")
+    Double averageGradeBySubjectAndDate(@Param("subjectId") long requestedSubject, @Param("date")LocalDate selectedDate);
 
     @Select("SELECT CASE WHEN (SELECT count(*) FROM grades WHERE subject_id = #{subject.id} AND date = #{date} ) > 0 THEN TRUE ELSE FALSE END")
     Boolean isGraded(@Param("subject") Subject subject, @Param("date")LocalDate date);
+
+    @Select("SELECT CASE WHEN (SELECT count(*) FROM grades WHERE date = #{date} ) > 0 THEN TRUE ELSE FALSE END")
+    Boolean areAnyGradesOnDate(@Param("date") LocalDate date);
+
+    @Select("SELECT CASE WHEN (SELECT count(*) FROM grades WHERE subject_id = #{subject} ) > 0 THEN TRUE ELSE FALSE END")
+    Boolean areAnyGradesOnSubject(@Param("subject") long subject);
+
+    @Select("SELECT CASE WHEN (SELECT count(*) FROM grades WHERE subject_id = #{subject} AND date = #{date}) > 0 THEN TRUE ELSE FALSE END")
+    Boolean areAnyGradesOnDateAndSubject(@Param("subject") long subject, @Param("date") LocalDate date);
+
+    @Select("SELECT CASE WHEN (SELECT count(*) FROM grades) > 0 THEN TRUE ELSE FALSE END")
+    Boolean areAnyGrades();
 
 }

@@ -15,6 +15,6 @@ import java.util.List;
 public class Demo {
 
     public static void main(String[] args) throws AddingGradeException {
-        System.out.println(new GradesDatabaseService(DataSource.getSqlSessionFactory()).calculateAvgGrade(1));
+
     }
 }

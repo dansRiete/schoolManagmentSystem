@@ -15,14 +15,13 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title">Average grade</h4>
+                <h4 id="modal-title-text" class="modal-title"></h4>
             </div>
             <div class="modal-body">
-                <p>Not yet implemented</p>
+                <p id="modal-body-text"></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -68,6 +67,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>
-<script src="js/indexPageJS.js"></script>
+<script src="js/index.js"></script>
 </body>
 </html>
