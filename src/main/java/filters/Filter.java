@@ -1,0 +1,47 @@
+package filters;
+
+/**
+ * Created by Aleks on 03.08.2017.
+ */
+
+import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+
+@WebFilter("/*")
+public class Filter implements javax.servlet.Filter {
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
+        HttpSession session = request.getSession(false);
+        String loginURI = request.getContextPath() + "/login";
+
+        boolean loggedIn = session != null && session.getAttribute("username") != null;
+        boolean loginRequest = request.getRequestURI().equals(loginURI);
+        System.out.println("Session = " + session);
+        System.out.println("session.getAttribute(\"username\") = " + (session == null ? "null" : session.getAttribute("username")));
+        System.out.println("request.getRequestURI() = " + request.getRequestURI());
+
+        if (loggedIn || loginRequest) {
+            filterChain.doFilter(request, response);
+        } else {
+            response.sendRedirect(loginURI);
+        }
+    }
+
+    @Override
+    public void destroy() {
+
+    }
+}

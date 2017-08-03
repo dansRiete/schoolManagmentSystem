@@ -8,6 +8,7 @@
 </head>
 
 <body>
+
 <div class="modal fade" id="myModalDeleteSubject" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -21,16 +22,21 @@
                 <p id="modalDS-body-text"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <form method="post" action="<c:url value="/deleteSubject"/>">
+                    <input id="modalDeleteSubjId" type="hidden" name="deletedSubjectId"/>
+                    <input type="submit" value="Delete">
+                </form>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+
+
 <div class="container">
     <div class="row">
-        <div class="col-lg-12">
-            <jsp:include page="navbar.jsp"/>
-        </div>
+
+        <div class="col-lg-12"><jsp:include page="navbar.jsp"/></div>
 
         <div class="col-lg-8">
             <table class="table">
@@ -45,9 +51,9 @@
                         <td><c:out value="${currentSubject.id}"/></td>
                         <td><c:out value="${currentSubject.title}"/></td>
                         <td>
-                            <form action="<c:url value="/deleteSubject"/>" method="post">
+                            <form id="${"deleteSubjectForm_".concat(currentSubject.id)}" action="<c:url value="/deleteSubject"/>" method="post">
                                 <input type="hidden" name="deletedSubjectId" value="${currentSubject.id}"/>
-                                <input type="submit" value="Delete">
+                                <input type="button" onclick="addFunction(${currentSubject.id})" value="Delete">
                             </form>
                         </td>
                     </tr>
@@ -58,8 +64,10 @@
 
     </div>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="js/bootstrap.min.js"></script>
+
+<script src="<c:url value="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"/>"></script>
+<script src="<c:url value="/js/bootstrap.min.js"/>"></script>
+<script src="<c:url value="/js/displaySubjects.js"/>"></script>
+
 </body>
 </html>

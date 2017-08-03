@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -129,8 +128,11 @@ public class GradesDatabaseService extends BaseGradesService {
     @Override
     public void forceDeleteSubject(long subjectId) {
         logger.info("forceDeleteSubject(long subjectId) was called, id = " + subjectId);
-        List<Long> gradesIds = fetchBySubject(subjectId, true).stream().map(Grade::getId).collect(Collectors.toList());
-        gradeDao.delete(gradesIds);
+        if(!fetchBySubject(subjectId, true).isEmpty()){
+            List<Long> gradesIds = fetchBySubject(subjectId, true)
+                    .stream().map(Grade::getId).collect(Collectors.toList());
+            gradeDao.delete(gradesIds);
+        }
         subjectDao.delete(subjectId);
         logger.info("forceDeleteSubject(long subjectId) completed");
 

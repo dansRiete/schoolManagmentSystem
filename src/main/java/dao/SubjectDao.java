@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by Aleks on 26.07.2017.
  */
-public class SubjectDao implements DaoInterface<Subject, Long> {
+public class SubjectDao implements BaseDao<Subject, Long> {
 
     private SqlSessionFactory sqlSessionFactory;
 

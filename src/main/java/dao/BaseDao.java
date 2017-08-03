@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by Aleks on 26.07.2017.
  */
-public interface DaoInterface<T, Id> {
+public interface BaseDao<T, Id> {
 
     T getById(Id id);
     List<T> getAll();

@@ -17,5 +17,6 @@
     <mappers>
         <mapper class="mappers.SubjectMapper"/>
         <mapper class="mappers.GradeMapper"/>
+        <mapper class="mappers.UserMapper"/>
     </mappers>
 </configuration>

@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by Aleks on 26.07.2017.
  */
-public class GradeDao implements DaoInterface <Grade, Long>{
+public class GradeDao implements BaseDao<Grade, Long> {
 
     private SqlSessionFactory sqlSessionFactory;
 

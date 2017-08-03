@@ -45,9 +45,6 @@ public class DisplayServlet extends HttpServlet{
         String selectedSubject = requestSelectedSubject == null ? sessionSelectedSubject : requestSelectedSubject;
         String selectedDate = requestSelectedDate == null ? sessionSelectedDate : requestSelectedDate;
 
-        System.out.println("SESSION!!!! sessionSelectedSubject = " + sessionSelectedSubject + ", sessionSelectedDate = " + sessionSelectedDate);
-        System.out.println("REQUEST!!!! requestSelectedSubject = " + requestSelectedSubject + ", requestSelectedDate = " + requestSelectedDate);
-
 
         if((selectedSubject == null || selectedSubject.equals("")) && (selectedDate == null || selectedDate.equals(""))){
             grades = gradesInMemoryService.fetchAllGrades();

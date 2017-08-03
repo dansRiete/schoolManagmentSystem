@@ -4,6 +4,7 @@
 (function () {
     let app = {
         initialize(){
+            console.log('initialize');
             app.setListeners();
         },
         setListeners(){
