@@ -59,13 +59,13 @@ public class GradesInMemoryService extends BaseGradesService {
         logger.info("addSubject(String title) , subject successfully created");
     }
 
-    @Override
+    /*@Override
     public List<Grade> fetchAllGrades() {
         logger.info("fetchAllGrades() was called, fetched " + grades.size() + " grades");
         return new ArrayList<>(grades);
-    }
+    }*/
 
-    @Override
+//    @Override
     public List<Grade> fetchBySubject(long subjectId, boolean ascendingByDate) {
         logger.info("fetchBySubject(long subjectId, boolean ascendingByDate) was called, subjectId = " + subjectId + ", ascendingByDate = " + ascendingByDate);
         List<Grade> gradesOnDate = retrieveGradesBySubject(subjectId);
@@ -74,7 +74,7 @@ public class GradesInMemoryService extends BaseGradesService {
         return gradesOnDate;
     }
 
-    @Override
+//    @Override
     public List<Grade> fetchByDate(LocalDate date) {
         logger.info("fetchByDate(LocalDate date) was called, date = " + date);
         List<Grade> gradesOnDate = retrieveGradesByDate(date);
@@ -84,8 +84,13 @@ public class GradesInMemoryService extends BaseGradesService {
     }
 
     @Override
-    public List<Grade> fetchBySubjectAndDate(long subjectId, LocalDate date) {
+    public List<Grade> fetchGrades(long subjectId, LocalDate date) {
         return null;//todo to implement
+    }
+
+    @Override
+    public List<Grade> fetchGrades(long subjectId, LocalDate date, int page) {
+        return null;
     }
 
     @Override

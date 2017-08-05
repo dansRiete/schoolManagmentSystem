@@ -33,7 +33,7 @@ public class FetchGradesOnSubjectServlet extends HttpServlet {
         String selectedSubjectIdParameter = request.getParameter("selectedSubjectIdParameter");
         System.out.println("selectedSubjectIdParameter=" + selectedSubjectIdParameter);
         long selectedSubjectId = Long.parseLong(selectedSubjectIdParameter);
-        List<Grade> subjects = gradesDatabaseService.fetchBySubject(selectedSubjectId, true);
+        List<Grade> subjects = gradesDatabaseService.fetchGrades(selectedSubjectId, null);
         System.out.println("subjects.size() = " + subjects.size());
         result.put("gradesOnSubjectCount", subjects.size());
         result.put("subjectId", subjects.size());

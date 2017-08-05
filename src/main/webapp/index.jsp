@@ -58,8 +58,21 @@
                 </c:forEach>
                 </tbody>
             </table>
-        </div>
 
+            <nav class="text-center">
+                <ul class="pagination">
+                    <c:forEach items="${requestScope.paginatorDisplayedPages}" var="page">
+                        <li
+                                <c:if test="${page < 0 || page > requestScope.availablePagesNumber - 1}">class="hidden"</c:if>
+                                <c:if test="${requestScope.pageIndex == page}">class="active"</c:if>
+                        >
+                            <a href="<c:url value="/?page=${page}"/>">${page + 1}</a>
+                        </li>
+                    </c:forEach>
+                </ul>
+            </nav>
+
+        </div>
     </div>
 </div>
 <script src="<c:url value="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"/>"></script>

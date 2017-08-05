@@ -34,10 +34,8 @@ public abstract class BaseGradesService {
 
     public abstract void addGrade(Grade addedGrade) throws AddingGradeException;
     public abstract void addSubject(String title) throws AddingSubjectException;
-    public abstract List<Grade> fetchAllGrades();
-    public abstract List<Grade> fetchBySubject(long subjectId, boolean ascendingByDate);
-    public abstract List<Grade> fetchByDate(LocalDate date);
-    public abstract List<Grade> fetchBySubjectAndDate(long subjectId, LocalDate date);
+    public abstract List<Grade> fetchGrades(long subjectId, LocalDate date);
+    public abstract List<Grade> fetchGrades(long subjectId, LocalDate date, int page);
     public abstract List<Subject> fetchAllSubjects();
     public abstract Subject fetchSubject(long id);
     public abstract void deleteGrade(long gradeId) throws DeletingSubjectException;

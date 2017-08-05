@@ -44,7 +44,7 @@
                         </label>
                     </form>
                     <form style ='float: left; padding: 5px;' class="navbar-form" method="post" action="<c:url value="/logout"/>">
-                        <input type="submit" id="logoutButton" class="btn btn-danger" value="LogOut"/>
+                        <input type="submit" id="logoutButton" class="btn btn-danger" value="Log out"/>
                     </form>
             </li>
         </ul>

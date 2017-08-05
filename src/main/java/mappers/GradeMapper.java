@@ -26,6 +26,17 @@ public interface GradeMapper {
             return sql;
         }
 
+        public String getOrderedByDateLimit(Map<String, Object> map){
+            long subject_id = (Long) map.get("id");
+            boolean ascending = ((Boolean) map.get("ascending"));
+            int limit = ((Integer) map.get("limit"));
+            int offset = ((Integer) map.get("offset"));
+            String sql =    "SELECT * FROM " + TABLE_NAME +
+                    " WHERE subject_id = "+ subject_id +
+                    " ORDER BY DATE" + (ascending ? "" : " DESC LIMIT " + limit + " OFFSET "+offset+"");
+            return sql;
+        }
+
         public String deleteInId(Map<String, Object> map){
             List<Long> ids = (List<Long>) map.get("ids");
             String whereClause = ids.toString().replace('[', '(').replace(']', ')');
@@ -52,6 +63,15 @@ public interface GradeMapper {
     })
     List<Grade> getAll();
 
+    @Select("SELECT * FROM " + TABLE_NAME + " ORDER BY id LIMIT #{limit} OFFSET #{offset}")
+    @Results({
+            @Result(id=true, property = "id", column = "id"),
+            @Result(property = "mark", column = "mark"),
+            @Result(property = "date", column = "date"),
+            @Result(property="subject", column="subject_id", one=@One(select="mappers.SubjectMapper.getById"))
+    })
+    List<Grade> getAllLimit(@Param("limit") int limit, @Param("offset") int offset);
+
     @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate}")
     @Results({
             @Result(id=true, property = "id", column = "id"),
@@ -61,7 +81,32 @@ public interface GradeMapper {
     })
     List<Grade> getOnDate(LocalDate requestedDate);
 
+    @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate} ORDER BY id LIMIT #{limit} OFFSET #{offset}")
+    @Results({
+            @Result(id=true, property = "id", column = "id"),
+            @Result(property = "mark", column = "mark"),
+            @Result(property = "date", column = "date"),
+            @Result(property="subject", column="subject_id", one=@One(select="mappers.SubjectMapper.getById"))
+    })
+    List<Grade> getOnDateLimit(@Param("requestedDate") LocalDate requestedDate, @Param("limit") int limit, @Param("offset") int offset);
 
+    @SelectProvider(type = SqlProvider.class, method = "getOrderedByDate")
+    @Results({
+            @Result(id=true, property = "id", column = "id"),
+            @Result(property = "mark", column = "mark"),
+            @Result(property = "date", column = "date"),
+            @Result(property="subject", column="subject_id", one=@One(select="mappers.SubjectMapper.getById"))
+    })
+    List<Grade> getOnSubject(@Param("id") Long requestedSubjectId, @Param("ascending") boolean ascending);
+
+    @SelectProvider(type = SqlProvider.class, method = "getOrderedByDateLimit")
+    @Results({
+            @Result(id=true, property = "id", column = "id"),
+            @Result(property = "mark", column = "mark"),
+            @Result(property = "date", column = "date"),
+            @Result(property="subject", column="subject_id", one=@One(select="mappers.SubjectMapper.getById"))
+    })
+    List<Grade> getOnSubjectLimit(@Param("id") Long requestedSubjectId, @Param("ascending") boolean ascending, @Param("limit") int limit, @Param("offset") int offset);
 
     @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate} AND subject_id = #{id}")
     @Results({
@@ -71,6 +116,15 @@ public interface GradeMapper {
             @Result(property="subject", column="subject_id", one=@One(select="mappers.SubjectMapper.getById"))
     })
     List<Grade> getOnDateAndSubject(@Param("id")long id, @Param("requestedDate")LocalDate requestedDate);
+
+    @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate} AND subject_id = #{id} ORDER BY id LIMIT #{limit} OFFSET #{offset}")
+    @Results({
+            @Result(id=true, property = "id", column = "id"),
+            @Result(property = "mark", column = "mark"),
+            @Result(property = "date", column = "date"),
+            @Result(property="subject", column="subject_id", one=@One(select="mappers.SubjectMapper.getById"))
+    })
+    List<Grade> getOnDateAndSubjectLimit(@Param("id")long id, @Param("requestedDate") LocalDate requestedDate, @Param("limit") int limit, @Param("offset") int offset);
 
     @Insert("INSERT INTO " + TABLE_NAME + " (date, subject_id, mark) VALUES (#{date}, #{subject.id}, #{mark})")
     void create(Grade entity);
@@ -86,15 +140,6 @@ public interface GradeMapper {
 
     @Delete("DELETE FROM " + TABLE_NAME)
     void deleteAll();
-
-    @SelectProvider(type = SqlProvider.class, method = "getOrderedByDate")
-    @Results({
-            @Result(id=true, property = "id", column = "id"),
-            @Result(property = "mark", column = "mark"),
-            @Result(property = "date", column = "date"),
-            @Result(property="subject", column="subject_id", one=@One(select="mappers.SubjectMapper.getById"))
-    })
-    List<Grade> getOnSubject(@Param("id") Long requestedSubjectId, @Param("ascending") boolean ascending);
 
     @Select("SELECT avg(grades.mark) FROM grades")
     Double averageGradeOfAll();
@@ -122,5 +167,17 @@ public interface GradeMapper {
 
     @Select("SELECT CASE WHEN (SELECT count(*) FROM grades) > 0 THEN TRUE ELSE FALSE END")
     Boolean areAnyGrades();
+
+    @Select("SELECT count(*) FROM grades")
+    long countAll();
+
+    @Select("SELECT count(*) FROM grades WHERE date = #{requestedDate}")
+    long countOnDate(@Param("requestedDate") LocalDate requestedDate);
+
+    @Select("SELECT count(*) FROM grades WHERE subject_id = #{id}")
+    long countOnSubject(@Param("id") Long requestedSubjectId);
+
+    @Select("SELECT count(*) FROM grades WHERE subject_id = #{id} AND date = #{requestedDate}")
+    long countOnSubjectAndDate(@Param("id")long subjectId, @Param("requestedDate") LocalDate requestedDate);
 
 }

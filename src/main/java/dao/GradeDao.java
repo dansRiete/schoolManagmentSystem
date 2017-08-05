@@ -46,6 +46,66 @@ public class GradeDao implements BaseDao<Grade, Long> {
         }
     }
 
+    public List<Grade> getAll(int limit, int offset) {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).getAllLimit(limit, offset);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public long countAll() {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).countAll();
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public long countBySubject(long subjectId) {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).countOnSubject(subjectId);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public long countByDate(LocalDate date) {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).countOnDate(date);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public long countBySubjectAndDate(long subjectId, LocalDate date) {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).countOnSubjectAndDate(subjectId, date);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
     public List<Grade> getOnDate(LocalDate requestedDate) {
         SqlSession sqlSession = null;
         try{
@@ -58,11 +118,47 @@ public class GradeDao implements BaseDao<Grade, Long> {
         }
     }
 
+    public List<Grade> getOnDate(LocalDate requestedDate, int limit, int offset) {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).getOnDateLimit(requestedDate, limit, offset);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
     public List<Grade> getOnDateAndSubject(long subjectId, LocalDate requestedDate) {
         SqlSession sqlSession = null;
         try{
             sqlSession = sqlSessionFactory.openSession();
             return sqlSession.getMapper(GradeMapper.class).getOnDateAndSubject(subjectId, requestedDate);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public List<Grade> getOnDateAndSubject(long subjectId, LocalDate requestedDate, int limit, int offset) {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).getOnDateAndSubjectLimit(subjectId, requestedDate, limit, offset);
+        }finally {
+            if(sqlSession != null){
+                sqlSession.close();
+            }
+        }
+    }
+
+    public List<Grade> getOnSubject(long requestedSubjectId, boolean ascending, int limit, int offset) {
+        SqlSession sqlSession = null;
+        try{
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.getMapper(GradeMapper.class).getOnSubjectLimit(requestedSubjectId, ascending, limit, offset);
         }finally {
             if(sqlSession != null){
                 sqlSession.close();

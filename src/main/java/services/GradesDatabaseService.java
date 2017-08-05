@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
  */
 public class GradesDatabaseService extends BaseGradesService {
 
+    private final int rowsPerPage = 1;
     private GradeDao gradeDao;
     private SubjectDao subjectDao;
     private Logger logger = Logger.getLogger(GradesDatabaseService.class);
@@ -62,7 +63,6 @@ public class GradesDatabaseService extends BaseGradesService {
         logger.info("addSubject(String title) , subject successfully created");
     }
 
-    @Override
     public List<Grade> fetchAllGrades() {
         logger.info("fetchAllGrades() was called");
         List<Grade> fetchedGrades = gradeDao.getAll();
@@ -70,26 +70,55 @@ public class GradesDatabaseService extends BaseGradesService {
         return fetchedGrades;
     }
 
-    @Override
-    public List<Grade> fetchBySubject(long subjectId, boolean ascendingByDate) {
-        logger.info("fetchBySubject(long subjectId, boolean ascendingByDate) was called, subjectId = " + subjectId + ", ascendingByDate = " + ascendingByDate);
-        List<Grade> fetchedSubjects = gradeDao.getOnSubject(subjectId, ascendingByDate);
-        logger.info("fetchBySubject(long subjectId, boolean ascendingByDate) Fetched " + fetchedSubjects.size() + " grades");
-        return fetchedSubjects;
+    public List<Grade> fetchAllGrades(int page) {
+        logger.info("fetchAllGrades(int page) was called, page = " + page);
+        List<Grade> fetchedGrades = gradeDao.getAll(rowsPerPage, page * rowsPerPage);
+        logger.info("fetchAllGrades() fetched " + fetchedGrades.size() + " grades");
+        return fetchedGrades;
     }
 
-    @Override
-    public List<Grade> fetchByDate(LocalDate date) {
-        logger.info("fetchByDate(LocalDate date) was called, date = " + date);
-        List<Grade> fetchedGrades = gradeDao.getOnDate(date);
-        logger.info("fetchByDate(LocalDate date) fetched " + fetchedGrades.size() + " grades");
-        return gradeDao.getOnDate(date);
+    public int availablePagesNumber(long subjectId, LocalDate date) {
+        logger.info("availablePagesNumber() was called");
+
+        if(subjectId != 0 && date == null){
+            return (int) Math.ceil(((double) gradeDao.countBySubject(subjectId)) / ((double) rowsPerPage));
+        }else if(subjectId == 0 && date != null){
+            return (int) Math.ceil(((double) gradeDao.countByDate(date)) / ((double) rowsPerPage));
+        }else if(subjectId != 0 && date != null){
+            return (int) Math.ceil(((double) gradeDao.countBySubjectAndDate(subjectId, date)) / ((double) rowsPerPage));
+        }else {
+            return (int) Math.ceil(((double) gradeDao.countAll()) / ((double) rowsPerPage));
+        }
+
     }
 
+
     @Override
-    public List<Grade> fetchBySubjectAndDate(long subjectId, LocalDate date) {
+    public List<Grade> fetchGrades(long subjectId, LocalDate date) {
         logger.info("fetchByDate(LocalDate date) was called, date = " + date + ", subjectId = " + subjectId);
-        return gradeDao.getOnDateAndSubject(subjectId, date);
+
+        if(subjectId != 0 && date == null){
+            return gradeDao.getOnSubject(subjectId, true);
+        }else if(subjectId == 0 && date != null){
+            return gradeDao.getOnDate(date);
+        }else if(subjectId != 0 && date != null){
+            return gradeDao.getOnDateAndSubject(subjectId, date);
+        }else {
+            return gradeDao.getAll();
+        }
+    }
+
+    public List<Grade> fetchGrades(long subjectId, LocalDate date, int page) {
+
+        if(subjectId != 0 && date == null){
+            return gradeDao.getOnSubject(subjectId, true, rowsPerPage, page * rowsPerPage);
+        }else if(subjectId == 0 && date != null){
+            return gradeDao.getOnDate(date, rowsPerPage, page * rowsPerPage);
+        }else if(subjectId != 0 && date != null){
+            return gradeDao.getOnDateAndSubject(subjectId, date, rowsPerPage, page * rowsPerPage);
+        }else {
+            return gradeDao.getAll();
+        }
     }
 
     @Override
@@ -118,7 +147,7 @@ public class GradesDatabaseService extends BaseGradesService {
     @Override
     public void deleteSubject(long subjectId) throws DeletingSubjectException{
         logger.info("deleteSubject(long subjectId) was called, id = " + subjectId);
-        if(!fetchBySubject(subjectId, true).isEmpty()){
+        if(!fetchGrades(subjectId, null).isEmpty()){
             throw new DeletingSubjectException("There is one or more grades in this subject");
         }
         subjectDao.delete(subjectId);
@@ -128,8 +157,8 @@ public class GradesDatabaseService extends BaseGradesService {
     @Override
     public void forceDeleteSubject(long subjectId) {
         logger.info("forceDeleteSubject(long subjectId) was called, id = " + subjectId);
-        if(!fetchBySubject(subjectId, true).isEmpty()){
-            List<Long> gradesIds = fetchBySubject(subjectId, true)
+        if(!fetchGrades(subjectId, null).isEmpty()){
+            List<Long> gradesIds = fetchGrades(subjectId, null)
                     .stream().map(Grade::getId).collect(Collectors.toList());
             gradeDao.delete(gradesIds);
         }
