@@ -33,7 +33,7 @@ public interface GradeMapper {
             int offset = ((Integer) map.get("offset"));
             String sql =    "SELECT * FROM " + TABLE_NAME +
                     " WHERE subject_id = "+ subject_id +
-                    " ORDER BY DATE" + (ascending ? "" : " DESC LIMIT " + limit + " OFFSET "+offset+"");
+                    " ORDER BY DATE" + (ascending ? "" : " DESC") + " LIMIT " + limit + " OFFSET " + offset;
             return sql;
         }
 
@@ -106,7 +106,10 @@ public interface GradeMapper {
             @Result(property = "date", column = "date"),
             @Result(property="subject", column="subject_id", one=@One(select="mappers.SubjectMapper.getById"))
     })
-    List<Grade> getOnSubjectLimit(@Param("id") Long requestedSubjectId, @Param("ascending") boolean ascending, @Param("limit") int limit, @Param("offset") int offset);
+    List<Grade> getOnSubjectLimit(
+            @Param("id") Long requestedSubjectId, @Param("ascending") boolean ascending,
+            @Param("limit") int limit, @Param("offset") int offset
+    );
 
     @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate} AND subject_id = #{id}")
     @Results({

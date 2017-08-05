@@ -117,7 +117,7 @@ public class GradesDatabaseService extends BaseGradesService {
         }else if(subjectId != 0 && date != null){
             return gradeDao.getOnDateAndSubject(subjectId, date, rowsPerPage, page * rowsPerPage);
         }else {
-            return gradeDao.getAll();
+            return gradeDao.getAll(rowsPerPage, page * rowsPerPage);
         }
     }
 

@@ -32,7 +32,7 @@ public class LoginServlet extends HttpServlet {
 
             if (userService.isExists(username, password)) {
                 request.getSession().setAttribute("username", username);
-                response.sendRedirect("/display");
+                response.sendRedirect("/list/grades");
                 return;
             } else {
                 //todo log

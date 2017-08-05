@@ -10,23 +10,23 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href=<c:url value="/display"/>>Grades</a>
+            <a class="navbar-brand" href=<c:url value="/list/grades"/>>Grades</a>
         </div>
         <ul class="nav navbar-nav">
-            <li ${requestScope.page eq 'display' ? 'class="active"' : ''}>
-                <a href=<c:url value="/display"/>>Grades list</a>
+            <li ${requestScope.pageTitle eq 'gradesList' ? 'class="active"' : ''}>
+                <a href=<c:url value="/list/grades"/>>Grades list</a>
             </li>
-            <li ${requestScope.page eq 'displaySubjects' ? 'class="active"' : ''}>
-                <a href=<c:url value="/display/subjects"/>>Subjects list</a>
+            <li ${requestScope.pageTitle eq 'displaySubjects' ? 'class="active"' : ''}>
+                <a href=<c:url value="/list/subjects"/>>Subjects list</a>
             </li>
-            <li ${requestScope.page eq 'createGrade' ? 'class="active"' : ''}>
+            <li ${requestScope.pageTitle eq 'createGrade' ? 'class="active"' : ''}>
                 <a href="<c:url value="/create/grade"/>">Add grade</a>
             </li>
 
-            <li ${requestScope.page eq 'createSubject' ? 'class="active"' : ''}>
+            <li ${requestScope.pageTitle eq 'createSubject' ? 'class="active"' : ''}>
                 <a href="<c:url value="/create/subject"/>">Add subject</a>
             </li>
-            <li ${requestScope.page ne 'display' ? 'class="hidden"' : ''}>
+            <li ${requestScope.pageTitle ne 'gradesList' ? 'class="hidden"' : ''}>
                     <form style ='float: left; padding: 5px;' id="filterForm" class="navbar-form" >
                         <label >
                             <select id="subjectsSelect" name="selectedSubjectId" class="form-control">
@@ -40,7 +40,7 @@
                             <input id="selectedDate" name="selectedDate" value="${requestScope.selectedDate}" type="date"  class="form-control"/>
                             <input type="submit" class="btn btn-success" value="Filter"/>
                             <input type="button" id="resetButton" class="btn btn-success" value="Reset"/>
-                            <input type="button" id="avgButton" class="btn btn-success" value="Avg"/>
+                            <input type="button" id="avgButton" class="btn btn-success"  value="Avg"/>
                         </label>
                     </form>
                     <form style ='float: left; padding: 5px;' class="navbar-form" method="post" action="<c:url value="/logout"/>">

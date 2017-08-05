@@ -5,7 +5,7 @@
     <display-name>Grades Web Application</display-name>
 
     <welcome-file-list>
-        <welcome-file>display</welcome-file>
+        <welcome-file>/list/grades</welcome-file>
     </welcome-file-list>
 
     <!--<filter>

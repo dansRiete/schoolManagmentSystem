@@ -26,7 +26,7 @@ public class DeleteGradeServlet extends HttpServlet {
         System.out.println("request.getParameter(\"selectedSubject\") = " + request.getParameter("selectedSubject"));
         request.setAttribute("selectedSubject", request.getParameter("selectedSubject"));
         request.setAttribute("selectedDate", request.getParameter("selectedDate"));
-        response.sendRedirect("/display");
+        response.sendRedirect("/list/grades");
     }
 
 }

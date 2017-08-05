@@ -26,16 +26,16 @@ public class Filter implements javax.servlet.Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpSession session = request.getSession(false);
         String loginURI = request.getContextPath() + "/login";
+        String requestedUri = request.getRequestURI();
 
         boolean loggedIn = session != null && session.getAttribute("username") != null;
-        boolean loginRequest = request.getRequestURI().equals(loginURI);
-        System.out.println("Session = " + session);
-        System.out.println("session.getAttribute(\"username\") = " + (session == null ? "null" : session.getAttribute("username")));
-        System.out.println("request.getRequestURI() = " + request.getRequestURI());
+        boolean loginRequest = requestedUri.equals(loginURI);
 
         if (loggedIn || loginRequest) {
             filterChain.doFilter(request, response);
-        } else {
+        }else if (requestedUri.matches(".*(css|jpg|png|gif|js)")){
+            filterChain.doFilter(request, response);
+        }else {
             response.sendRedirect(loginURI);
         }
     }

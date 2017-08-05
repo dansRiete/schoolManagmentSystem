@@ -25,7 +25,7 @@ public class CreateSubjectServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        req.setAttribute("page", "createSubject");
+        req.setAttribute("pageTitle", "createSubject");
         req.getRequestDispatcher("/createSubject.jsp").forward(req, resp);
     }
 

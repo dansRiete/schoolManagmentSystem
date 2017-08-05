@@ -1,5 +1,7 @@
 package servlets;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import datasources.DataSource;
 import exceptions.AddingGradeException;
 import model.Grade;
@@ -13,9 +15,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Aleks on 29.07.2017.
@@ -38,13 +43,15 @@ public class CreateGradeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setAttribute("subjects", gradesService.fetchAllSubjects());
-        req.setAttribute("page", "createGrade");
+        req.setAttribute("pageTitle", "createGrade");
 
         Long selectedSubjectId = null;
         Integer mark = null;
         LocalDate date = null;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         Grade addedGrade = null;
+        Map<String, Object> result = new HashMap<>();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         try {
             selectedSubjectId = Long.valueOf(req.getParameter("selectedSubject"));
@@ -53,32 +60,20 @@ public class CreateGradeServlet extends HttpServlet {
             Subject subject = gradesService.fetchSubject(selectedSubjectId);
             addedGrade = new Grade(subject, date, mark);
             gradesService.addGrade(addedGrade);
-            req.setAttribute("statusMessage", "Success: Grade [" + BaseGradesService.represent(addedGrade) + "] has been successfully created");
-            req.getRequestDispatcher("/createGrade.jsp").forward(req, resp);
+            result.put("statusMessage", "Success: Grade [" + BaseGradesService.represent(addedGrade) + "] has been successfully created");
         }catch (NumberFormatException e){
             logger.error("Add grade error " + e.getMessage());
-            req.setAttribute("statusMessage", "Error: " + e.getLocalizedMessage());
-            req.setAttribute("selectedSubjectId", selectedSubjectId);
-            req.setAttribute("date", req.getParameter("date"));
-            req.setAttribute("mark", req.getParameter("mark"));
-            req.setAttribute("subjects", gradesService.fetchAllSubjects());
-            req.getRequestDispatcher("/createGrade.jsp").forward(req, resp);
+            result.put("statusMessage", "Error: " + e.getLocalizedMessage());
         }catch (AddingGradeException e) {
             logger.error("Add grade error " + e.getMessage());
-            req.setAttribute("statusMessage", "Error: " + e.getLocalizedMessage());
-            req.setAttribute("selectedSubjectId", selectedSubjectId);
-            req.setAttribute("date", date);
-            req.setAttribute("mark", mark);
-            req.setAttribute("subjects", gradesService.fetchAllSubjects());
-            req.getRequestDispatcher("/createGrade.jsp").forward(req, resp);
+            result.put("statusMessage", "Error: " + e.getLocalizedMessage());
         }catch (DateTimeParseException e) {
             logger.error("Add grade error " + e.getMessage());
-            req.setAttribute("statusMessage", "Error: Enter a date");
-            req.setAttribute("selectedSubjectId", selectedSubjectId);
-            req.setAttribute("date", date);
-            req.setAttribute("mark", mark);
-            req.setAttribute("subjects", gradesService.fetchAllSubjects());
-            req.getRequestDispatcher("/createGrade.jsp").forward(req, resp);
+            result.put("statusMessage", "Error: Enter a date");
         }
+
+        resp.setContentType("application/json");
+        PrintWriter writer = resp.getWriter();
+        writer.println(gson.toJson(result));
     }
 }

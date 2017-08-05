@@ -8,6 +8,7 @@
 </head>
 
 <body>
+
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -26,6 +27,57 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div class="modal fade" id="modalAddGrade" tabindex="-1" role="dialog">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 id="modalAddGrade-title-text" class="modal-title">Add a grade</h4>
+        </div>
+
+        <form method="post" id="addNewGradeForm" class="navbar-form" action="<c:url value="/create/grade"/>">
+
+        <div class="modal-body">
+            <p class="alert-danger" id="statusMessage"></p>
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Mark</th>
+                </tr>
+                <tr>
+                    <th>
+                        <select class="form-control" name="selectedSubject">
+                            <c:forEach items="${requestScope.allSubjects}" var="subject">
+                                <option ${requestScope.selectedSubjectId eq subject.id ? 'selected' : ''}
+                                        value="${subject.id}">${subject}
+                                </option>
+                            </c:forEach>
+                        </select>
+                    </th>
+                    <th>
+                        <input name="date" type="date" value="${requestScope.date}" class="form-control"/>
+                    </th>
+                    <th>
+                        <input name="mark" type="number" min="0" value="${requestScope.mark}" class="form-control"/>
+                    </th>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" onclick="addGrade(this.form)">Add</button>
+        </div>
+        </form>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
@@ -51,7 +103,7 @@
                         <td>
                             <form action="deleteGrade" method="post">
                                 <input type="hidden" name="deletedGradeId" value="${currentGrade.id}"/>
-                                <input type="submit" value="Delete">
+                                <input type="submit" class="btn btn-danger" value="Delete">
                             </form>
                         </td>
                     </tr>
@@ -66,11 +118,17 @@
                                 <c:if test="${page < 0 || page > requestScope.availablePagesNumber - 1}">class="hidden"</c:if>
                                 <c:if test="${requestScope.pageIndex == page}">class="active"</c:if>
                         >
-                            <a href="<c:url value="/?page=${page}"/>">${page + 1}</a>
+                            <a href="<c:url value="/list/grades?page=${page}"/>">${page + 1}</a>
                         </li>
                     </c:forEach>
                 </ul>
             </nav>
+
+            <hr>
+
+            <input type="button" id="addNewGradeButton" class="btn btn-success" value="Add a grade"/>
+
+
 
         </div>
     </div>
