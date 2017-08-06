@@ -19,6 +19,7 @@
             form[0].submit();
 
         },showAddGradeModal(){
+            $("#statusMessage").html("");
             $('#modalAddGrade').modal({show: true});
         },
         showAverageGradeModal(){
@@ -60,11 +61,31 @@
     app.initialize();
 }) ();
 function addGrade(form) {
-    $.ajax({
-        url: $(location).attr("protocol") + "//" + $(location).attr("host") + "/create/grade",
-        type: 'POST',
-        data: $(form).serialize()
-    }).done(function(data){
-        $("#statusMessage").html(data["statusMessage"]);
-    });
+
+    $("#statusMessage").html("");
+
+    let date = $("#date").val();
+    let subjectId = $("#selectedSubject").val();
+    let mark = $("#mark").val();
+    console.log('date=' + date);
+    console.log('subjectId=' + subjectId);
+    console.log('mark=' + mark);
+
+    if(date === null || date === undefined || date === ''){
+        $("#statusMessage").html("Select a date");
+    }else if(subjectId === null || subjectId === undefined || subjectId === ''){
+        $("#statusMessage").html("Select a subject");
+    }else if(mark === null || mark === undefined || mark === ''){
+        $("#statusMessage").html("Enter a mark");
+    }else if(mark < 0){
+        $("#statusMessage").html("Mark can not be less than zero");
+    }else {
+        $.ajax({
+            url: $(location).attr("protocol") + "//" + $(location).attr("host") + "/create/grade",
+            type: 'POST',
+            data: $(form).serialize()
+        }).done(function(data){
+            $("#statusMessage").html(data["statusMessage"]);
+        });
+    }
 }

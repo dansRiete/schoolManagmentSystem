@@ -38,7 +38,7 @@
             <h4 id="modalAddGrade-title-text" class="modal-title">Add a grade</h4>
         </div>
 
-        <form method="post" id="addNewGradeForm" class="navbar-form" action="<c:url value="/create/grade"/>">
+        <form method="post" id="addNewGradeForm" name="addNewGradeForm" class="navbar-form" action="<c:url value="/create/grade"/>">
 
         <div class="modal-body">
             <p class="alert-danger" id="statusMessage"></p>
@@ -51,25 +51,24 @@
                 </tr>
                 <tr>
                     <th>
-                        <select class="form-control" name="selectedSubject">
+                        <select class="form-control" id="selectedSubject" name="selectedSubject">
                             <c:forEach items="${requestScope.allSubjects}" var="subject">
-                                <option ${requestScope.selectedSubjectId eq subject.id ? 'selected' : ''}
-                                        value="${subject.id}">${subject}
-                                </option>
+                                <option ${subject eq null ? 'hidden' : ''} value="${subject.id}">${subject}></option>
                             </c:forEach>
                         </select>
                     </th>
                     <th>
-                        <input name="date" type="date" value="${requestScope.date}" class="form-control"/>
+                        <input name="date" id="date" type="date" value="${requestScope.date}" class="form-control"/>
+                        <span class="help-block"></span>
                     </th>
                     <th>
-                        <input name="mark" type="number" min="0" value="${requestScope.mark}" class="form-control"/>
+                        <input name="mark" id="mark" type="number" <%--min="0"--%> value="${requestScope.mark}" class="form-control"/>
                     </th>
                 </tr>
                 </tbody>
             </table>
-
         </div>
+
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="addGrade(this.form)">Add</button>
         </div>
@@ -134,8 +133,11 @@
     </div>
 </div>
 <script src="<c:url value="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"/>"></script>
+<script src="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"/>"></script>
+<script src="<c:url value="/js/gradesList.js"/>"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="<c:url value="/js/bootstrap.min.js"/>"></script>
-<script src="<c:url value="/js/index.js"/>"></script>
+
+
 </body>
 </html>

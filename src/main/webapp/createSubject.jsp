@@ -25,14 +25,14 @@
         <p <c:if test="${fn:startsWith(requestScope.message, 'Success')}">style="color: #3e8f3e" </c:if>>
             ${requestScope.message}
         </p>
-        <form method="post" class="navbar-form" action="<c:url value="/create/subject"/>">
+        <form method="post" name="addSubject" class="navbar-form" action="<c:url value="/create/subject"/>">
             <table class="table">
                 <tbody>
                 <tr>
                     <th>Subject's title</th>
                 </tr>
                 <tr>
-                    <th><input pattern="[^\s]{1,32}" required title="1 to 32 characters without slashes"type="text" class="form-control" name="subjectTitle" value="${requestScope.subjectTitle}"/></th>
+                    <th><input type="text" class="form-control" name="subjectTitle" value="${requestScope.subjectTitle}"/></th>
                 </tr>
                 </tbody>
             </table> <br/>
@@ -42,6 +42,8 @@
     </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"/>"></script>
+<script src="<c:url value="/js/createSubject.js"/>"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>
 </body>
