@@ -38,22 +38,20 @@
 
         <div class="col-lg-12"><jsp:include page="navbar.jsp"/></div>
 
-        <div class="col-lg-8">
+        <div class="col-lg-6 col-lg-offset-3">
             <table class="table">
                 <tbody>
                 <tr>
-                    <th>Id</th>
                     <th>Subject's title</th>
                     <th>Action</th>
                 </tr>
                 <c:forEach items="${requestScope.subjects}" var="currentSubject">
                     <tr>
-                        <td><c:out value="${currentSubject.id}"/></td>
                         <td><c:out value="${currentSubject.title}"/></td>
                         <td>
                             <form id="${"deleteSubjectForm_".concat(currentSubject.id)}" action="<c:url value="/deleteSubject"/>" method="post">
                                 <input type="hidden" name="deletedSubjectId" value="${currentSubject.id}"/>
-                                <input type="button" onclick="addFunction(${currentSubject.id})" value="Delete">
+                                <input type="button"  class="btn btn-default" onclick="addFunction(${currentSubject.id})" value="Delete">
                             </form>
                         </td>
                     </tr>

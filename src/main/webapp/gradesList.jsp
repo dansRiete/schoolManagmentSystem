@@ -4,6 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="<c:url value="/css/bootstrap.min.css"/> " rel="stylesheet">
+    <link href="<c:url value="/css/add-grades-list.css"/> " rel="stylesheet">
     <title>Grades Web-Application</title>
 </head>
 
@@ -83,26 +84,34 @@
             <jsp:include page="navbar.jsp"/>
         </div>
 
-        <div class="col-lg-8">
+        <div class="col-lg-10 col-lg-offset-1">
             <table class="table">
                 <tbody>
                 <tr>
-                    <th>Id</th>
-                    <th>Date</th>
-                    <th>Subject</th>
+                    <form style ='float: left; padding: 5px;' id="filterForm" class="navbar-form" >
+                    <th>Date <input id="selectedDate" name="selectedDate" value="${requestScope.selectedDate}" type="date"  class="form-control"/></th>
+                    <th>Subject <select id="subjectsSelect" name="selectedSubjectId" class="form-control">
+                        <c:forEach items="${requestScope.allSubjects}" var="subject">
+                            <option
+                                    <c:if test="${requestScope.selectedSubject == subject.id}">selected</c:if>
+                                    value="${subject.id}">${subject == null ? 'All subjects' : subject.title}
+                            </option>
+                        </c:forEach>
+                    </select></th>
                     <th>Mark</th>
-                    <th>Action</th>
+                    <th>Action<br/><input type="submit" class="btn btn-default" value="Filter"/>
+                        <input type="button" id="resetButton" class="btn btn-default" value="Reset"/></th>
+                    </form>
                 </tr>
                 <c:forEach items="${requestScope.allGrades}" var="currentGrade">
                     <tr>
-                        <td><c:out value="${currentGrade.id}"/></td>
                         <td><c:out value="${currentGrade.date}"/></td>
                         <td><c:out value="${currentGrade.subject}"/></td>
                         <td><c:out value="${currentGrade.mark}"/></td>
                         <td>
                             <form action="deleteGrade" method="post">
                                 <input type="hidden" name="deletedGradeId" value="${currentGrade.id}"/>
-                                <input type="submit" class="btn btn-danger" value="Delete">
+                                <input type="submit" class="btn btn-default" value="Delete">
                             </form>
                         </td>
                     </tr>
@@ -124,9 +133,8 @@
             </nav>
 
             <hr>
-
-            <input type="button" id="addNewGradeButton" class="btn btn-success" value="Add a grade"/>
-
+            <input type="button" id="avgButton" class="btn btn-primary footer-buttons-class" value="Get Average"/>
+            <input type="button" id="addNewGradeButton" class="btn btn-primary footer-buttons-class" value="Add a grade"/>
 
 
         </div>

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class GradesDatabaseService extends BaseGradesService {
 
-    private final int rowsPerPage = 1;
+    private final int rowsPerPage = 5;
     private GradeDao gradeDao;
     private SubjectDao subjectDao;
     private Logger logger = Logger.getLogger(GradesDatabaseService.class);

@@ -30,13 +30,15 @@
             let form = $("#filterForm");
             let link = $(location).attr("protocol") + "//" + $(location).attr("host") + "/average";
             $.ajax({
-                url: link, type: "POST", data: form.serialize()
+                url: link,
+                type: "POST",
+                data: form.serialize()
             })
                 .fail(function () {
                     console.log("Sending form failed")
                 })
                 .done(function (msg) {
-                    if(msg["avg"] !== null && msg["avg"] !== undefined){
+                    if(msg["avg"] !== null && msg["avg"] !== undefined && msg["avg"] !== ''){
                         $("#modal-body-text").html(msg["avg"]);
                         $("#modal-title-text").html(
                             'Average mark on:' +
