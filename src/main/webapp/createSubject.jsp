@@ -32,20 +32,29 @@
                     <th>Subject's title</th>
                 </tr>
                 <tr>
-                    <th><input type="text" class="form-control" name="subjectTitle" value="${requestScope.subjectTitle}"/></th>
+                    <th>
+                        <div id="mydiv" class="form-group">
+                        <label>
+                                <input type="text" class="form-control" id="subjectTitle" name="subjectTitle" value="${requestScope.subjectTitle}"/>
+                        </label>
+                        </div>
+                    </th>
                 </tr>
                 </tbody>
             </table> <br/>
 
             <input type="submit" value="Create" class="btn btn-success"/>
+
         </form>
+        <button id="butt" name="butt" onclick="myButton()" ></button>
     </div>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"/>"></script>
-<script src="<c:url value="/js/createSubject.js"/>"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="js/bootstrap.min.js"></script>
+
 </body>
+<script src="<c:url value="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"/>"></script>
+<script src="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"/>"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="<c:url value="/js/bootstrap.min.js"/>"></script>
+<script src="<c:url value="/js/createSubject.js"/>"></script>
 
 </html>

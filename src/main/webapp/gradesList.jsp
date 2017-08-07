@@ -54,7 +54,7 @@
                     <th>
                         <select class="form-control" id="selectedSubject" name="selectedSubject">
                             <c:forEach items="${requestScope.allSubjects}" var="subject">
-                                <option ${subject eq null ? 'hidden' : ''} value="${subject.id}"${subject}></option>
+                                <option ${subject eq null ? 'hidden' : ''} value="${subject.id}">${subject}</option>
                             </c:forEach>
                         </select>
                     </th>

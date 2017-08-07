@@ -40,16 +40,20 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 id="modalAS-title-text" class="modal-title"></h4>
+                <h4 id="modalAS-title-text" class="modal-title">Add a subject</h4>
             </div>
             <div class="modal-body">
                 <p id="modalAS-body-text"></p>
+                <div id="newSubjectTitleDiv" class="form-group row">
+                    <div class="col-xs-6">
+                        <label for="newSubjectTitle">Subject's title</label>
+                        <input type="text" class="form-control" name="newSubjectTitle" id="newSubjectTitle" placeholder="Title">
+                        <span id="help" class="help-inline"></span>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <form method="post"  action="<c:url value="/deleteSubject"/>">
-                    <input id="modalAddSubjId" type="hidden" name="deletedSubjectId"/>
-                    <input type="submit" value="Delete">
-                </form>
+                <input type="submit" class="btn btn-success" onclick="addSubject()" value="Create">
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -75,7 +79,7 @@
                         <td>
                             <form id="${"deleteSubjectForm_".concat(currentSubject.id)}" style="margin-bottom: 0" action="<c:url value="/deleteSubject"/>" method="post">
                                 <input type="hidden" name="deletedSubjectId" value="${currentSubject.id}"/>
-                                <input type="button"  class="btn btn-default" onclick="addFunction(${currentSubject.id})" value="Delete">
+                                <input type="button" class="btn btn-default" onclick="deleteSubject(${currentSubject.id})" value="Delete">
                             </form>
                         </td>
                     </tr>
@@ -83,7 +87,8 @@
                 </tbody>
             </table>
             <hr>
-            <input type="button" id="addNewSubjectButton" class="btn btn-primary footer-buttons-class" onclick="showAddSubjModal()" nvalue="New subject"/>
+            <input type="button" id="addNewSubjectButton" data-toggle="modal" data-target="#myModalAddSubject"
+                   class="btn btn-primary footer-buttons-class" value="New subject"/>
         </div>
 
     </div>
@@ -91,7 +96,7 @@
 
 <script src="<c:url value="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"/>"></script>
 <script src="<c:url value="/js/bootstrap.min.js"/>"></script>
-<script src="<c:url value="/js/displaySubjects.js"/>"></script>
+<script src="<c:url value="/js/subjectsList.js"/>"></script>
 
 </body>
 </html>
