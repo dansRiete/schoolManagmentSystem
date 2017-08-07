@@ -60,7 +60,7 @@ public class CreateGradeServlet extends HttpServlet {
             Subject subject = gradesService.fetchSubject(selectedSubjectId);
             addedGrade = new Grade(subject, date, mark);
             gradesService.addGrade(addedGrade);
-            result.put("statusMessage", "Success: Grade [" + BaseGradesService.represent(addedGrade) + "] has been successfully created");
+            result.put("statusMessage", "Success: Grade has been successfully created");
         }catch (NumberFormatException e){
             logger.error("Add grade error " + e.getMessage());
             result.put("statusMessage", "Error: " + e.getLocalizedMessage());

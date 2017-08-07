@@ -1,5 +1,6 @@
 package servlets;
 
+import org.apache.log4j.Logger;
 import services.UserService;
 
 import javax.servlet.ServletException;
@@ -18,6 +19,7 @@ import java.util.Map;
 public class LoginServlet extends HttpServlet {
 
     private UserService userService = new UserService();
+    Logger logger = Logger.getLogger(LoginServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -32,6 +34,7 @@ public class LoginServlet extends HttpServlet {
 
             if (userService.isExists(username, password)) {
                 request.getSession().setAttribute("username", username);
+                logger.info("User " + username + " is logged in");
                 response.sendRedirect("/list/grades");
                 return;
             } else {

@@ -42,7 +42,7 @@
         <form method="post" id="addNewGradeForm" name="addNewGradeForm" class="navbar-form" action="<c:url value="/create/grade"/>">
 
         <div class="modal-body">
-            <p class="alert-danger" id="statusMessage"></p>
+            <p class="" id="statusMessage"></p>
             <table class="table">
                 <tbody>
                 <tr>
@@ -54,7 +54,7 @@
                     <th>
                         <select class="form-control" id="selectedSubject" name="selectedSubject">
                             <c:forEach items="${requestScope.allSubjects}" var="subject">
-                                <option ${subject eq null ? 'hidden' : ''} value="${subject.id}">${subject}></option>
+                                <option ${subject eq null ? 'hidden' : ''} value="${subject.id}"${subject}></option>
                             </c:forEach>
                         </select>
                     </th>
@@ -63,7 +63,7 @@
                         <span class="help-block"></span>
                     </th>
                     <th>
-                        <input name="mark" id="mark" type="number" <%--min="0"--%> value="${requestScope.mark}" class="form-control"/>
+                        <input name="mark" id="mark" type="number" min="0" value="${requestScope.mark}" class="form-control"/>
                     </th>
                 </tr>
                 </tbody>
@@ -88,7 +88,7 @@
             <table class="table">
                 <tbody>
                 <tr>
-                    <form style ='float: left; padding: 5px;' id="filterForm" class="navbar-form" >
+                    <form id="filterForm" class="navbar-form" >
                     <th>Date <input id="selectedDate" name="selectedDate" value="${requestScope.selectedDate}" type="date"  class="form-control"/></th>
                     <th>Subject <select id="subjectsSelect" name="selectedSubjectId" class="form-control">
                         <c:forEach items="${requestScope.allSubjects}" var="subject">
@@ -105,11 +105,11 @@
                 </tr>
                 <c:forEach items="${requestScope.allGrades}" var="currentGrade">
                     <tr>
-                        <td><c:out value="${currentGrade.date}"/></td>
-                        <td><c:out value="${currentGrade.subject}"/></td>
-                        <td><c:out value="${currentGrade.mark}"/></td>
-                        <td>
-                            <form action="deleteGrade" method="post">
+                        <td ><c:out value="${currentGrade.date}"/></td>
+                        <td style="margin-bottom: 0"><c:out value="${currentGrade.subject}"/></td>
+                        <td style="margin-bottom: 0"><c:out value="${currentGrade.mark}"/></td>
+                        <td style="margin-bottom: 0">
+                            <form action="deleteGrade" style="margin-bottom: 0" method="post">
                                 <input type="hidden" name="deletedGradeId" value="${currentGrade.id}"/>
                                 <input type="submit" class="btn btn-default" value="Delete">
                             </form>

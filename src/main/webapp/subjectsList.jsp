@@ -22,8 +22,32 @@
                 <p id="modalDS-body-text"></p>
             </div>
             <div class="modal-footer">
-                <form method="post" action="<c:url value="/deleteSubject"/>">
+                <form method="post"  action="<c:url value="/deleteSubject"/>">
                     <input id="modalDeleteSubjId" type="hidden" name="deletedSubjectId"/>
+                    <input type="submit" value="Delete">
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<div class="modal fade" id="myModalAddSubject" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 id="modalAS-title-text" class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <p id="modalAS-body-text"></p>
+            </div>
+            <div class="modal-footer">
+                <form method="post"  action="<c:url value="/deleteSubject"/>">
+                    <input id="modalAddSubjId" type="hidden" name="deletedSubjectId"/>
                     <input type="submit" value="Delete">
                 </form>
             </div>
@@ -49,7 +73,7 @@
                     <tr>
                         <td><c:out value="${currentSubject.title}"/></td>
                         <td>
-                            <form id="${"deleteSubjectForm_".concat(currentSubject.id)}" action="<c:url value="/deleteSubject"/>" method="post">
+                            <form id="${"deleteSubjectForm_".concat(currentSubject.id)}" style="margin-bottom: 0" action="<c:url value="/deleteSubject"/>" method="post">
                                 <input type="hidden" name="deletedSubjectId" value="${currentSubject.id}"/>
                                 <input type="button"  class="btn btn-default" onclick="addFunction(${currentSubject.id})" value="Delete">
                             </form>
@@ -58,6 +82,8 @@
                 </c:forEach>
                 </tbody>
             </table>
+            <hr>
+            <input type="button" id="addNewSubjectButton" class="btn btn-primary footer-buttons-class" onclick="showAddSubjModal()" nvalue="New subject"/>
         </div>
 
     </div>

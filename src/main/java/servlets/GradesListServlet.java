@@ -67,21 +67,14 @@ public class GradesListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        List<Grade> fetchedGrades;
+        List<Grade> gradesToDisplay;
         List<Subject> subjects = new ArrayList<>();
         HttpSession httpSession = request.getSession();
         int availablePagesNumber;
-        int requestedPageIndex;
-        try {
-            requestedPageIndex = Integer.parseInt(request.getParameter("page"));
-        } catch (NumberFormatException e) {
-            logger.error(e.getMessage() + '\n' + "Requested page parameter was incorrect, pageIndex was " + request.getParameter("page"));
-            requestedPageIndex = 0;
-        }
+        int requestedPageIndex = 0;     //By default zero page is requested
 
         subjects.add(null);
         subjects.addAll(gradesDatabaseService.fetchAllSubjects());
-        request.setAttribute("allSubjects", subjects);
 
         String requestSelectedSubject = request.getParameter("selectedSubjectId");
         String requestSelectedDate = request.getParameter("selectedDate");
@@ -92,40 +85,51 @@ public class GradesListServlet extends HttpServlet {
         String selectedSubject = requestSelectedSubject == null ? sessionSelectedSubject : requestSelectedSubject;
         String selectedDate = requestSelectedDate == null ? sessionSelectedDate : requestSelectedDate;
 
-        long requestedSubjectId;
-        LocalDate requestedDate;
+        long requestedSubjectId = 0;
+        LocalDate requestedDate = null;
 
         if(selectedSubject != null && !selectedSubject.isEmpty()){
             try {
                 requestedSubjectId = Long.parseLong(selectedSubject);
-            } catch (NumberFormatException ne) {
-                logger.error(ne.getMessage() + "\nException during parsing 'requestedSubjectId', requested subject was - '" + selectedSubject + '\'');
-                requestedSubjectId = 0;
+            } catch (NumberFormatException e) {
+                logger.error(e.getClass().getCanonicalName() + " " + e.getLocalizedMessage() + " " +
+                        " Exception during parsing 'requestedSubjectId', requested subject was - '" + selectedSubject + '\'');
             }
-        }else {
-            requestedSubjectId = 0;
         }
 
         if(selectedDate != null && !selectedDate.isEmpty()) {
             try {
                 requestedDate = LocalDate.parse(selectedDate, formatter);
-            } catch (DateTimeParseException de) {
-                logger.error(de.getMessage() + "\nException during parsing 'requestedDate', requested subject was - '" + selectedDate + '\'');
-                requestedDate = null;
+            } catch (DateTimeParseException e) {
+                logger.error(e.getClass().getCanonicalName() + " " + e.getLocalizedMessage() +
+                        " Exception during parsing 'requestedDate', requested subject was - '" + selectedDate + '\'');
             }
-        }else {
-            requestedDate = null;
         }
 
         availablePagesNumber = gradesDatabaseService.availablePagesNumber(requestedSubjectId, requestedDate);
-        fetchedGrades = gradesDatabaseService.fetchGrades(requestedSubjectId, requestedDate, requestedPageIndex);
 
+        if(request.getParameter("page") != null){
+            try {
+                requestedPageIndex = Integer.parseInt(request.getParameter("page"));
+                if(requestedPageIndex > availablePagesNumber - 1){
+                    logger.error("Page " + requestedPageIndex + " is unavailable");
+                    requestedPageIndex = 0;
+                }
+            } catch (NumberFormatException e) {
+                logger.error(e.getClass().getCanonicalName() + " " + e.getLocalizedMessage() +
+                        " Requested page parameter was '" + request.getParameter("page") + '\'');
+            }
+        }
+
+        gradesToDisplay = gradesDatabaseService.fetchGrades(requestedSubjectId, requestedDate, requestedPageIndex);
+
+        request.setAttribute("allSubjects", subjects);
         request.setAttribute("selectedSubject", selectedSubject);
         request.setAttribute("selectedDate", selectedDate);
         request.setAttribute("paginatorDisplayedPages", paginatorDisplayedPages(availablePagesNumber, requestedPageIndex));
         request.setAttribute("availablePagesNumber", availablePagesNumber);
         request.setAttribute("pageIndex", requestedPageIndex);
-        request.setAttribute("allGrades", fetchedGrades);
+        request.setAttribute("allGrades", gradesToDisplay);
         request.setAttribute("pageTitle", "gradesList");
 
         httpSession.setAttribute("selectedSubject", selectedSubject);

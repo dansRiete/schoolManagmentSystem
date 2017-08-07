@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class GradesDatabaseService extends BaseGradesService {
 
-    private final int rowsPerPage = 5;
+    private final int itemsPerPage = 5;
     private GradeDao gradeDao;
     private SubjectDao subjectDao;
     private Logger logger = Logger.getLogger(GradesDatabaseService.class);
@@ -72,7 +72,7 @@ public class GradesDatabaseService extends BaseGradesService {
 
     public List<Grade> fetchAllGrades(int page) {
         logger.info("fetchAllGrades(int page) was called, page = " + page);
-        List<Grade> fetchedGrades = gradeDao.getAll(rowsPerPage, page * rowsPerPage);
+        List<Grade> fetchedGrades = gradeDao.getAll(itemsPerPage, page * itemsPerPage);
         logger.info("fetchAllGrades() fetched " + fetchedGrades.size() + " grades");
         return fetchedGrades;
     }
@@ -81,13 +81,13 @@ public class GradesDatabaseService extends BaseGradesService {
         logger.info("availablePagesNumber() was called");
 
         if(subjectId != 0 && date == null){
-            return (int) Math.ceil(((double) gradeDao.countBySubject(subjectId)) / ((double) rowsPerPage));
+            return (int) Math.ceil(((double) gradeDao.countBySubject(subjectId)) / ((double) itemsPerPage));
         }else if(subjectId == 0 && date != null){
-            return (int) Math.ceil(((double) gradeDao.countByDate(date)) / ((double) rowsPerPage));
+            return (int) Math.ceil(((double) gradeDao.countByDate(date)) / ((double) itemsPerPage));
         }else if(subjectId != 0 && date != null){
-            return (int) Math.ceil(((double) gradeDao.countBySubjectAndDate(subjectId, date)) / ((double) rowsPerPage));
+            return (int) Math.ceil(((double) gradeDao.countBySubjectAndDate(subjectId, date)) / ((double) itemsPerPage));
         }else {
-            return (int) Math.ceil(((double) gradeDao.countAll()) / ((double) rowsPerPage));
+            return (int) Math.ceil(((double) gradeDao.countAll()) / ((double) itemsPerPage));
         }
 
     }
@@ -111,13 +111,13 @@ public class GradesDatabaseService extends BaseGradesService {
     public List<Grade> fetchGrades(long subjectId, LocalDate date, int page) {
 
         if(subjectId != 0 && date == null){
-            return gradeDao.getOnSubject(subjectId, true, rowsPerPage, page * rowsPerPage);
+            return gradeDao.getOnSubject(subjectId, true, itemsPerPage, page * itemsPerPage);
         }else if(subjectId == 0 && date != null){
-            return gradeDao.getOnDate(date, rowsPerPage, page * rowsPerPage);
+            return gradeDao.getOnDate(date, itemsPerPage, page * itemsPerPage);
         }else if(subjectId != 0 && date != null){
-            return gradeDao.getOnDateAndSubject(subjectId, date, rowsPerPage, page * rowsPerPage);
+            return gradeDao.getOnDateAndSubject(subjectId, date, itemsPerPage, page * itemsPerPage);
         }else {
-            return gradeDao.getAll(rowsPerPage, page * rowsPerPage);
+            return gradeDao.getAll(itemsPerPage, page * itemsPerPage);
         }
     }
 

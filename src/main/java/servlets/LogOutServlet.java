@@ -1,5 +1,7 @@
 package servlets;
 
+import org.apache.log4j.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,8 +16,10 @@ import java.util.Map;
  */
 @WebServlet("/logout")
 public class LogOutServlet extends HttpServlet {
+    Logger logger = Logger.getLogger(LoginServlet.class);
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.info("User " + request.getSession().getAttribute("username") + " is logged out");
         request.getSession().setAttribute("username", null);
         response.sendRedirect("/login.jsp");
     }

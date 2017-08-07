@@ -56,12 +56,12 @@
 
                     app.showAverageGradeModal();
                 });
-        },
-
-
+        }
     };
     app.initialize();
 }) ();
+
+
 function addGrade(form) {
 
     $("#statusMessage").html("");
@@ -87,7 +87,9 @@ function addGrade(form) {
             type: 'POST',
             data: $(form).serialize()
         }).done(function(data){
-            $("#statusMessage").html(data["statusMessage"]);
+            let p = $("#statusMessage");
+            p.attr("class", "alert-success");
+            p.html(data["statusMessage"]);
         });
     }
 }
