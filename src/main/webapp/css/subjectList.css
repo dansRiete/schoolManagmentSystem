@@ -1,0 +1,13 @@
+.error-span{
+    color: #A94442;
+    font-size: smaller;
+    font-weight: bold;
+}
+.success-span{
+    color: #3C763D;
+    font-size: smaller;
+    font-weight: bold;
+}
+.form-control{
+    margin-bottom: 5px;
+}

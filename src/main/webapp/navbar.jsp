@@ -20,8 +20,11 @@
             <li ${requestScope.pageTitle eq 'subjectsList' ? 'class="active"' : ''}>
                 <a href=<c:url value="/list/subjects"/>>Subjects list</a>
             </li>
-            <li style="vertical-align: middle" ${requestScope.pageTitle eq 'createSubject' ? 'class="active"' : ''}>
-                <a href="<c:url value="/create/subject"/>">Add subject</a>
+            <li ${requestScope.pageTitle eq 'import' ? 'class="active"' : ''}>
+                <a href=<c:url value="/import"/>>Import</a>
+            </li>
+            <li ${requestScope.pageTitle eq 'export' ? 'class="active"' : ''}>
+                <a href=<c:url value="/export"/>>Export</a>
             </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">

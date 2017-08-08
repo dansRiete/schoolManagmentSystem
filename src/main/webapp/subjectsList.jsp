@@ -4,11 +4,13 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="<c:url value="/css/bootstrap.min.css"/> " rel="stylesheet">
+    <link href="<c:url value="/css/subjectList.css"/> " rel="stylesheet">
     <title>Grades Web-Application</title>
 </head>
 
 <body>
 
+<%--Delete subject modal window--%>
 <div class="modal fade" id="myModalDeleteSubject" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -27,12 +29,11 @@
                     <input type="submit" value="Delete">
                 </form>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+        </div>
+    </div>
+</div>
 
-
-
+<%--Add new subject modal window--%>
 <div class="modal fade" id="myModalAddSubject" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -42,22 +43,27 @@
                 </button>
                 <h4 id="modalAS-title-text" class="modal-title">Add a subject</h4>
             </div>
+            <form id="new-subject-form" class="form-horizontal">
             <div class="modal-body">
                 <p id="modalAS-body-text"></p>
+
                 <div id="newSubjectTitleDiv" class="form-group row">
-                    <div class="col-xs-6">
+                    <div class="col-xs-8">
                         <label for="newSubjectTitle">Subject's title</label>
                         <input type="text" class="form-control" name="newSubjectTitle" id="newSubjectTitle" placeholder="Title">
-                        <span id="help" class="help-inline"></span>
+                        <span id="subject-title-error" class="help-inline error-span"></span>
                     </div>
+
                 </div>
+
             </div>
             <div class="modal-footer">
-                <input type="submit" class="btn btn-success" onclick="addSubject()" value="Create">
+                <input type="button" class="btn btn-success" onclick="addSubject(this.form)" value="Create">
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+            </form>
+        </div>
+    </div>
+</div>
 
 
 
@@ -87,7 +93,7 @@
                 </tbody>
             </table>
             <hr>
-            <input type="button" id="addNewSubjectButton" data-toggle="modal" data-target="#myModalAddSubject"
+            <input type="button" id="addNewSubjectButton" data-toggle="modal" onclick="showAddSubjectModal()"
                    class="btn btn-primary footer-buttons-class" value="New subject"/>
         </div>
 

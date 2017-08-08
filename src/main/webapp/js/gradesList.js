@@ -1,6 +1,11 @@
 /**
  * Created by Aleks on 01.08.2017.
  */
+$(document).ready(
+    $('#modalAddGrade').on('hidden.bs.modal', function () {
+        window.location.reload(true);
+    })
+);
 (function () {
     let app = {
         initialize(){

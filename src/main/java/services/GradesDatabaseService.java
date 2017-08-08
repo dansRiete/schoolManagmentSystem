@@ -1,5 +1,7 @@
 package services;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dao.GradeDao;
 import dao.SubjectDao;
 import exceptions.AddingGradeException;
@@ -50,6 +52,18 @@ public class GradesDatabaseService extends BaseGradesService {
         }
         gradeDao.create(addedGrade);
         logger.info("addGrade(Grade addedGrade) , grade successfully created");
+    }
+
+    public void addAllSubjects(List<Subject> subjects){
+        subjectDao.createAll(subjects);
+    }
+
+    @Override
+    public void addGrades(List<Grade> addedGrades) throws AddingGradeException {
+        List<Subject> subjectsToAdd = extractSubjects(addedGrades);
+        List<Subject> existedSubject = fetchAllSubjects();
+        subjectsToAdd.removeAll(existedSubject);
+
     }
 
 
@@ -168,6 +182,12 @@ public class GradesDatabaseService extends BaseGradesService {
     }
 
     @Override
+    public void forceDeleteAllSubjects() {
+        deleteAllGrades();
+        subjectDao.deleteAll();
+    }
+
+    @Override
     public void deleteAllGrades() {
         logger.info("deleteAllGrades() was called");
         gradeDao.deleteAll();
@@ -181,22 +201,22 @@ public class GradesDatabaseService extends BaseGradesService {
         double averageGrade;
         if(subjectId == 0 && selectedDate == null){
             if(!gradeDao.areAnyGrades()){
-                throw new NoGradesException("There are no grades in database");
+                throw new NoGradesException("There are no grades");
             }
-            averageGrade = gradeDao.averageOfAll();
+            averageGrade = gradeDao.averageOfAll(); //todo return
         }else if(subjectId != 0 && selectedDate == null){
             if(!gradeDao.areAnyGradesOnSubject(subjectId)){
-                throw new NoGradesException("There are no grades on selected subject in database");
+                throw new NoGradesException("There are no grades on selected subject");
             }
             averageGrade = gradeDao.averageGradeBySubject(subjectId);
         }else if(subjectId == 0 && selectedDate != null){
             if(!gradeDao.areAnyGradesOnDate(selectedDate)){
-                throw new NoGradesException("There are no grades on selected subject in database");
+                throw new NoGradesException("There are no grades on selected date");
             }
             averageGrade = gradeDao.averageGradeByDate(selectedDate);
         }else {
             if(!gradeDao.areAnyGradesOnDateAndSubject(subjectId, selectedDate)){
-                throw new NoGradesException("There are no grades on selected subject in database");
+                throw new NoGradesException("There are no grades on selected subject and date");
             }
             averageGrade = gradeDao.averageGradeBySubjectAndDate(subjectId, selectedDate);
         }
@@ -218,12 +238,32 @@ public class GradesDatabaseService extends BaseGradesService {
     }
 
     @Override
-    public void reloadFromFile(String fileName) throws IOException {
-
+    public void fromJson(String json) throws IOException {
+        Gson gson = new Gson();
+        forceDeleteAllSubjects();
+        List<Grade> jsonGrades = gson.fromJson(json, GRADES_LIST_REVIEW_TYPE);
+        subjectDao.createAll(extractSubjects(jsonGrades));
+        List<Subject> finalReadSubjects = subjectDao.getAll();
+        jsonGrades.forEach(grade -> {
+            final Subject[] currentSubject = {null};
+            finalReadSubjects.forEach(subject -> {
+                if(subject.getTitle().equals(grade.getSubject().getTitle())){
+                    currentSubject[0] = subject;
+                }
+            });
+            grade.setSubject(currentSubject[0]);
+        });
+        gradeDao.createAll(jsonGrades);
     }
 
     @Override
-    public void dumpToFile(String fileName) throws IOException {
+    public String toJson() throws IOException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(fetchAllGrades());
+    }
+
+    @Override
+    public void toJson(List<Grade> grades) throws IOException {
 
     }
 

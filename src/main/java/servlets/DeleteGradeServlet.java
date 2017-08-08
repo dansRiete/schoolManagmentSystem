@@ -1,6 +1,7 @@
 package servlets;
 
 import datasources.DataSource;
+import org.apache.log4j.Logger;
 import services.GradesDatabaseService;
 
 import javax.servlet.ServletException;
@@ -17,16 +18,20 @@ import java.time.LocalDate;
 @WebServlet(urlPatterns = "/deleteGrade")
 public class DeleteGradeServlet extends HttpServlet {
 
+    Logger logger = Logger.getLogger(DeleteGradeServlet.class);
+
     GradesDatabaseService gradesInMemoryService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.debug("doPost");
         Long deletedGradeId = Long.valueOf(request.getParameter("deletedGradeId"));
         gradesInMemoryService.deleteGrade(deletedGradeId);
         System.out.println("request.getParameter(\"selectedSubject\") = " + request.getParameter("selectedSubject"));
         request.setAttribute("selectedSubject", request.getParameter("selectedSubject"));
         request.setAttribute("selectedDate", request.getParameter("selectedDate"));
         response.sendRedirect("/list/grades");
+//        request.getRequestDispatcher("/gradesList.jsp").forward(request, response);
     }
 
 }

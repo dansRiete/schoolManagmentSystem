@@ -4,14 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.sun.xml.internal.messaging.saaj.packaging.mime.util.LineInputStream;
 import exceptions.AddingGradeException;
 import exceptions.AddingSubjectException;
 import exceptions.DeletingSubjectException;
 import exceptions.NoGradesException;
 import model.Grade;
 import model.Subject;
-import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -30,9 +28,10 @@ public abstract class BaseGradesService {
     final static String AFTER_TODAY_GRADE_MSG = "Grade's date can not be after today";
     final static String DATE_CAN_NOT_BE_NULL_MSG = "Date can not be null";
     final static String PAST_YEAR_GRADE_MSG = "Grade's date can not be before beginning of the year";
-    private static final Type REVIEW_TYPE = new TypeToken<List<Grade>>() {}.getType();
+    public static final Type GRADES_LIST_REVIEW_TYPE = new TypeToken<List<Grade>>() {}.getType();
 
     public abstract void addGrade(Grade addedGrade) throws AddingGradeException;
+    public abstract void addGrades(List<Grade> addedGrades) throws AddingGradeException;
     public abstract void addSubject(String title) throws AddingSubjectException;
     public abstract List<Grade> fetchGrades(long subjectId, LocalDate date);
     public abstract List<Grade> fetchGrades(long subjectId, LocalDate date, int page);
@@ -41,12 +40,13 @@ public abstract class BaseGradesService {
     public abstract void deleteGrade(long gradeId) throws DeletingSubjectException;
     public abstract void deleteSubject(long subjectId) throws DeletingSubjectException;
     public abstract void forceDeleteSubject(long subjectId);
+    public abstract void forceDeleteAllSubjects();
     public abstract void deleteAllGrades();
     public abstract double calculateAvgGrade(long subjectId, LocalDate selectedDate) throws NoGradesException;
     public abstract boolean isGraded(Subject subject, LocalDate date);
     public abstract boolean isSubjectExists(String subjectTitle);
-    public abstract void reloadFromFile(String fileName) throws IOException;
-    public abstract void dumpToFile(String fileName) throws IOException;
+    public abstract void fromJson(String json) throws IOException;
+    public abstract String toJson() throws IOException;
 
     void validateDate(LocalDate validatedDate) throws AddingGradeException {
         if(validatedDate == null){
@@ -60,13 +60,31 @@ public abstract class BaseGradesService {
         }
     }
 
+    public List<Subject> extractSubjects(List<Grade> grades){
+        HashSet<Subject> subjects = new HashSet<>();
+        grades.forEach(grade -> subjects.add(grade.getSubject()));
+        return new ArrayList<>(subjects);
+    }
+
     public List<Grade> readFromFile(String fileName) throws IOException {
         Gson gson = new Gson();
         try (
                 FileReader fileReader = new FileReader(fileName);
                 JsonReader jsonReader = new JsonReader(fileReader)
         ){
-            return gson.fromJson(jsonReader, REVIEW_TYPE);
+            return gson.fromJson(jsonReader, GRADES_LIST_REVIEW_TYPE);
+        }
+    }
+
+
+
+    public String readStringFromFile(String fileName) throws IOException {
+        Gson gson = new Gson();
+        try (
+                FileReader fileReader = new FileReader(fileName);
+                JsonReader jsonReader = new JsonReader(fileReader)
+        ){
+            return gson.fromJson(jsonReader, GRADES_LIST_REVIEW_TYPE);
         }
     }
 
@@ -94,4 +112,5 @@ public abstract class BaseGradesService {
         return gradesRepresent.toString();
     }
 
+    public abstract void toJson(List<Grade> grades) throws IOException;
 }

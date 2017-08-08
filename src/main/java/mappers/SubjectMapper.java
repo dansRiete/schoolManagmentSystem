@@ -22,6 +22,16 @@ public interface SubjectMapper {
     @Insert("INSERT INTO " + TABLE_NAME + " (title) VALUES (#{title})")
     void create(Subject entity);
 
+    @Insert({"<script>",
+            "INSERT INTO " + TABLE_NAME,
+            "VALUES ",
+            "<foreach item='item' index='index' collection='list'",
+            "open='(' separator=',' close=')'>",
+            "#{item}",
+            "</foreach>",
+            "</script>"})
+    void createAll(@Param("list") List<Subject> subjects);
+
     @Update("UPDATE " + TABLE_NAME + " SET title = #{title} WHERE id = #{id}")
     void update(Subject entity);
 

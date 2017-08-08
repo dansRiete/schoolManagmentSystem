@@ -49,6 +49,11 @@ public class GradesInMemoryService extends BaseGradesService {
     }
 
     @Override
+    public void addGrades(List<Grade> addedGrades) throws AddingGradeException {
+
+    }
+
+    @Override
     public void addSubject(String title) throws AddingSubjectException {
         logger.info("addSubject(String title) , title = " + title);
         Subject addedSubject = Subject.compose(title);
@@ -140,6 +145,11 @@ public class GradesInMemoryService extends BaseGradesService {
     }
 
     @Override
+    public void forceDeleteAllSubjects() {
+
+    }
+
+    @Override
     public void deleteAllGrades() {
         logger.info("deleteAllGrades() was called");
         this.grades = new ArrayList<>();
@@ -181,13 +191,17 @@ public class GradesInMemoryService extends BaseGradesService {
     }
 
     @Override
-    public void reloadFromFile(String fileName) throws IOException {
-        this.grades = readFromFile(fileName);
+    public void fromJson(String json) throws IOException {
+//        return null;
     }
 
     @Override
-    public void dumpToFile(String fileName) throws IOException {
-        saveToFile(fileName, this.grades);
+    public String toJson() throws IOException {
+        return null;
+    }
+
+    @Override
+    public void toJson(List<Grade> grades) throws IOException {
     }
 
     private List<Grade> retrieveGradesBySubject(long subject){

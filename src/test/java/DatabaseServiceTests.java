@@ -15,6 +15,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -171,6 +172,19 @@ public class DatabaseServiceTests {
         gradesService.addGrade(addedGrade);
         assertTrue(gradesService.fetchAllGrades().contains(addedGrade));
         assertFalse(gradesService.fetchAllGrades().contains(absentGrade));
+
+    }
+
+
+
+    @Test
+    public void createAllSubjectsTest() throws AddingGradeException, AddingSubjectException {
+        Subject subject1 = Subject.compose("First");
+        Subject subject2 = Subject.compose("Second");
+        Subject subject3 = Subject.compose("Third");
+//        Grade absentGrade = new Grade(math_id1, LocalDate.of(2017, 4, 14), 8);
+        gradesService.addAllSubjects(Arrays.asList(subject1, subject2, subject3));
+        assertThat(gradesService.fetchAllSubjects(), containsInAnyOrder(subject1, subject2, subject3));
 
     }
 

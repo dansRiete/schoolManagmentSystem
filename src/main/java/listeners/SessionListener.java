@@ -18,7 +18,7 @@ public class SessionListener implements HttpSessionListener {
     }
     @Override
     public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
-        logger.info("Session is invalidated");
+        logger.info("Session has been expired");
         logger.info("User " + httpSessionEvent.getSession().getAttribute("username") + " is logged out");
     }
 }

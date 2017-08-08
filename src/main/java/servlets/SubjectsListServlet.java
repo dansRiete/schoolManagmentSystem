@@ -2,6 +2,7 @@ package servlets;
 
 import datasources.DataSource;
 import model.Subject;
+import org.apache.log4j.Logger;
 import services.GradesDatabaseService;
 
 import javax.servlet.ServletException;
@@ -17,6 +18,8 @@ import java.util.List;
  */
 @WebServlet(urlPatterns = "/list/subjects")
 public class SubjectsListServlet extends HttpServlet {
+
+
 
 
     GradesDatabaseService gradesInMemoryService = new GradesDatabaseService(DataSource.getSqlSessionFactory());

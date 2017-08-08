@@ -109,7 +109,7 @@
                         <td style="margin-bottom: 0"><c:out value="${currentGrade.subject}"/></td>
                         <td style="margin-bottom: 0"><c:out value="${currentGrade.mark}"/></td>
                         <td style="margin-bottom: 0">
-                            <form action="deleteGrade" style="margin-bottom: 0" method="post">
+                            <form action="<c:url value="/deleteGrade"/>" style="margin-bottom: 0" method="post">
                                 <input type="hidden" name="deletedGradeId" value="${currentGrade.id}"/>
                                 <input type="submit" class="btn btn-default" value="Delete">
                             </form>
