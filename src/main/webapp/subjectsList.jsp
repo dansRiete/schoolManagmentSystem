@@ -1,6 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="ISO-8859-1" %>
-<html>
+<c:set var="language" value="${sessionScope.locale_language}"/>
+<fmt:setLocale value="${language}" />
+<fmt:setBundle basename="text" />
+<html lang="${language}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="<c:url value="/css/bootstrap.min.css"/> " rel="stylesheet">
@@ -18,15 +22,15 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 id="modalDS-title-text" class="modal-title"></h4>
+                <h4 id="modalDS-title-text" class="modal-title"><fmt:message key="result.there_is_a_grade"/></h4>
             </div>
             <div class="modal-body">
-                <p id="modalDS-body-text"></p>
+                <p id="modalDS-body-text"><fmt:message key="ask.sure_force_delete_subject"/></p>
             </div>
             <div class="modal-footer">
                 <form method="post"  action="<c:url value="/deleteSubject"/>">
                     <input id="modalDeleteSubjId" type="hidden" name="deletedSubjectId"/>
-                    <input type="submit" value="Delete">
+                    <input type="submit" value="<fmt:message key="action.delete"/>">
                 </form>
             </div>
         </div>
@@ -41,7 +45,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 id="modalAS-title-text" class="modal-title">Add a subject</h4>
+                <h4 id="modalAS-title-text" class="modal-title"><fmt:message key="action.add_subject"/></h4>
             </div>
             <form id="new-subject-form" class="form-horizontal">
             <div class="modal-body">
@@ -49,8 +53,8 @@
 
                 <div id="newSubjectTitleDiv" class="form-group row">
                     <div class="col-xs-8">
-                        <label for="newSubjectTitle">Subject's title</label>
-                        <input type="text" class="form-control" name="newSubjectTitle" id="newSubjectTitle" placeholder="Title">
+                        <label for="newSubjectTitle"><fmt:message key="entity.subject"/></label>
+                        <input type="text" class="form-control" name="newSubjectTitle" id="newSubjectTitle" placeholder="<fmt:message key="entity.subject"/>">
                         <span id="subject-title-error" class="help-inline error-span"></span>
                     </div>
 
@@ -76,8 +80,8 @@
             <table class="table">
                 <tbody>
                 <tr>
-                    <th>Subject's title</th>
-                    <th>Action</th>
+                    <th><fmt:message key="entity.subject"/></th>
+                    <th><fmt:message key="action.action"/></th>
                 </tr>
                 <c:forEach items="${requestScope.subjects}" var="currentSubject">
                     <tr>
@@ -85,7 +89,7 @@
                         <td>
                             <form id="${"deleteSubjectForm_".concat(currentSubject.id)}" style="margin-bottom: 0" action="<c:url value="/deleteSubject"/>" method="post">
                                 <input type="hidden" name="deletedSubjectId" value="${currentSubject.id}"/>
-                                <input type="button" class="btn btn-default" onclick="deleteSubject(${currentSubject.id})" value="Delete">
+                                <input type="button" class="btn btn-default" onclick="deleteSubject(${currentSubject.id})" value="<fmt:message key="action.delete"/>">
                             </form>
                         </td>
                     </tr>
@@ -94,7 +98,7 @@
             </table>
             <hr>
             <input type="button" id="addNewSubjectButton" data-toggle="modal" onclick="showAddSubjectModal()"
-                   class="btn btn-primary footer-buttons-class" value="New subject"/>
+                   class="btn btn-primary footer-buttons-class" value="<fmt:message key="action.create"/>"/>
         </div>
 
     </div>

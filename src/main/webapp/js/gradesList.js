@@ -24,6 +24,8 @@ $(document).ready(
             form[0].submit();
 
         },showAddGradeModal(){
+            let locale = getMyLocale();
+            console.log('locale is ' + locale);
             $("#statusMessage").html("");
             $('#modalAddGrade').modal({show: true});
         },

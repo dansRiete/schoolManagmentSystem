@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Aleks
@@ -7,7 +8,10 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<c:set var="language" value="${sessionScope.locale_language}"/>
+<fmt:setLocale value="${language}" />
+<fmt:setBundle basename="text" />
+<html lang="${language}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="<c:url value="/css/bootstrap.min.css"/> " rel="stylesheet">
@@ -20,12 +24,12 @@
             <jsp:include page="navbar.jsp"/>
         </div>
         <div class="col-lg-6 col-lg-offset-3">
-            <h3>Reload from JSON file:</h3>
-            Select a file to upload: <br/>
-            <form action="import" method="post" enctype="multipart/form-data">
+            <h3><fmt:message key="action.reload_from_json"/></h3>
+            <fmt:message key="ask.select_a_file_to_upload"/>: <br/>
+            <form lang="en" action="import" method="post" enctype="multipart/form-data">
                 <input type="file" name="file" size="50"/>
                 <br/>
-                <input type="submit" value="Reload from file"/>
+                <input type="submit" value="<fmt:message key="action.reload_from_file"/>"/>
             </form>
         </div>
     </div>

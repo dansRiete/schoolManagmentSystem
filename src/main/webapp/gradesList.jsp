@@ -1,6 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="ISO-8859-1" %>
-<html>
+<c:set var="language" value="${sessionScope.locale_language}"/>
+<fmt:setLocale value="${language}" />
+<fmt:setBundle basename="text" />
+<html lang="${language}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="<c:url value="/css/bootstrap.min.css"/> " rel="stylesheet">
@@ -23,7 +27,7 @@
                 <p id="modal-body-text"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="action.close"/></button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -36,7 +40,7 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
-            <h4 id="modalAddGrade-title-text" class="modal-title">Add a grade</h4>
+            <h4 id="modalAddGrade-title-text" class="modal-title"><fmt:message key="action.add_grade"/></h4>
         </div>
 
         <form method="post" id="addNewGradeForm" name="addNewGradeForm" class="navbar-form" action="<c:url value="/create/grade"/>">
@@ -46,9 +50,9 @@
             <table class="table">
                 <tbody>
                 <tr>
-                    <th>Subject</th>
-                    <th>Date</th>
-                    <th>Mark</th>
+                    <th><fmt:message key="entity.subject"/></th>
+                    <th><fmt:message key="entity.date"/></th>
+                    <th><fmt:message key="entity.mark"/></th>
                 </tr>
                 <tr>
                     <th>
@@ -71,7 +75,7 @@
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" onclick="addGrade(this.form)">Add</button>
+            <button type="button" class="btn btn-default" onclick="addGrade(this.form)"><fmt:message key="action.add_grade"/></button>
         </div>
         </form>
     </div><!-- /.modal-content -->
@@ -89,18 +93,34 @@
                 <tbody>
                 <tr>
                     <form id="filterForm" class="navbar-form" >
-                    <th>Date <input id="selectedDate" name="selectedDate" value="${requestScope.selectedDate}" type="date"  class="form-control"/></th>
-                    <th>Subject <select id="subjectsSelect" name="selectedSubjectId" class="form-control">
+                    <th>
+                        <fmt:message key="entity.date"/>
+                        <input id="selectedDate"
+                               placeholder="<fmt:message key="entity.all_dates"/>"
+                               name="selectedDate" value="${requestScope.selectedDate}"
+                               type="date"
+                               class="form-control"/>
+                    </th>
+                    <th>
+                        <fmt:message key="entity.subject"/>
+                        <select id="subjectsSelect" name="selectedSubjectId" class="form-control">
                         <c:forEach items="${requestScope.allSubjects}" var="subject">
-                            <option
-                                    <c:if test="${requestScope.selectedSubject == subject.id}">selected</c:if>
-                                    value="${subject.id}">${subject == null ? 'All subjects' : subject.title}
+                            <option <c:if test="${requestScope.selectedSubject == subject.id}">selected</c:if> value="${subject.id}">
+                                <c:choose>
+                                    <c:when test="${subject == null}">
+                                        <fmt:message key="entity.all_subjects"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${subject.title}
+                                    </c:otherwise>
+                                </c:choose>
                             </option>
                         </c:forEach>
-                    </select></th>
-                    <th>Mark</th>
-                    <th>Action<br/><input type="submit" class="btn btn-default" value="Filter"/>
-                        <input type="button" id="resetButton" class="btn btn-default" value="Reset"/></th>
+                        </select>
+                    </th>
+                    <th><fmt:message key="entity.mark"/></th>
+                    <th><fmt:message key="action.filter"/><br/><input type="submit" class="btn btn-default" value="<fmt:message key="action.filter"/>"/>
+                        <input type="button" id="resetButton" class="btn btn-default" value="<fmt:message key="action.reset"/>"/></th>
                     </form>
                 </tr>
                 <c:forEach items="${requestScope.allGrades}" var="currentGrade">
@@ -111,7 +131,7 @@
                         <td style="margin-bottom: 0">
                             <form action="<c:url value="/deleteGrade"/>" style="margin-bottom: 0" method="post">
                                 <input type="hidden" name="deletedGradeId" value="${currentGrade.id}"/>
-                                <input type="submit" class="btn btn-default" value="Delete">
+                                <input type="submit" class="btn btn-default" value="<fmt:message key="action.delete"/>">
                             </form>
                         </td>
                     </tr>
@@ -133,8 +153,8 @@
             </nav>
 
             <hr>
-            <input type="button" id="avgButton" class="btn btn-primary footer-buttons-class" value="Get Average"/>
-            <input type="button" id="addNewGradeButton" class="btn btn-primary footer-buttons-class" value="Add a grade"/>
+            <input type="button" id="avgButton" class="btn btn-primary footer-buttons-class" value="<fmt:message key="action.get_average"/>"/>
+            <input type="button" id="addNewGradeButton" class="btn btn-primary footer-buttons-class" value="<fmt:message key="action.add_grade"/>"/>
 
 
         </div>
@@ -143,6 +163,7 @@
 <script src="<c:url value="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"/>"></script>
 <script src="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"/>"></script>
 <script src="<c:url value="/js/gradesList.js"/>"></script>
+<script src="<c:url value="/js/getLocale.js"/>"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="<c:url value="/js/bootstrap.min.js"/>"></script>
 

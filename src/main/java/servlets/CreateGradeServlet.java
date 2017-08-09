@@ -32,12 +32,12 @@ public class CreateGradeServlet extends HttpServlet {
     Logger logger = Logger.getLogger(CreateGradeServlet.class);
     GradesDatabaseService gradesService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
 
-    @Override
+    /*@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("subjects", gradesService.fetchAllSubjects());
         req.setAttribute("page", "createGrade");
         req.getRequestDispatcher("/createGrade.jsp").forward(req, resp);
-    }
+    }*/
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
