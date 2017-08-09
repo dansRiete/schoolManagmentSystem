@@ -87,7 +87,8 @@
                     <tr>
                         <td><c:out value="${currentSubject.title}"/></td>
                         <td>
-                            <form id="${"deleteSubjectForm_".concat(currentSubject.id)}" style="margin-bottom: 0" action="<c:url value="/deleteSubject"/>" method="post">
+                            <form id="${"deleteSubjectForm_".concat(currentSubject.id)}" style="margin-bottom: 0"
+                                  action="<c:url value="/deleteSubject"/>" method="post">
                                 <input type="hidden" name="deletedSubjectId" value="${currentSubject.id}"/>
                                 <input type="button" class="btn btn-default" onclick="deleteSubject(${currentSubject.id})" value="<fmt:message key="action.delete"/>">
                             </form>

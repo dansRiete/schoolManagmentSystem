@@ -16,30 +16,34 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static utils.Consts.LOCALE_PARAM_KEY;
+
 /**
  * Created by Aleks on 09.08.2017.
  */
 @WebServlet(urlPatterns = "/locale")
 public class LocaleLanguageServlet extends HttpServlet {
 
-    Logger logger = Logger.getLogger(LocaleLanguageServlet.class);
-    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private Logger logger = Logger.getLogger(LocaleLanguageServlet.class);
+
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Map<String, Object> result = new HashMap<>();
-        result.put("locale_language", req.getSession().getAttribute("locale_language") == null ? null : req.getSession().getAttribute("locale_language").toString());
-        resp.setContentType("application/json");
-        PrintWriter writer = resp.getWriter();
+        String sessionLocale = (String) request.getSession().getAttribute(LOCALE_PARAM_KEY);
+        result.put(LOCALE_PARAM_KEY, sessionLocale);
+        response.setContentType("application/json");
+        PrintWriter writer = response.getWriter();
         writer.println(gson.toJson(result));
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("Locale has been changed from '" + req.getSession().getAttribute("locale_language") + " on '" + req.getParameter("locale_language") + '\'');
-        String language = req.getSession().getAttribute("locale_language") == null ? null : req.getSession().getAttribute("locale_language").toString();
-        req.getSession().setAttribute("locale_language", req.getParameter("locale_language"));
-        Config.set( req.getSession(), Config.FMT_LOCALE, new java.util.Locale("en_US") );
-        resp.sendRedirect(req.getHeader("Referer"));
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String sessionLocale = (String) request.getSession().getAttribute(LOCALE_PARAM_KEY);
+        String requestLocale = request.getParameter(LOCALE_PARAM_KEY);
+        logger.info("Locale has been changed from '" + sessionLocale + " on '" + requestLocale + '\'');
+        request.getSession().setAttribute(LOCALE_PARAM_KEY, requestLocale);
+        response.sendRedirect(request.getHeader("Referer"));
     }
 }

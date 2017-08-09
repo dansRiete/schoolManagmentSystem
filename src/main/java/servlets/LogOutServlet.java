@@ -11,16 +11,19 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static utils.Consts.USERNAME_PARAM_KEY;
+
 /**
  * Created by Aleks on 03.08.2017.
  */
 @WebServlet("/logout")
 public class LogOutServlet extends HttpServlet {
     Logger logger = Logger.getLogger(LoginServlet.class);
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.info("User " + request.getSession().getAttribute("username") + " is logged out");
-        request.getSession().setAttribute("username", null);
+        logger.info("User " + request.getSession().getAttribute(USERNAME_PARAM_KEY) + " is logged out");
+        request.getSession().setAttribute(USERNAME_PARAM_KEY, null);
         response.sendRedirect("/login.jsp");
     }
 }

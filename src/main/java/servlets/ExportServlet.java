@@ -13,6 +13,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static utils.Consts.PAGE_TITLE_PARAM_KEY;
+
 /**
  * Created by Aleks on 08.08.2017.
  */
@@ -23,7 +25,7 @@ public class ExportServlet extends HttpServlet{
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("pageTitle", "export");
+        req.setAttribute(PAGE_TITLE_PARAM_KEY, "export");
         req.getRequestDispatcher("/export.jsp").forward(req, resp);
     }
 
@@ -33,16 +35,15 @@ public class ExportServlet extends HttpServlet{
         resp.setContentType("application/octet-stream");
         resp.setHeader("Content-Disposition","attachment;filename=grades.json");
 
-        StringBuffer sb = new StringBuffer(gradesDatabaseService.toJson());
-        InputStream in = new ByteArrayInputStream(sb.toString().getBytes("UTF-8"));
+        InputStream in = new ByteArrayInputStream(gradesDatabaseService.toJson().getBytes("UTF-8"));
         ServletOutputStream out = resp.getOutputStream();
 
         byte[] outputByte = new byte[4096];
-        //copy binary contect to output stream
-        while(in.read(outputByte, 0, 4096) != -1)
-        {
+
+        while(in.read(outputByte, 0, 4096) != -1) {
             out.write(outputByte, 0, 4096);
         }
+
         in.close();
         out.flush();
         out.close();

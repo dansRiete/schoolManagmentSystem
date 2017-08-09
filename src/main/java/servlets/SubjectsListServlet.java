@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+import static utils.Consts.PAGE_TITLE_PARAM_KEY;
+import static utils.Consts.SUBJECTS_PARAM_KEY;
+
 /**
  * Created by Aleks on 02.08.2017.
  */
@@ -27,8 +30,8 @@ public class SubjectsListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Subject> subjects = gradesInMemoryService.fetchAllSubjects();
-        request.setAttribute("subjects", subjects);
-        request.setAttribute("pageTitle", "subjectsList");
+        request.setAttribute(SUBJECTS_PARAM_KEY, subjects);
+        request.setAttribute(PAGE_TITLE_PARAM_KEY, "subjectsList");
         request.getRequestDispatcher("/subjectsList.jsp").forward(request, response);
     }
 }

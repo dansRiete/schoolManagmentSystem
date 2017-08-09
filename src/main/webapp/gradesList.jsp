@@ -57,7 +57,7 @@
                 <tr>
                     <th>
                         <select class="form-control" id="selectedSubject" name="selectedSubject">
-                            <c:forEach items="${requestScope.allSubjects}" var="subject">
+                            <c:forEach items="${requestScope.subjects}" var="subject">
                                 <option ${subject eq null ? 'hidden' : ''} value="${subject.id}">${subject}</option>
                             </c:forEach>
                         </select>
@@ -103,8 +103,8 @@
                     </th>
                     <th>
                         <fmt:message key="entity.subject"/>
-                        <select id="subjectsSelect" name="selectedSubjectId" class="form-control">
-                        <c:forEach items="${requestScope.allSubjects}" var="subject">
+                        <select id="subjectsSelect" name="selectedSubject" class="form-control">
+                        <c:forEach items="${requestScope.subjects}" var="subject">
                             <option <c:if test="${requestScope.selectedSubject == subject.id}">selected</c:if> value="${subject.id}">
                                 <c:choose>
                                     <c:when test="${subject == null}">
@@ -120,7 +120,7 @@
                     </th>
                     <th><fmt:message key="entity.mark"/></th>
                     <th><fmt:message key="action.filter"/><br/><input type="submit" class="btn btn-default" value="<fmt:message key="action.filter"/>"/>
-                        <input type="button" id="resetButton" class="btn btn-default" value="<fmt:message key="action.reset"/>"/></th>
+                        <input type="button" id="resetButton" class="btn btn-default" onclick="resetFilter()" value="<fmt:message key="action.reset"/>"/></th>
                     </form>
                 </tr>
                 <c:forEach items="${requestScope.allGrades}" var="currentGrade">
@@ -153,8 +153,8 @@
             </nav>
 
             <hr>
-            <input type="button" id="avgButton" class="btn btn-primary footer-buttons-class" value="<fmt:message key="action.get_average"/>"/>
-            <input type="button" id="addNewGradeButton" class="btn btn-primary footer-buttons-class" value="<fmt:message key="action.add_grade"/>"/>
+            <input type="button" id="avgButton" class="btn btn-primary footer-buttons-class" onclick="submitAverage()" value="<fmt:message key="action.get_average"/>"/>
+            <input type="button" id="addNewGradeButton" class="btn btn-primary footer-buttons-class" onclick="showAddGradeModal()" value="<fmt:message key="action.add_grade"/>"/>
 
 
         </div>

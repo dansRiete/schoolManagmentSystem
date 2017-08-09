@@ -21,15 +21,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import static utils.Consts.*;
+
 /**
  * Created by Aleks on 28.07.2017.
  */
 @WebServlet(urlPatterns = "/list/grades")
 public class GradesListServlet extends HttpServlet {
 
-    GradesDatabaseService gradesDatabaseService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
-    Logger logger = Logger.getLogger(GradesListServlet.class);
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private GradesDatabaseService gradesDatabaseService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
+    private Logger logger = Logger.getLogger(GradesListServlet.class);
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private int[] paginatorDisplayedPages(int availablePagesNumber, int activePageIndex) {
 
@@ -78,11 +80,10 @@ public class GradesListServlet extends HttpServlet {
         subjects.add(null);
         subjects.addAll(gradesDatabaseService.fetchAllSubjects());
 
-        String requestSelectedSubject = request.getParameter("selectedSubjectId");
-        String requestSelectedDate = request.getParameter("selectedDate");
-
-        String sessionSelectedSubject = httpSession.getAttribute("selectedSubject") == null ? null : httpSession.getAttribute("selectedSubject").toString();
-        String sessionSelectedDate = httpSession.getAttribute("selectedDate") == null ? null : httpSession.getAttribute("selectedDate").toString();
+        String requestSelectedSubject = request.getParameter(SELECTED_SUBJECT_PARAM_KEY);
+        String requestSelectedDate = request.getParameter(SELECTED_DATE_PARAM_KEY);
+        String sessionSelectedSubject = (String) httpSession.getAttribute(SELECTED_SUBJECT_PARAM_KEY);
+        String sessionSelectedDate = (String) httpSession.getAttribute(SELECTED_DATE_PARAM_KEY);
 
         String selectedSubject = requestSelectedSubject == null ? sessionSelectedSubject : requestSelectedSubject;
         String selectedDate = requestSelectedDate == null ? sessionSelectedDate : requestSelectedDate;
@@ -125,17 +126,17 @@ public class GradesListServlet extends HttpServlet {
 
         gradesToDisplay = gradesDatabaseService.fetchGrades(requestedSubjectId, requestedDate, requestedPageIndex);
 
-        request.setAttribute("allSubjects", subjects);
-        request.setAttribute("selectedSubject", selectedSubject);
-        request.setAttribute("selectedDate", selectedDate);
+        request.setAttribute(SUBJECTS_PARAM_KEY, subjects);
+        request.setAttribute(SELECTED_SUBJECT_PARAM_KEY, selectedSubject);
+        request.setAttribute(SELECTED_DATE_PARAM_KEY, selectedDate);
         request.setAttribute("paginatorDisplayedPages", paginatorDisplayedPages(availablePagesNumber, requestedPageIndex));
         request.setAttribute("availablePagesNumber", availablePagesNumber);
         request.setAttribute("pageIndex", requestedPageIndex);
         request.setAttribute("allGrades", gradesToDisplay);
-        request.setAttribute("pageTitle", "gradesList");
+        request.setAttribute(PAGE_TITLE_PARAM_KEY, "gradesList");
 
-        httpSession.setAttribute("selectedSubject", selectedSubject);
-        httpSession.setAttribute("selectedDate", selectedDate);
+        httpSession.setAttribute(SELECTED_SUBJECT_PARAM_KEY, selectedSubject);
+        httpSession.setAttribute(SELECTED_DATE_PARAM_KEY, selectedDate);
 
         request.getRequestDispatcher("/gradesList.jsp").forward(request, response);
     }

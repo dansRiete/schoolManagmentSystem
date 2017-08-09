@@ -18,11 +18,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static utils.Consts.SELECTED_DATE_PARAM_KEY;
+import static utils.Consts.SELECTED_SUBJECT_PARAM_KEY;
+
 /**
  * Created by Aleks on 03.08.2017.
  */
 @WebServlet(urlPatterns = "/fetchBySubject")
-public class FetchGradesOnSubjectServlet extends HttpServlet {
+public class FetchGradesBySubjectServlet extends HttpServlet {
 
     private GradesDatabaseService gradesDatabaseService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -30,11 +33,8 @@ public class FetchGradesOnSubjectServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, Object> result = new HashMap<>();
-        String selectedSubjectIdParameter = request.getParameter("selectedSubjectIdParameter");
-        System.out.println("selectedSubjectIdParameter=" + selectedSubjectIdParameter);
-        long selectedSubjectId = Long.parseLong(selectedSubjectIdParameter);
-        List<Grade> subjects = gradesDatabaseService.fetchGrades(selectedSubjectId, null);
-        System.out.println("subjects.size() = " + subjects.size());
+        long requestedSubjectId = Long.parseLong(request.getParameter(SELECTED_SUBJECT_PARAM_KEY));
+        List<Grade> subjects = gradesDatabaseService.fetchGrades(requestedSubjectId, null);
         result.put("gradesOnSubjectCount", subjects.size());
         result.put("subjectId", subjects.size());
         response.setContentType("application/json");

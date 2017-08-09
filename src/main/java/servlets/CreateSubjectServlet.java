@@ -18,6 +18,8 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static utils.Consts.PAGE_TITLE_PARAM_KEY;
+
 /**
  * Created by Aleks on 31.07.2017.
  */
@@ -29,14 +31,14 @@ public class CreateSubjectServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("pageTitle", "createSubject");
+        req.setAttribute(PAGE_TITLE_PARAM_KEY, "createSubject");
         req.getRequestDispatcher("/createSubject.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        req.setAttribute("page", "createSubject");
+//todo and up
+//        req.setAttribute("page", "createSubject");
         String subjectTitle = req.getParameter("newSubjectTitle");
         Subject addedSubject = null;
         Map<String, Object> result = new HashMap<>();

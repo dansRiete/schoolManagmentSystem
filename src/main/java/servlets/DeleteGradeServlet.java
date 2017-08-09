@@ -12,26 +12,24 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 
+import static utils.Consts.SELECTED_DATE_PARAM_KEY;
+import static utils.Consts.SELECTED_SUBJECT_PARAM_KEY;
+
 /**
  * Created by Aleks on 29.07.2017.
  */
 @WebServlet(urlPatterns = "/deleteGrade")
 public class DeleteGradeServlet extends HttpServlet {
 
-    Logger logger = Logger.getLogger(DeleteGradeServlet.class);
-
-    GradesDatabaseService gradesInMemoryService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
+    private GradesDatabaseService gradesInMemoryService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.debug("doPost");
         Long deletedGradeId = Long.valueOf(request.getParameter("deletedGradeId"));
         gradesInMemoryService.deleteGrade(deletedGradeId);
-        System.out.println("request.getParameter(\"selectedSubject\") = " + request.getParameter("selectedSubject"));
-        request.setAttribute("selectedSubject", request.getParameter("selectedSubject"));
-        request.setAttribute("selectedDate", request.getParameter("selectedDate"));
+        request.setAttribute(SELECTED_SUBJECT_PARAM_KEY, request.getParameter(SELECTED_SUBJECT_PARAM_KEY));
+        request.setAttribute(SELECTED_DATE_PARAM_KEY, request.getParameter(SELECTED_DATE_PARAM_KEY));
         response.sendRedirect("/list/grades");
-//        request.getRequestDispatcher("/gradesList.jsp").forward(request, response);
     }
 
 }
