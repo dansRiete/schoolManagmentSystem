@@ -12,10 +12,6 @@ function showAddGradeModal(){
     $('#modalAddGrade').modal({show: true});
 }
 
-function getLocalizedMessage(msgKey, locale) {
-
-}
-
 function submitAverage(){
     let form = $("#filterForm");
     let link = $(location).attr("protocol") + "//" + $(location).attr("host") + "/average";
@@ -49,11 +45,8 @@ function submitAverage(){
 }
 
 function resetFilter(){
-    let form = $("#filterForm");
-    form[0].reset();
-    $("#subjectsSelect").val(null);
-    $("#selectedDate").val(null);
-    form[0].submit();
+    let link = $(location).attr("protocol") + "//" + $(location).attr("host") + "/list/grades?selectedDate=&selectedSubjectId=";
+    window.location.replace(link);
 }
 
 function addGrade(form) {
@@ -85,7 +78,7 @@ function addGradeToServer(form, locale) {
     $('#modalAddGrade').modal({show: true});
 
     let date = $("#date").val();
-    let subjectId = $("#selectedSubjectId").val();
+    let subjectId = $("#modalSelectedSubjectId").val();
     let mark = $("#mark").val();
 
     if(date === null || date === undefined || date === ''){
@@ -102,8 +95,12 @@ function addGradeToServer(form, locale) {
             type: 'POST',
             data: $(form).serialize()
         }).done(function(data){
-            statusMessage.attr("class", "alert-success");
-            statusMessage.html(data["statusMessage"]);
+            console.log(data['statusMessage']);
+            if(!data['statusMessage'].startsWith('Error')){
+                $('#modalAddGrade').modal('hide');
+            }else {
+                statusMessage.html(data['statusMessage']);
+            }
         });
     }
 }

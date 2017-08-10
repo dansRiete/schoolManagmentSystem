@@ -7,6 +7,8 @@ import model.Grade;
 import model.Subject;
 import org.apache.log4j.Logger;
 import services.GradesDatabaseService;
+import services.GradesInMemoryService;
+import utils.MainService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,7 +30,6 @@ import static utils.Consts.SELECTED_SUBJECT_PARAM_KEY;
 @WebServlet(urlPatterns = "/fetchBySubject")
 public class FetchGradesBySubjectServlet extends HttpServlet {
 
-    private GradesDatabaseService gradesDatabaseService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private Logger logger = Logger.getLogger(FetchGradesBySubjectServlet.class);
 
@@ -37,7 +38,7 @@ public class FetchGradesBySubjectServlet extends HttpServlet {
         Map<String, Object> result = new HashMap<>();
         logger.debug("request.getParameter(SELECTED_SUBJECT_PARAM_KEY) = " + request.getParameter(SELECTED_SUBJECT_PARAM_KEY));
         long requestedSubjectId = Long.parseLong(request.getParameter(SELECTED_SUBJECT_PARAM_KEY));
-        List<Grade> subjects = gradesDatabaseService.fetchGrades(requestedSubjectId, null);
+        List<Grade> subjects = MainService.service.fetchGrades(requestedSubjectId, null);
         result.put("gradesOnSubjectCount", subjects.size());
         result.put("subjectId", subjects.size());
         response.setContentType("application/json");

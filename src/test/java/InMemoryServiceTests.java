@@ -1,6 +1,7 @@
 import datasources.DataSourceTest;
 import exceptions.AddingGradeException;
 import exceptions.AddingSubjectException;
+import exceptions.NoGradesException;
 import model.Grade;
 import model.Subject;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -15,6 +16,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.*;
 
 /**
@@ -22,7 +24,6 @@ import static org.junit.Assert.*;
  */
 @SuppressWarnings("Duplicates")
 public class InMemoryServiceTests {
-    SqlSessionFactory sqlSessionFactory = DataSourceTest.getSqlSessionFactory();
     GradesInMemoryService gradesService = new GradesInMemoryService();
     Subject math_id1;
     Subject geo_id2;
@@ -82,6 +83,7 @@ public class InMemoryServiceTests {
     @Before
     public void clear() throws AddingSubjectException {
         gradesService.setGrades(allInitGrades);
+        System.out.println("clear() " + gradesService.fetchAllGrades());
     }
 
     @Test
@@ -92,8 +94,8 @@ public class InMemoryServiceTests {
 
     @Test
     public void populateGradesTest(){
-//        List<Grade> receivedGrades = gradesService.fetchAllGrades();
-//        assertThat(receivedGrades, containsInAnyOrder(grade1, grade2, grade3, grade4, grade5, grade6));
+        List<Grade> receivedGrades = gradesService.fetchAllGrades();
+        assertThat(receivedGrades, containsInAnyOrder(grade1, grade2, grade3, grade4, grade5, grade6));
     }
 
     @Test
@@ -109,8 +111,8 @@ public class InMemoryServiceTests {
         Grade addedGrade = new Grade(math_id1, LocalDate.of(2017, 6, 14), 8);
         Grade absentGrade = new Grade(math_id1, LocalDate.of(2017, 4, 14), 8);
         gradesService.addGrade(addedGrade);
-//        assertTrue(gradesService.fetchAllGrades().contains(addedGrade));
-//        assertFalse(gradesService.fetchAllGrades().contains(absentGrade));
+        assertTrue(gradesService.fetchAllGrades().contains(addedGrade));
+        assertFalse(gradesService.fetchAllGrades().contains(absentGrade));
 
     }
 
@@ -162,8 +164,8 @@ public class InMemoryServiceTests {
     }
 
     @Test
-    public void calculateAverageGradeTest(){
-//        assertEquals(4.3333, gradesService.calculateAvgGrade(math_id1.getId()), 0.001);//todo
+    public void calculateAverageGradeTest() throws NoGradesException {
+        assertEquals(4.3333, gradesService.calculateAvgGrade(math_id1.getId(), null), 0.001);//todo
     }
 
     @Test
@@ -176,28 +178,25 @@ public class InMemoryServiceTests {
     @Test
     public void deleteAllGradesTest() {
         gradesService.deleteAllGrades();
-//        assertThat(gradesService.fetchAllGrades().size(), is(0));
-    }
-
-    @Test
-    public void fetchBySubjectAscendingDateTest(){
-        assertEquals(initMathGradesAscendingDate, gradesService.fetchBySubject(1, true));
+        assertThat(gradesService.fetchAllGrades().size(), is(0));
     }
 
     @Test
     public void fetchBySubjectDescendingDateTest(){
-        assertEquals(initMathGradesDescendingDate, gradesService.fetchBySubject(1, false));
+        assertEquals(initMathGradesDescendingDate, gradesService.fetchGrades(1, null));
     }
 
     @Test
     public void deleteGradeTest(){
+        System.out.println("deleteGradeTest(): " + gradesService.fetchAllGrades());
         gradesService.deleteGrade(3);
-//        assertFalse(gradesService.fetchAllGrades().contains(grade3));
+        System.out.println("deleteGradeTest(): " + gradesService.fetchAllGrades());
+        assertFalse(gradesService.fetchAllGrades().contains(grade3));
     }
 
     @Test
     public void fetchByDateTestHamcrest(){
-        List<Grade> receivedList = gradesService.fetchByDate(LocalDate.of(2017, 7, 29));
+        List<Grade> receivedList = gradesService.fetchGrades(0, LocalDate.of(2017, 7, 29));
         assertThat(receivedList, containsInAnyOrder(grade2, grade3));
     }
 }

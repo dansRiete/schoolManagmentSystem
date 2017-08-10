@@ -58,8 +58,20 @@ public class GradesDatabaseService extends BaseGradesService {
     @Override
     public void addGrades(List<Grade> addedGrades) throws AddingGradeException {
         List<Subject> subjectsToAdd = extractSubjects(addedGrades);
-        List<Subject> existedSubject = fetchAllSubjects();
-        subjectsToAdd.removeAll(existedSubject);
+        List<Subject> existedSubjects = fetchAllSubjects();
+        subjectsToAdd.removeAll(existedSubjects);
+        subjectDao.createAll(subjectsToAdd);
+        existedSubjects = fetchAllSubjects();
+        for(Grade currentGrade : addedGrades){
+            if(currentGrade.getSubject().getId() == null){
+                for(Subject currentSubject : existedSubjects){
+                    if(currentSubject.getTitle().equals(currentGrade.getSubject().getTitle())){
+                        currentGrade.setSubject(currentSubject);
+                    }
+                }
+            }
+        }
+        gradeDao.createAll(addedGrades);
 
     }
 
@@ -74,6 +86,7 @@ public class GradesDatabaseService extends BaseGradesService {
         logger.info("addSubject(String title) , subject successfully created");
     }
 
+    @Override
     public List<Grade> fetchAllGrades() {
         logger.info("fetchAllGrades() was called");
         List<Grade> fetchedGrades = gradeDao.getAll();
@@ -223,8 +236,8 @@ public class GradesDatabaseService extends BaseGradesService {
 
     @Override
     public boolean isGraded(Subject subject, LocalDate date) {
-        logger.info("isGraded(Subject subject, LocalDate date) was called, subjectId = " + subject.getId() +
-                ", date = " + date);
+        logger.info("isGraded(Subject subject, LocalDate date) was called, subjectId = " +
+                subject.getId() + ", date = " + date);
         return gradeDao.isGraded(subject, date);
     }
 
@@ -235,10 +248,10 @@ public class GradesDatabaseService extends BaseGradesService {
     }
 
     @Override
-    public void fromJson(String json) throws IOException {
-        Gson gson = new Gson();
+    public void reloadCollectionFromJson(String json) throws IOException {
+
         forceDeleteAllSubjects();
-        List<Grade> jsonGrades = gson.fromJson(json, GRADES_LIST_REVIEW_TYPE);
+        List<Grade> jsonGrades = fromJson(json);
         subjectDao.createAll(extractSubjects(jsonGrades));
         List<Subject> finalReadSubjects = subjectDao.getAll();
         jsonGrades.forEach(grade -> {
@@ -251,17 +264,6 @@ public class GradesDatabaseService extends BaseGradesService {
             grade.setSubject(currentSubject[0]);
         });
         gradeDao.createAll(jsonGrades);
-    }
-
-    @Override
-    public String toJson() throws IOException {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return gson.toJson(fetchAllGrades());
-    }
-
-    @Override
-    public void toJson(List<Grade> grades) throws IOException {
-
     }
 
 }

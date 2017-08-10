@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import exceptions.AddingGradeException;
-import exceptions.AddingSubjectException;
-import exceptions.DeletingSubjectException;
-import exceptions.NoGradesException;
+import exceptions.*;
 import model.Grade;
 import model.Subject;
 
@@ -32,7 +29,8 @@ public abstract class BaseGradesService {
 
     public abstract void addGrade(Grade addedGrade) throws AddingGradeException;
     public abstract void addGrades(List<Grade> addedGrades) throws AddingGradeException;
-    public abstract void addSubject(String title) throws AddingSubjectException;
+    public abstract void addSubject(String title) throws SubjectIllegalTitleException, SubjectExistsException;
+    public abstract List<Grade> fetchAllGrades();
     public abstract List<Grade> fetchGrades(long subjectId, LocalDate date);
     public abstract List<Grade> fetchGrades(long subjectId, LocalDate date, int page);
     public abstract List<Subject> fetchAllSubjects();
@@ -45,8 +43,8 @@ public abstract class BaseGradesService {
     public abstract double calculateAvgGrade(long subjectId, LocalDate selectedDate) throws NoGradesException;
     public abstract boolean isGraded(Subject subject, LocalDate date);
     public abstract boolean isSubjectExists(String subjectTitle);
-    public abstract void fromJson(String json) throws IOException;
-    public abstract String toJson() throws IOException;
+    public abstract void reloadCollectionFromJson(String json) throws IOException;
+    public abstract int availablePagesNumber(long requestedSubjectId, LocalDate requestedDate);
 
     void validateDate(LocalDate validatedDate) throws AddingGradeException {
         if(validatedDate == null){
@@ -67,51 +65,15 @@ public abstract class BaseGradesService {
         return new ArrayList<>(subjects);
     }
 
-    public List<Grade> readFromFile(String fileName) throws IOException {
+    public String toJson(List<Grade> grades) throws IOException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(grades);
+    }
+
+    public List<Grade> fromJson(String json) throws IOException {
         Gson gson = new Gson();
-        try (
-                FileReader fileReader = new FileReader(fileName);
-                JsonReader jsonReader = new JsonReader(fileReader)
-        ){
-            return gson.fromJson(jsonReader, GRADES_LIST_REVIEW_TYPE);
-        }
+        return gson.fromJson(json, GRADES_LIST_REVIEW_TYPE);
     }
 
 
-
-    public String readStringFromFile(String fileName) throws IOException {
-        Gson gson = new Gson();
-        try (
-                FileReader fileReader = new FileReader(fileName);
-                JsonReader jsonReader = new JsonReader(fileReader)
-        ){
-            return gson.fromJson(jsonReader, GRADES_LIST_REVIEW_TYPE);
-        }
-    }
-
-    public void saveToFile(String fileName, List<Grade> gradesToWrite) throws IOException {
-        try (Writer writer = new FileWriter(fileName)) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            gson.toJson(gradesToWrite, writer);
-        }
-    }
-
-    public static String represent(Grade gradeToPrint) {
-        return  "Subject: " + gradeToPrint.getSubject() +
-                ", Date: " + gradeToPrint.getDate() +
-                ", Mark: " + gradeToPrint.getMark();
-    }
-
-    public static String represent(List<Grade> gradesToPrint) {
-        StringBuilder gradesRepresent = new StringBuilder();
-        for(int i = 0; i < gradesToPrint.size(); i++){
-            gradesRepresent.append(represent(gradesToPrint.get(i)));
-            if(i != gradesToPrint.size()){
-                gradesRepresent.append('\n');
-            }
-        }
-        return gradesRepresent.toString();
-    }
-
-    public abstract void toJson(List<Grade> grades) throws IOException;
 }

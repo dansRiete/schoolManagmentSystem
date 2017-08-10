@@ -9,6 +9,8 @@ import exceptions.SubjectIllegalTitleException;
 import model.Subject;
 import org.apache.log4j.Logger;
 import services.GradesDatabaseService;
+import services.GradesInMemoryService;
+import utils.MainService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,7 +34,6 @@ import static utils.Consts.PAGE_TITLE_PARAM_KEY;
 @WebServlet(urlPatterns = "/create/subject")
 public class CreateSubjectServlet extends HttpServlet {
     Logger logger = Logger.getLogger(CreateGradeServlet.class);
-    GradesDatabaseService gradesService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -43,10 +44,8 @@ public class CreateSubjectServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        //todo up
-
         String subjectTitle = req.getParameter("newSubjectTitle");
-        Subject addedSubject = null;
+        Subject addedSubject;
         Map<String, Object> result = new HashMap<>();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String sessionLocale = (String) req.getSession().getAttribute(LOCALE_PARAM_KEY);
@@ -54,7 +53,7 @@ public class CreateSubjectServlet extends HttpServlet {
 
         try {
             addedSubject = Subject.compose(subjectTitle);
-            gradesService.addSubject(addedSubject.getTitle());
+            MainService.service.addSubject(addedSubject.getTitle());
             result.put("status", "success");
             result.put("message", "Subject has been successfuly added");
             req.setAttribute("message", "Success: subject \"" + addedSubject +

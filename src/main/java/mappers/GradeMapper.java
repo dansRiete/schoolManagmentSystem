@@ -132,6 +132,12 @@ public interface GradeMapper {
     @Insert("INSERT INTO " + TABLE_NAME + " (date, subject_id, mark) VALUES (#{date}, #{subject.id}, #{mark})")
     void create(Grade entity);
 
+    @Insert({"<script>",
+            "INSERT INTO " + TABLE_NAME + " (date, subject_id, mark) values ",
+            "<foreach collection='list' item='grd' separator = '),(' open ='(' close=')' >#{grd.date}, #{grd.subject.id}, #{grd.mark}</foreach>",
+            "</script>"})
+    void createAll(@Param("list")List<Grade> list);
+
     @Update("UPDATE " + TABLE_NAME + " SET date = #{date}, subject_id = #{subject.id}, mark = #{mark} WHERE id = #{id}")
     void update(Grade entity);
 

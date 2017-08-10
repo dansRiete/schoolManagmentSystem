@@ -9,6 +9,9 @@ import model.Subject;
 import org.apache.log4j.Logger;
 import services.BaseGradesService;
 import services.GradesDatabaseService;
+import services.GradesInMemoryService;
+import utils.MainService;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,6 +25,8 @@ import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static utils.Consts.SELECTED_SUBJECT_PARAM_KEY;
+
 /**
  * Created by Aleks on 29.07.2017.
  */
@@ -30,36 +35,28 @@ import java.util.Map;
 public class CreateGradeServlet extends HttpServlet {
 
     Logger logger = Logger.getLogger(CreateGradeServlet.class);
-    GradesDatabaseService gradesService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
-
-    /*@Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("subjects", gradesService.fetchAllSubjects());
-        req.setAttribute("page", "createGrade");
-        req.getRequestDispatcher("/createGrade.jsp").forward(req, resp);
-    }*/
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        req.setAttribute("subjects", gradesService.fetchAllSubjects());
+        req.setAttribute("subjects", MainService.service.fetchAllSubjects());
         req.setAttribute("pageTitle", "createGrade");
 
-        Long selectedSubjectId = null;
-        Integer mark = null;
-        LocalDate date = null;
+        Long selectedSubjectId;
+        Integer mark;
+        LocalDate date;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        Grade addedGrade = null;
+        Grade addedGrade;
         Map<String, Object> result = new HashMap<>();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         try {
-            selectedSubjectId = Long.valueOf(req.getParameter("selectedSubjectId"));
+            selectedSubjectId = Long.valueOf(req.getParameter("modalSelectedSubjectId"));
             mark = Integer.valueOf(req.getParameter("mark"));
             date = LocalDate.parse(req.getParameter("date"), formatter);
-            Subject subject = gradesService.fetchSubject(selectedSubjectId);
+            Subject subject = MainService.service.fetchSubject(selectedSubjectId);
             addedGrade = new Grade(subject, date, mark);
-            gradesService.addGrade(addedGrade);
+            MainService.service.addGrade(addedGrade);
             result.put("statusMessage", "Success: Grade has been successfully created");
         }catch (NumberFormatException e){
             logger.error("Add grade error " + e.getMessage());

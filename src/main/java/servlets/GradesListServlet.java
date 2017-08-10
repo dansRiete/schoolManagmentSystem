@@ -5,6 +5,8 @@ import model.Grade;
 import model.Subject;
 import org.apache.log4j.Logger;
 import services.GradesDatabaseService;
+import services.GradesInMemoryService;
+import utils.MainService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,7 +31,6 @@ import static utils.Consts.*;
 @WebServlet(urlPatterns = "/list/grades")
 public class GradesListServlet extends HttpServlet {
 
-    private GradesDatabaseService gradesDatabaseService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
     private Logger logger = Logger.getLogger(GradesListServlet.class);
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -78,7 +79,7 @@ public class GradesListServlet extends HttpServlet {
         int requestedPageIndex = 0;     //By default zero page is requested
 
         subjects.add(null);
-        subjects.addAll(gradesDatabaseService.fetchAllSubjects());
+        subjects.addAll(MainService.service.fetchAllSubjects());
 
         String requestSelectedSubject = request.getParameter(SELECTED_SUBJECT_PARAM_KEY);
         String requestSelectedDate = request.getParameter(SELECTED_DATE_PARAM_KEY);
@@ -109,7 +110,7 @@ public class GradesListServlet extends HttpServlet {
             }
         }
 
-        availablePagesNumber = gradesDatabaseService.availablePagesNumber(requestedSubjectId, requestedDate);
+        availablePagesNumber = MainService.service.availablePagesNumber(requestedSubjectId, requestedDate);
 
         if(request.getParameter("page") != null){
             try {
@@ -124,7 +125,7 @@ public class GradesListServlet extends HttpServlet {
             }
         }
 
-        gradesToDisplay = gradesDatabaseService.fetchGrades(requestedSubjectId, requestedDate, requestedPageIndex);
+        gradesToDisplay = MainService.service.fetchGrades(requestedSubjectId, requestedDate, requestedPageIndex);
 
         request.setAttribute(SUBJECTS_PARAM_KEY, subjects);
         request.setAttribute(SELECTED_SUBJECT_PARAM_KEY, selectedSubject);

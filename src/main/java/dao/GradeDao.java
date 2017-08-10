@@ -197,8 +197,7 @@ public class GradeDao implements BaseDao<Grade, Long> {
         SqlSession sqlSession = null;
         try{
             sqlSession = sqlSessionFactory.openSession();
-            GradeMapper gradeMapper = sqlSession.getMapper(GradeMapper.class);
-            grades.forEach(gradeMapper::create);
+            sqlSession.getMapper(GradeMapper.class).createAll(grades);
             sqlSession.commit();
         }finally {
             if(sqlSession != null){

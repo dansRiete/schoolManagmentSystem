@@ -4,6 +4,7 @@ import datasources.DataSource;
 import model.Subject;
 import org.apache.log4j.Logger;
 import services.GradesDatabaseService;
+import utils.MainService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,14 +23,9 @@ import static utils.Consts.SUBJECTS_PARAM_KEY;
 @WebServlet(urlPatterns = "/list/subjects")
 public class SubjectsListServlet extends HttpServlet {
 
-
-
-
-    GradesDatabaseService gradesInMemoryService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Subject> subjects = gradesInMemoryService.fetchAllSubjects();
+        List<Subject> subjects = MainService.service.fetchAllSubjects();
         request.setAttribute(SUBJECTS_PARAM_KEY, subjects);
         request.setAttribute(PAGE_TITLE_PARAM_KEY, "subjectsList");
         request.getRequestDispatcher("/subjectsList.jsp").forward(request, response);

@@ -184,7 +184,8 @@ public class DatabaseServiceTests {
         Subject subject3 = Subject.compose("Third");
 //        Grade absentGrade = new Grade(math_id1, LocalDate.of(2017, 4, 14), 8);
         gradesService.addAllSubjects(Arrays.asList(subject1, subject2, subject3));
-        assertThat(gradesService.fetchAllSubjects(), containsInAnyOrder(subject1, subject2, subject3));
+        System.out.println("gradesService.fetchAllSubjects() = "  + gradesService.fetchAllSubjects());
+        assertThat(gradesService.fetchAllSubjects(), containsInAnyOrder(subject1, subject2, subject3, math_id1, geo_id2, history_id3));
 
     }
 

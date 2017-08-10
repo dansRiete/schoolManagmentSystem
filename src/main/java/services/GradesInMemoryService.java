@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  */
 public class GradesInMemoryService extends BaseGradesService {
 
+    private final int itemsPerPage = 5;
     private List<Grade> grades = new ArrayList<>();
     private List<Subject> subjects = new ArrayList<>();
     private Logger logger = Logger.getLogger(GradesDatabaseService.class);
@@ -40,59 +41,41 @@ public class GradesInMemoryService extends BaseGradesService {
             throw new AddingGradeException(TWO_GRADES_ON_DAY_MSG);
         }
 
-        addedGrade.setId(getUId());
+        addedGrade.setId(getGradeUId());
         grades.add(addedGrade);
         logger.info("addGrade(Grade addedGrade) , grade successfully created");
     }
 
     @Override
     public void addGrades(List<Grade> addedGrades) throws AddingGradeException {
-
+        grades.addAll(addedGrades);
     }
 
     @Override
-    public void addSubject(String title) throws AddingSubjectException {
+    public void addSubject(String title) throws SubjectIllegalTitleException, SubjectExistsException {
         logger.info("addSubject(String title) , title = " + title);
         Subject addedSubject = Subject.compose(title);
         if(fetchAllSubjects().contains(addedSubject)){
             throw new SubjectExistsException();
         }
+        addedSubject.setId(getSubjectUId());
         this.subjects.add(addedSubject);
         logger.info("addSubject(String title) , subject successfully created");
     }
 
-    /*@Override
+    @Override
     public List<Grade> fetchAllGrades() {
-        logger.info("fetchAllGrades() was called, fetched " + grades.size() + " grades");
-        return new ArrayList<>(grades);
-    }*/
-
-//    @Override
-    public List<Grade> fetchBySubject(long subjectId, boolean ascendingByDate) {
-        logger.info("fetchBySubject(long subjectId, boolean ascendingByDate) was called, subjectId = " + subjectId + ", ascendingByDate = " + ascendingByDate);
-        List<Grade> gradesOnDate = retrieveGradesBySubject(subjectId);
-        logger.info("fetchBySubject(long subjectId, boolean ascendingByDate) Fetched " + gradesOnDate.size() + " grades");
-        sortByDate(gradesOnDate, ascendingByDate);
-        return gradesOnDate;
-    }
-
-//    @Override
-    public List<Grade> fetchByDate(LocalDate date) {
-        logger.info("fetchByDate(LocalDate date) was called, date = " + date);
-        List<Grade> gradesOnDate = retrieveGradesByDate(date);
-        gradesOnDate.sort(Comparator.comparing(o -> o.getSubject().getTitle()));
-        logger.info("fetchByDate(LocalDate date) fetched " + gradesOnDate.size() + " grsdes");
-        return gradesOnDate;
+        return fetchGrades(0, null);
     }
 
     @Override
     public List<Grade> fetchGrades(long subjectId, LocalDate date) {
-        return null;//todo to implement
+        return filterGrades(subjectId, date);
     }
 
     @Override
     public List<Grade> fetchGrades(long subjectId, LocalDate date, int page) {
-        return null;
+        return filterGrades(subjectId, date).subList(page * itemsPerPage, page * itemsPerPage + (itemsPerPage > grades.size() ? grades.size() : itemsPerPage));
     }
 
     @Override
@@ -133,17 +116,31 @@ public class GradesInMemoryService extends BaseGradesService {
 
     @Override
     public void deleteSubject(long subjectId) throws DeletingSubjectException {
-        //todo to implement
+        subjects.forEach(subject -> {
+            if(subject.getId().equals(subjectId)){
+                subjects.remove(subject);
+            }
+        });
     }
 
     @Override
     public void forceDeleteSubject(long subjectId) {
-        //todo to implement
+        grades.forEach(grade -> {
+            if(grade.getSubject().getId().equals(subjectId)){
+                grades.remove(grade);
+            }
+        });
+        subjects.forEach(subject1 -> {
+            if(subject1.getId().equals(subjectId)){
+                subjects.remove(subject1);
+            }
+        });
     }
 
     @Override
     public void forceDeleteAllSubjects() {
-
+        subjects = new ArrayList<>();
+        grades = new ArrayList<>();
     }
 
     @Override
@@ -151,26 +148,31 @@ public class GradesInMemoryService extends BaseGradesService {
         logger.info("deleteAllGrades() was called");
         this.grades = new ArrayList<>();
         logger.info("All grades were deleted");
-    }/*
-
-    @Override
-    public double calculateAvgGrade(long subjectId) {
-        logger.info("calculateAvgGrade(long subjectId) was called, subjectId = " + subjectId);
-        final double[] averageGrade = {0};
-        List<Grade> subjectGrades = retrieveGradesBySubject(subjectId);
-        subjectGrades.forEach(grade -> averageGrade[0] += grade.getMark());
-        logger.info("calculateAvgGrade(long subjectId); completed");
-        return subjectGrades.isEmpty() ? 0 : averageGrade[0] / subjectGrades.size();
-    }*/
+    }
 
     @Override
     public double calculateAvgGrade(long subjectId, LocalDate selectedDate) throws NoGradesException{
-        return 0;//todo to implement
+        logger.info("calculateAvgGrade(long subjectId, LocalDate selectedDate) was called, subjectId = " +
+                subjectId + ", selectedDate = " + selectedDate);
+
+        List<Grade> sortedGrade = filterGrades(subjectId, selectedDate);
+
+        if(sortedGrade.isEmpty()){
+            throw new NoGradesException("There are no grades on selected subject and date");
+        }
+
+        final int[] summ = {0};
+        sortedGrade.forEach(grade -> summ[0] +=grade.getMark());
+
+        double averageGrade = ((double) summ[0]) / ((double) sortedGrade.size());
+        logger.info("calculateAvgGrade(long subjectId, LocalDate selectedDate); completed");
+        return averageGrade;
     }
 
     @Override
     public boolean isGraded(Subject subject, LocalDate date) {
-        logger.info("isGraded(Subject subject, LocalDate date) was called, subjectId = " + subject.getId() + ", date = " + date);
+        logger.info("isGraded(Subject subject, LocalDate date) was called, subjectId = " +
+                subject.getId() + ", date = " + date);
         return !retrieveGradesByDate(date, retrieveGradesBySubject(subject.getId())).isEmpty();
     }
 
@@ -188,17 +190,13 @@ public class GradesInMemoryService extends BaseGradesService {
     }
 
     @Override
-    public void fromJson(String json) throws IOException {
-//        return null;
+    public void reloadCollectionFromJson(String json) throws IOException {
+        setGrades(fromJson(json));
     }
 
     @Override
-    public String toJson() throws IOException {
-        return null;
-    }
-
-    @Override
-    public void toJson(List<Grade> grades) throws IOException {
+    public int availablePagesNumber(long requestedSubjectId, LocalDate requestedDate) {
+        return grades.size() / itemsPerPage;
     }
 
     private List<Grade> retrieveGradesBySubject(long subject){
@@ -227,7 +225,7 @@ public class GradesInMemoryService extends BaseGradesService {
         }
     }
 
-    private long getUId(){
+    private long getGradeUId(){
         long id = 0;
         for(Grade grade : grades){
             if(grade.getId() > id){
@@ -235,6 +233,38 @@ public class GradesInMemoryService extends BaseGradesService {
             }
         }
         return id == 0 ? 1 : id;
+    }
+
+    private long getSubjectUId(){
+        long id = 0;
+        for(Subject subject : subjects){
+            if(subject.getId() > id){
+                id = subject.getId();
+            }
+        }
+        return id == 0 ? 1 : id;
+    }
+
+    private List<Grade> filterGrades(long subjectId, LocalDate selectedDate){
+        List<Grade> sortedGrade;
+
+        if(subjectId == 0 && selectedDate == null){
+            sortedGrade = grades;
+        }else if(subjectId != 0 && selectedDate == null){
+            sortedGrade = grades.stream().filter(
+                    grade -> grade.getSubject().getId() == subjectId).collect(Collectors.toList()
+            );
+        }else if(subjectId == 0 && selectedDate != null){
+            sortedGrade = grades.stream().filter(
+                    grade -> grade.getDate().equals(selectedDate)).collect(Collectors.toList()
+            );
+        }else {
+            sortedGrade = grades.stream().filter(
+                    grade -> grade.getDate().equals(selectedDate) && grade.getSubject().getId() == subjectId
+            ).collect(Collectors.toList());
+        }
+
+        return sortedGrade;
     }
 
     public void setGrades(List<Grade> grades) {

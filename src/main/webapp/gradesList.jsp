@@ -46,7 +46,8 @@
         <form method="post" id="addNewGradeForm" name="addNewGradeForm" class="navbar-form" action="<c:url value="/create/grade"/>">
 
         <div class="modal-body">
-            <p class="" id="statusMessage"></p>
+
+            <p style="color: #ac2925; font-weight: bold" id="statusMessage"></p>
             <table class="table">
                 <tbody>
                 <tr>
@@ -56,7 +57,7 @@
                 </tr>
                 <tr>
                     <th>
-                        <select class="form-control" id="selectedSubjectId" name="selectedSubjectId">
+                        <select class="form-control" id="modalSelectedSubjectId" name="modalSelectedSubjectId">
                             <c:forEach items="${requestScope.subjects}" var="subject">
                                 <option ${subject eq null ? 'hidden' : ''} value="${subject.id}">${subject}</option>
                             </c:forEach>

@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import datasources.DataSource;
 import services.GradesDatabaseService;
+import services.GradesInMemoryService;
+import utils.MainService;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -24,8 +26,6 @@ import static utils.Consts.PAGE_TITLE_PARAM_KEY;
 @WebServlet(urlPatterns = "/export")
 public class ExportServlet extends HttpServlet{
 
-    private GradesDatabaseService gradesDatabaseService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute(PAGE_TITLE_PARAM_KEY, "export");
@@ -34,13 +34,11 @@ public class ExportServlet extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
         resp.setContentType("application/json");
         resp.setContentType("APPLICATION/OCTET-STREAM");
         resp.setHeader("Content-Disposition","attachment;filename=grades.json");
         PrintWriter writer = resp.getWriter();
-        writer.println(gson.toJson(gradesDatabaseService.fetchAllGrades()));
+        writer.println(MainService.service.toJson(MainService.service.fetchAllGrades()));
 
     }
 

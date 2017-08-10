@@ -1,11 +1,10 @@
 package servlets;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import datasources.DataSource;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import services.GradesDatabaseService;
+import services.GradesInMemoryService;
+import utils.MainService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -17,7 +16,6 @@ import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.nio.file.Paths;
 
 import static utils.Consts.PAGE_TITLE_PARAM_KEY;
 
@@ -27,9 +25,6 @@ import static utils.Consts.PAGE_TITLE_PARAM_KEY;
 @WebServlet(urlPatterns = "/import")
 @MultipartConfig
 public class ImportServlet extends HttpServlet {
-
-    //todo Dependency Injection?
-    private GradesDatabaseService gradesDatabaseService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -44,7 +39,7 @@ public class ImportServlet extends HttpServlet {
         StringWriter writer = new StringWriter();
         IOUtils.copy(fileContent, writer, "UTF-8");
         String importedJson = writer.toString();
-        gradesDatabaseService.fromJson(importedJson);
+        MainService.service.reloadCollectionFromJson(importedJson);
         resp.sendRedirect("/list/grades");
     }
 }
