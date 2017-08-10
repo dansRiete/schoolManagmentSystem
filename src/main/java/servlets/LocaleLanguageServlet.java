@@ -35,6 +35,7 @@ public class LocaleLanguageServlet extends HttpServlet {
         result.put(LOCALE_PARAM_KEY, sessionLocale);
         response.setContentType("application/json");
         PrintWriter writer = response.getWriter();
+        response.setCharacterEncoding("UTF-8");
         writer.println(gson.toJson(result));
     }
 

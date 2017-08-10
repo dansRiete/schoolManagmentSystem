@@ -9,7 +9,7 @@ public final class Consts {
     public final static String PASSWORD_PARAM_KEY = "password";
     public final static String SUBJECTS_PARAM_KEY = "subjects";
     public final static String PAGE_TITLE_PARAM_KEY = "pageTitle";
-    public final static String SELECTED_SUBJECT_PARAM_KEY = "selectedSubject";
+    public final static String SELECTED_SUBJECT_PARAM_KEY = "selectedSubjectId";
     public final static String SELECTED_DATE_PARAM_KEY = "selectedDate";
 
 }

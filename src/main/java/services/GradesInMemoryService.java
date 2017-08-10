@@ -1,9 +1,6 @@
 package services;
 
-import exceptions.AddingGradeException;
-import exceptions.AddingSubjectException;
-import exceptions.DeletingSubjectException;
-import exceptions.NoGradesException;
+import exceptions.*;
 import model.Grade;
 import model.Subject;
 import org.apache.log4j.Logger;
@@ -58,7 +55,7 @@ public class GradesInMemoryService extends BaseGradesService {
         logger.info("addSubject(String title) , title = " + title);
         Subject addedSubject = Subject.compose(title);
         if(fetchAllSubjects().contains(addedSubject)){
-            throw new AddingSubjectException("There can not be two subjects with the same names");
+            throw new SubjectExistsException();
         }
         this.subjects.add(addedSubject);
         logger.info("addSubject(String title) , subject successfully created");
@@ -183,7 +180,7 @@ public class GradesInMemoryService extends BaseGradesService {
         Subject foundSubject = null;
         try {
             foundSubject = Subject.compose(subjectTitle);
-        } catch (AddingSubjectException e) {
+        } catch (SubjectIllegalTitleException e) {
             logger.error("isSubjectExists(String subjectTitle) was called with illegal subjectTitle");
         }
         logger.info("isSubjectExists(String subjectTitle) found subject");

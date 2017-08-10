@@ -54,7 +54,7 @@ public class CreateGradeServlet extends HttpServlet {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         try {
-            selectedSubjectId = Long.valueOf(req.getParameter("selectedSubject"));
+            selectedSubjectId = Long.valueOf(req.getParameter("selectedSubjectId"));
             mark = Integer.valueOf(req.getParameter("mark"));
             date = LocalDate.parse(req.getParameter("date"), formatter);
             Subject subject = gradesService.fetchSubject(selectedSubjectId);

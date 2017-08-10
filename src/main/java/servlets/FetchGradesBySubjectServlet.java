@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import datasources.DataSource;
 import model.Grade;
 import model.Subject;
+import org.apache.log4j.Logger;
 import services.GradesDatabaseService;
 
 import javax.servlet.ServletException;
@@ -29,15 +30,18 @@ public class FetchGradesBySubjectServlet extends HttpServlet {
 
     private GradesDatabaseService gradesDatabaseService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private Logger logger = Logger.getLogger(FetchGradesBySubjectServlet.class);
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, Object> result = new HashMap<>();
+        logger.debug("request.getParameter(SELECTED_SUBJECT_PARAM_KEY) = " + request.getParameter(SELECTED_SUBJECT_PARAM_KEY));
         long requestedSubjectId = Long.parseLong(request.getParameter(SELECTED_SUBJECT_PARAM_KEY));
         List<Grade> subjects = gradesDatabaseService.fetchGrades(requestedSubjectId, null);
         result.put("gradesOnSubjectCount", subjects.size());
         result.put("subjectId", subjects.size());
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         PrintWriter writer = response.getWriter();
         writer.println(gson.toJson(result));
     }

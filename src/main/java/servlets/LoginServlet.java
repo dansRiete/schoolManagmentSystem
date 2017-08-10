@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static utils.Consts.LOCALE_PARAM_KEY;
 import static utils.Consts.PASSWORD_PARAM_KEY;
 import static utils.Consts.USERNAME_PARAM_KEY;
 
@@ -23,6 +24,7 @@ public class LoginServlet extends HttpServlet {
 
     private UserService userService = new UserService();
     Logger logger = Logger.getLogger(LoginServlet.class);
+    private final static String DEFAULT_LOCALE = "en";
 
 
     @Override
@@ -38,6 +40,7 @@ public class LoginServlet extends HttpServlet {
 
             if (userService.isExists(username, password)) {
                 request.getSession().setAttribute(USERNAME_PARAM_KEY, username);
+                request.getSession().setAttribute(LOCALE_PARAM_KEY, DEFAULT_LOCALE);
                 logger.info("User " + username + " is logged in");
                 response.sendRedirect("/list/grades");
                 return;

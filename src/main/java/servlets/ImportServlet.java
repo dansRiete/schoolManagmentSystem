@@ -45,5 +45,6 @@ public class ImportServlet extends HttpServlet {
         IOUtils.copy(fileContent, writer, "UTF-8");
         String importedJson = writer.toString();
         gradesDatabaseService.fromJson(importedJson);
+        resp.sendRedirect("/list/grades");
     }
 }

@@ -1,10 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="ISO-8859-1" %>
-<c:set var="language" value="${sessionScope.locale_language}"/>
-<fmt:setLocale value="${language}" />
+<%--<c:set var="language" value="${sessionScope.locale_language}"/>--%>
+<fmt:setLocale value="${sessionScope.locale_language}" />
 <fmt:setBundle basename="text" />
-<html lang="${language}">
+<html lang="${sessionScope.locale_language}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="<c:url value="/css/bootstrap.min.css"/> " rel="stylesheet">
@@ -56,7 +56,7 @@
                 </tr>
                 <tr>
                     <th>
-                        <select class="form-control" id="selectedSubject" name="selectedSubject">
+                        <select class="form-control" id="selectedSubjectId" name="selectedSubjectId">
                             <c:forEach items="${requestScope.subjects}" var="subject">
                                 <option ${subject eq null ? 'hidden' : ''} value="${subject.id}">${subject}</option>
                             </c:forEach>
@@ -103,9 +103,9 @@
                     </th>
                     <th>
                         <fmt:message key="entity.subject"/>
-                        <select id="subjectsSelect" name="selectedSubject" class="form-control">
+                        <select id="subjectsSelectId" name="selectedSubjectId" class="form-control">
                         <c:forEach items="${requestScope.subjects}" var="subject">
-                            <option <c:if test="${requestScope.selectedSubject == subject.id}">selected</c:if> value="${subject.id}">
+                            <option <c:if test="${requestScope.selectedSubjectId == subject.id}">selected</c:if> value="${subject.id}">
                                 <c:choose>
                                     <c:when test="${subject == null}">
                                         <fmt:message key="entity.all_subjects"/>
@@ -119,8 +119,11 @@
                         </select>
                     </th>
                     <th><fmt:message key="entity.mark"/></th>
-                    <th><fmt:message key="action.filter"/><br/><input type="submit" class="btn btn-default" value="<fmt:message key="action.filter"/>"/>
-                        <input type="button" id="resetButton" class="btn btn-default" onclick="resetFilter()" value="<fmt:message key="action.reset"/>"/></th>
+                    <th>
+                        <fmt:message key="action.filter"/><br/>
+                        <input type="submit" class="btn btn-default" value="<fmt:message key="action.filter"/>"/>
+                        <input type="button" id="resetButton" class="btn btn-default" onclick="resetFilter()" value="<fmt:message key="action.reset"/>"/>
+                    </th>
                     </form>
                 </tr>
                 <c:forEach items="${requestScope.allGrades}" var="currentGrade">

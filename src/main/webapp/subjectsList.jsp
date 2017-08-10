@@ -108,6 +108,7 @@
 <script src="<c:url value="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"/>"></script>
 <script src="<c:url value="/js/bootstrap.min.js"/>"></script>
 <script src="<c:url value="/js/subjectsList.js"/>"></script>
+<script src="<c:url value="/js/getLocale.js"/>"></script>
 
 </body>
 </html>

@@ -62,6 +62,7 @@ public abstract class BaseGradesService {
 
     public List<Subject> extractSubjects(List<Grade> grades){
         HashSet<Subject> subjects = new HashSet<>();
+        System.out.println(grades);
         grades.forEach(grade -> subjects.add(grade.getSubject()));
         return new ArrayList<>(subjects);
     }

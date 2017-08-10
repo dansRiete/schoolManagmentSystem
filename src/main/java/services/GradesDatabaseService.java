@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dao.GradeDao;
 import dao.SubjectDao;
-import exceptions.AddingGradeException;
-import exceptions.AddingSubjectException;
-import exceptions.DeletingSubjectException;
-import exceptions.NoGradesException;
+import exceptions.*;
 import model.Grade;
 import model.Subject;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -67,11 +64,11 @@ public class GradesDatabaseService extends BaseGradesService {
     }
 
 
-    public void addSubject(String title) throws AddingSubjectException {
+    public void addSubject(String title) throws SubjectExistsException, SubjectIllegalTitleException {
         logger.info("addSubject(String title) , title = " + title);
         Subject createdSubject = Subject.compose(title);
         if(isSubjectExists(title)){
-            throw new AddingSubjectException("There can not be two subjects with the same title");
+            throw new SubjectExistsException();
         }
         subjectDao.create(createdSubject);
         logger.info("addSubject(String title) , subject successfully created");

@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import datasources.DataSource;
 import exceptions.AddingSubjectException;
+import exceptions.SubjectExistsException;
+import exceptions.SubjectIllegalTitleException;
 import model.Subject;
 import org.apache.log4j.Logger;
 import services.GradesDatabaseService;
@@ -16,8 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
+import static utils.Consts.LOCALE_PARAM_KEY;
 import static utils.Consts.PAGE_TITLE_PARAM_KEY;
 
 /**
@@ -37,12 +42,15 @@ public class CreateSubjectServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//todo and up
-//        req.setAttribute("page", "createSubject");
+
+        //todo up
+
         String subjectTitle = req.getParameter("newSubjectTitle");
         Subject addedSubject = null;
         Map<String, Object> result = new HashMap<>();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String sessionLocale = (String) req.getSession().getAttribute(LOCALE_PARAM_KEY);
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("text", Locale.forLanguageTag(sessionLocale));
 
         try {
             addedSubject = Subject.compose(subjectTitle);
@@ -51,14 +59,21 @@ public class CreateSubjectServlet extends HttpServlet {
             result.put("message", "Subject has been successfuly added");
             req.setAttribute("message", "Success: subject \"" + addedSubject +
                     "\" has been successfully created");
-        }catch (AddingSubjectException e){
+        }catch (SubjectIllegalTitleException e){
             logger.error(e.getClass().getCanonicalName() + " " + e.getLocalizedMessage());
-            req.setAttribute("message", "Error: " + e.getLocalizedMessage());
+            req.setAttribute("message", resourceBundle.getString("error.illegal_subject_title"));
             result.put("status", "error");
-            result.put("message", e.getClass().getCanonicalName() + " " + e.getLocalizedMessage());
+            result.put("message", resourceBundle.getString("error.illegal_subject_title"));
+            req.setAttribute("subjectTitle", subjectTitle);
+        } catch (SubjectExistsException e) {
+            logger.error(e.getClass().getCanonicalName() + " " + e.getLocalizedMessage());
+            req.setAttribute("message", resourceBundle.getString("error.subject_exists"));
+            result.put("status", "error");
+            result.put("message", resourceBundle.getString("error.subject_exists"));
             req.setAttribute("subjectTitle", subjectTitle);
         }
         resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
         PrintWriter writer = resp.getWriter();
         writer.println(gson.toJson(result));
     }

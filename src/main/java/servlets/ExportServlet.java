@@ -1,5 +1,7 @@
 package servlets;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import datasources.DataSource;
 import services.GradesDatabaseService;
 
@@ -12,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 
 import static utils.Consts.PAGE_TITLE_PARAM_KEY;
 
@@ -31,21 +34,15 @@ public class ExportServlet extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        resp.setContentType("application/octet-stream");
+        resp.setContentType("application/json");
+        resp.setContentType("APPLICATION/OCTET-STREAM");
         resp.setHeader("Content-Disposition","attachment;filename=grades.json");
+        PrintWriter writer = resp.getWriter();
+        writer.println(gson.toJson(gradesDatabaseService.fetchAllGrades()));
 
-        InputStream in = new ByteArrayInputStream(gradesDatabaseService.toJson().getBytes("UTF-8"));
-        ServletOutputStream out = resp.getOutputStream();
-
-        byte[] outputByte = new byte[4096];
-
-        while(in.read(outputByte, 0, 4096) != -1) {
-            out.write(outputByte, 0, 4096);
-        }
-
-        in.close();
-        out.flush();
-        out.close();
     }
+
 }
+
