@@ -1,10 +1,8 @@
 package servlets;
 
-import datasources.DataSource;
 import model.Subject;
-import org.apache.log4j.Logger;
-import services.GradesDatabaseService;
-import utils.MainService;
+import services.BaseGradesService;
+import utils.ServiceFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,9 +21,11 @@ import static utils.Consts.SUBJECTS_PARAM_KEY;
 @WebServlet(urlPatterns = "/list/subjects")
 public class SubjectsListServlet extends HttpServlet {
 
+    private BaseGradesService service = ServiceFactory.getService();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Subject> subjects = MainService.service.fetchAllSubjects();
+        List<Subject> subjects = service.fetchAllSubjects();
         request.setAttribute(SUBJECTS_PARAM_KEY, subjects);
         request.setAttribute(PAGE_TITLE_PARAM_KEY, "subjectsList");
         request.getRequestDispatcher("/subjectsList.jsp").forward(request, response);

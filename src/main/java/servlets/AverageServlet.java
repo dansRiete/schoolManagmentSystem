@@ -2,12 +2,9 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import datasources.DataSource;
 import exceptions.NoGradesException;
-import org.apache.log4j.Logger;
-import services.GradesDatabaseService;
-import services.GradesInMemoryService;
-import utils.MainService;
+import services.BaseGradesService;
+import utils.ServiceFactory;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -36,6 +33,7 @@ public class AverageServlet extends HttpServlet {
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private DecimalFormat averageGradeDecimalFormat = new DecimalFormat("#.##");
+    private BaseGradesService service = ServiceFactory.getService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -46,9 +44,9 @@ public class AverageServlet extends HttpServlet {
         String selectedDateRawParam = request.getParameter(SELECTED_DATE_PARAM_KEY);
         long selectedSubjectId = selecteSubjectIdRawParam == null || selecteSubjectIdRawParam.equals("") ? 0 : Long.parseLong(selecteSubjectIdRawParam);
         LocalDate selectedDate = selectedDateRawParam == null || selectedDateRawParam.equals("") ? null : LocalDate.parse(selectedDateRawParam, formatter);
-        String subject = selectedSubjectId == 0 ? resourceBundle.getString("entity.all_subjects") : MainService.service.fetchSubject(selectedSubjectId).getTitle();
+        String subject = selectedSubjectId == 0 ? resourceBundle.getString("entity.all_subjects") : service.fetchSubject(selectedSubjectId).getTitle();
         String date = resourceBundle.getString("entity.date") + ": " + (selectedDate == null ? resourceBundle.getString("entity.all_dates") : selectedDate.toString());
-        StringBuilder modalTitle = new StringBuilder(resourceBundle.getString("info.avg_mark_on"))
+        StringBuilder averageModalTitle = new StringBuilder(resourceBundle.getString("info.avg_mark_on"))
                 .append(": ")
                 .append(subject)
                 .append(", ")
@@ -58,11 +56,11 @@ public class AverageServlet extends HttpServlet {
         Map<String, Object> result = new HashMap<>();
 
         try {
-            double averageMark = MainService.service.calculateAvgGrade(selectedSubjectId, selectedDate);
-            result.put("modal_title", modalTitle);
+            double averageMark = service.calculateAvgGrade(selectedSubjectId, selectedDate);
+            result.put("modal_title", averageModalTitle);
             result.put("modal_body", averageGradeDecimalFormat.format(averageMark));
         } catch (NoGradesException e) {
-            result.put("modal_title", modalTitle);
+            result.put("modal_title", averageModalTitle);
             result.put("modal_body", resourceBundle.getString("result.no_grades_found"));
         }
 

@@ -26,7 +26,7 @@ function submitAverage(){
             let locale = msg["locale_language"] == null || msg["locale_language"] == undefined || msg["locale_language"] == '' ? 'en' : msg["locale_language"];
             const subjectEn = 'Subject'
             const subjectUa = '\u041F\u0440\u0435\u0434\u043C\u0435\u0442'
-            const allSubjectsEn = 'all subjects';
+            const allSubjectsEn = 'All subjects';
             const allSubjectsUa = '\u0432\u0441\u0456 \u043F\u0440\u0435\u0434\u043C\u0435\u0442\u0438';
             const noGradesEn = 'There are no grades on requested conditions';
             const noGradesUa = '\u041F\u043E \u0432\u0430\u0448\u043E\u043C\u0443 \u0437\u0430\u043F\u0438\u0442\u0443 \u043D\u0435 \u0437\u043D\u0430\u0439\u0434\u0435\u043D\u043E \u0436\u043E\u0434\u043D\u043E\u0457 \u043E\u0446\u0456\u043D\u043A\u0438';

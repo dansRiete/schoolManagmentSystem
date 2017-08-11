@@ -8,9 +8,8 @@ import exceptions.SubjectExistsException;
 import exceptions.SubjectIllegalTitleException;
 import model.Subject;
 import org.apache.log4j.Logger;
-import services.GradesDatabaseService;
-import services.GradesInMemoryService;
-import utils.MainService;
+import services.BaseGradesService;
+import utils.ServiceFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,7 +32,9 @@ import static utils.Consts.PAGE_TITLE_PARAM_KEY;
 
 @WebServlet(urlPatterns = "/create/subject")
 public class CreateSubjectServlet extends HttpServlet {
-    Logger logger = Logger.getLogger(CreateGradeServlet.class);
+
+    private Logger logger = Logger.getLogger(CreateGradeServlet.class);
+    private BaseGradesService service = ServiceFactory.getService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -53,7 +54,7 @@ public class CreateSubjectServlet extends HttpServlet {
 
         try {
             addedSubject = Subject.compose(subjectTitle);
-            MainService.service.addSubject(addedSubject.getTitle());
+            service.addSubject(addedSubject.getTitle());
             result.put("status", "success");
             result.put("message", "Subject has been successfuly added");
             req.setAttribute("message", "Success: subject \"" + addedSubject +

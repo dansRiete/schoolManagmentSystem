@@ -26,6 +26,7 @@
         <div class="col-lg-6 col-lg-offset-3">
             <h3><fmt:message key="action.reload_from_json"/></h3>
             <fmt:message key="ask.select_a_file_to_upload"/>: <br/>
+            <p style="color: #ac2925; font-weight: bold">${requestScope.invalid_file_msg}</p>
             <form lang="en" action="import" method="post" enctype="multipart/form-data">
                 <input type="file" name="file" size="50"/>
                 <br/>

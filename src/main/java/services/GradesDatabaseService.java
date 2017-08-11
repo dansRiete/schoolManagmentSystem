@@ -51,12 +51,15 @@ public class GradesDatabaseService extends BaseGradesService {
         logger.info("addGrade(Grade addedGrade) , grade successfully created");
     }
 
+    @Override
     public void addAllSubjects(List<Subject> subjects){
+        logger.info("addAllSubjects(List<Subject> subjects) was called");
         subjectDao.createAll(subjects);
     }
 
     @Override
     public void addGrades(List<Grade> addedGrades) throws AddingGradeException {
+        logger.info("addGrades(List<Grade> addedGrades) was called");
         List<Subject> subjectsToAdd = extractSubjects(addedGrades);
         List<Subject> existedSubjects = fetchAllSubjects();
         subjectsToAdd.removeAll(existedSubjects);
@@ -72,9 +75,8 @@ public class GradesDatabaseService extends BaseGradesService {
             }
         }
         gradeDao.createAll(addedGrades);
-
+        logger.info("addGrades(List<Grade> addedGrades) completed");
     }
-
 
     public void addSubject(String title) throws SubjectExistsException, SubjectIllegalTitleException {
         logger.info("addSubject(String title) , title = " + title);
@@ -87,20 +89,6 @@ public class GradesDatabaseService extends BaseGradesService {
     }
 
     @Override
-    public List<Grade> fetchAllGrades() {
-        logger.info("fetchAllGrades() was called");
-        List<Grade> fetchedGrades = gradeDao.getAll();
-        logger.info("fetchAllGrades() fetched " + fetchedGrades.size() + " grades");
-        return fetchedGrades;
-    }
-
-    public List<Grade> fetchAllGrades(int page) {
-        logger.info("fetchAllGrades(int page) was called, page = " + page);
-        List<Grade> fetchedGrades = gradeDao.getAll(itemsPerPage, page * itemsPerPage);
-        logger.info("fetchAllGrades() fetched " + fetchedGrades.size() + " grades");
-        return fetchedGrades;
-    }
-
     public int availablePagesNumber(long subjectId, LocalDate date) {
         logger.info("availablePagesNumber() was called");
 
@@ -113,7 +101,14 @@ public class GradesDatabaseService extends BaseGradesService {
         }else {
             return (int) Math.ceil(((double) gradeDao.countAll()) / ((double) itemsPerPage));
         }
+    }
 
+    @Override
+    public List<Grade> fetchAllGrades() {
+        logger.info("fetchAllGrades() was called");
+        List<Grade> fetchedGrades = gradeDao.getAll();
+        logger.info("fetchAllGrades() fetched " + fetchedGrades.size() + " grades");
+        return fetchedGrades;
     }
 
 
@@ -122,7 +117,7 @@ public class GradesDatabaseService extends BaseGradesService {
         logger.info("fetchByDate(LocalDate date) was called, date = " + date + ", subjectId = " + subjectId);
 
         if(subjectId != 0 && date == null){
-            return gradeDao.getOnSubject(subjectId, true);
+            return gradeDao.getOnSubject(subjectId, false);
         }else if(subjectId == 0 && date != null){
             return gradeDao.getOnDate(date);
         }else if(subjectId != 0 && date != null){
@@ -132,10 +127,11 @@ public class GradesDatabaseService extends BaseGradesService {
         }
     }
 
+    @Override
     public List<Grade> fetchGrades(long subjectId, LocalDate date, int page) {
-
+        logger.info("fetchByDate(LocalDate date) was called, date = " + date + ", subjectId = " + subjectId);
         if(subjectId != 0 && date == null){
-            return gradeDao.getOnSubject(subjectId, true, itemsPerPage, page * itemsPerPage);
+            return gradeDao.getOnSubject(subjectId, false, itemsPerPage, page * itemsPerPage);
         }else if(subjectId == 0 && date != null){
             return gradeDao.getOnDate(date, itemsPerPage, page * itemsPerPage);
         }else if(subjectId != 0 && date != null){
@@ -193,8 +189,10 @@ public class GradesDatabaseService extends BaseGradesService {
 
     @Override
     public void forceDeleteAllSubjects() {
+        logger.info("forceDeleteAllSubjects() was called");
         deleteAllGrades();
         subjectDao.deleteAll();
+        logger.info("forceDeleteAllSubjects() completed");
     }
 
     @Override
@@ -213,7 +211,7 @@ public class GradesDatabaseService extends BaseGradesService {
             if(!gradeDao.areAnyGrades()){
                 throw new NoGradesException("There are no grades");
             }
-            averageGrade = gradeDao.averageOfAll(); //todo return
+            averageGrade = gradeDao.averageOfAll();
         }else if(subjectId != 0 && selectedDate == null){
             if(!gradeDao.areAnyGradesOnSubject(subjectId)){
                 throw new NoGradesException("There are no grades on selected subject");
@@ -249,21 +247,21 @@ public class GradesDatabaseService extends BaseGradesService {
 
     @Override
     public void reloadCollectionFromJson(String json) throws IOException {
-
+        logger.info("reloadCollectionFromJson(String json) was called json = " + json);
         forceDeleteAllSubjects();
-        List<Grade> jsonGrades = fromJson(json);
-        subjectDao.createAll(extractSubjects(jsonGrades));
-        List<Subject> finalReadSubjects = subjectDao.getAll();
-        jsonGrades.forEach(grade -> {
+        List<Grade> gradesFromJson = fromJson(json);
+        subjectDao.createAll(extractSubjects(gradesFromJson));
+        List<Subject> reloadedSubjects = subjectDao.getAll();
+        gradesFromJson.forEach(currentGrade -> {
             final Subject[] currentSubject = {null};
-            finalReadSubjects.forEach(subject -> {
-                if(subject.getTitle().equals(grade.getSubject().getTitle())){
+            reloadedSubjects.forEach(subject -> {
+                if(subject.getTitle().equals(currentGrade.getSubject().getTitle())){
                     currentSubject[0] = subject;
                 }
             });
-            grade.setSubject(currentSubject[0]);
+            currentGrade.setSubject(currentSubject[0]);
         });
-        gradeDao.createAll(jsonGrades);
+        gradeDao.createAll(gradesFromJson);
     }
 
 }

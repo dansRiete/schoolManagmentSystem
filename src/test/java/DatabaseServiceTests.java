@@ -1,6 +1,7 @@
 import datasources.DataSourceTest;
 import exceptions.AddingGradeException;
 import exceptions.AddingSubjectException;
+import exceptions.NoGradesException;
 import mappers.SqlMapper;
 import model.Grade;
 import model.Subject;
@@ -77,7 +78,6 @@ public class DatabaseServiceTests {
         } catch (AddingSubjectException e) {
             e.printStackTrace();
         }
-
     }
 
     @Before
@@ -237,8 +237,8 @@ public class DatabaseServiceTests {
     }
 
     @Test
-    public void calculateAverageGradeTest(){
-//        assertEquals(4.3333, gradesService.calculateAvgGrade(math_id1.getId()), 0.001);//todo
+    public void calculateAverageGradeTest() throws NoGradesException {
+        assertEquals(4.3333, gradesService.calculateAvgGrade(math_id1.getId(), null), 0.001);//todo
     }
 
     @Test
@@ -255,13 +255,8 @@ public class DatabaseServiceTests {
     }
 
     @Test
-    public void fetchBySubjectAscendingDateTest(){
-//        assertEquals(initMathGradesAscendingDate, gradesService.fetchBySubject(1, true));
-    }
-
-    @Test
     public void fetchBySubjectDescendingDateTest(){
-//        assertEquals(initMathGradesDescendingDate, gradesService.fetchBySubject(1, false));
+        assertEquals(initMathGradesDescendingDate, gradesService.fetchGrades(1, null));
     }
 
     @Test
@@ -272,8 +267,8 @@ public class DatabaseServiceTests {
 
     @Test
     public void fetchByDateTestHamcrest(){
-//        List<Grade> receivedList = gradesService.fetchByDate(LocalDate.of(2017, 7, 29));
-//        assertThat(receivedList, containsInAnyOrder(grade2, grade3));
+        List<Grade> receivedList = gradesService.fetchGrades(0, LocalDate.of(2017, 7, 29));
+        assertThat(receivedList, containsInAnyOrder(grade2, grade3));
     }
 
 }

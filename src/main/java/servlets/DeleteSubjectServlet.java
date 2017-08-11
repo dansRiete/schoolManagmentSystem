@@ -1,7 +1,9 @@
 package servlets;
 
 import datasources.DataSource;
+import services.BaseGradesService;
 import services.GradesDatabaseService;
+import utils.ServiceFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,12 +19,12 @@ import java.io.IOException;
 @WebServlet(urlPatterns = "/deleteSubject")
 public class DeleteSubjectServlet extends HttpServlet {
 
-    GradesDatabaseService gradesInMemoryService = new GradesDatabaseService(DataSource.getSqlSessionFactory());
+    private BaseGradesService service = ServiceFactory.getService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long deletedSubjectId = Long.valueOf(request.getParameter("deletedSubjectId"));
-        gradesInMemoryService.forceDeleteSubject(deletedSubjectId);
+        service.forceDeleteSubject(deletedSubjectId);
         response.sendRedirect("/list/subjects");
 
     }

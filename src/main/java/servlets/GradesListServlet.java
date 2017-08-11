@@ -1,12 +1,10 @@
 package servlets;
 
-import datasources.DataSource;
 import model.Grade;
 import model.Subject;
 import org.apache.log4j.Logger;
-import services.GradesDatabaseService;
-import services.GradesInMemoryService;
-import utils.MainService;
+import services.BaseGradesService;
+import utils.ServiceFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,39 +31,42 @@ public class GradesListServlet extends HttpServlet {
 
     private Logger logger = Logger.getLogger(GradesListServlet.class);
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private BaseGradesService service = ServiceFactory.getService();
 
     private int[] paginatorDisplayedPages(int availablePagesNumber, int activePageIndex) {
 
-        int[] paginatorPages = null;
+        int[] paginatorPages = new int[]{0, 1, 2, 3, 4, 5, 6};
 
-        if (availablePagesNumber <= 7) {
-            paginatorPages = new int[]{0, 1, 2, 3, 4, 5, 6};
-        } else {
-
-            if (activePageIndex <= 3) {
-                paginatorPages = new int[]{0, 1, 2, 3, 4, 5, availablePagesNumber - 1};
-            } else if (activePageIndex > 3 && activePageIndex <= availablePagesNumber - 4) {
-                paginatorPages = new int[]{
-                        0,
-                        activePageIndex - 2,
-                        activePageIndex - 1,
-                        activePageIndex,
-                        activePageIndex + 1,
-                        activePageIndex + 2,
-                        availablePagesNumber - 1
-                };
-            } else if (activePageIndex > 3 && activePageIndex > availablePagesNumber - 4) {
-                paginatorPages = new int[]{
-                        0,
-                        availablePagesNumber - 6,
-                        availablePagesNumber - 5,
-                        availablePagesNumber - 4,
-                        availablePagesNumber - 3,
-                        availablePagesNumber - 2,
-                        availablePagesNumber - 1
-                };
+        if (availablePagesNumber <= 1) {
+            paginatorPages = new int[0];
+        }else if(availablePagesNumber <= 7){
+            return paginatorPages;
+        }else {
+                if (activePageIndex <= 3) {
+                    paginatorPages = new int[]{0, 1, 2, 3, 4, 5, availablePagesNumber - 1};
+                } else if (activePageIndex > 3 && activePageIndex <= availablePagesNumber - 4) {
+                    paginatorPages = new int[]{
+                            0,
+                            activePageIndex - 2,
+                            activePageIndex - 1,
+                            activePageIndex,
+                            activePageIndex + 1,
+                            activePageIndex + 2,
+                            availablePagesNumber - 1
+                    };
+                } else if (activePageIndex > 3 && activePageIndex > availablePagesNumber - 4) {
+                    paginatorPages = new int[]{
+                            0,
+                            availablePagesNumber - 6,
+                            availablePagesNumber - 5,
+                            availablePagesNumber - 4,
+                            availablePagesNumber - 3,
+                            availablePagesNumber - 2,
+                            availablePagesNumber - 1
+                    };
+                }
             }
-        }
+
         return paginatorPages;
     }
 
@@ -79,7 +80,7 @@ public class GradesListServlet extends HttpServlet {
         int requestedPageIndex = 0;     //By default zero page is requested
 
         subjects.add(null);
-        subjects.addAll(MainService.service.fetchAllSubjects());
+        subjects.addAll(service.fetchAllSubjects());
 
         String requestSelectedSubject = request.getParameter(SELECTED_SUBJECT_PARAM_KEY);
         String requestSelectedDate = request.getParameter(SELECTED_DATE_PARAM_KEY);
@@ -110,7 +111,7 @@ public class GradesListServlet extends HttpServlet {
             }
         }
 
-        availablePagesNumber = MainService.service.availablePagesNumber(requestedSubjectId, requestedDate);
+        availablePagesNumber = service.availablePagesNumber(requestedSubjectId, requestedDate);
 
         if(request.getParameter("page") != null){
             try {
@@ -125,7 +126,7 @@ public class GradesListServlet extends HttpServlet {
             }
         }
 
-        gradesToDisplay = MainService.service.fetchGrades(requestedSubjectId, requestedDate, requestedPageIndex);
+        gradesToDisplay = service.fetchGrades(requestedSubjectId, requestedDate, requestedPageIndex);
 
         request.setAttribute(SUBJECTS_PARAM_KEY, subjects);
         request.setAttribute(SELECTED_SUBJECT_PARAM_KEY, selectedSubject);

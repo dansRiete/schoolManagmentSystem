@@ -64,7 +64,6 @@ public class SubjectDao implements BaseDao<Subject, Long> {
         try{
             sqlSession = sqlSessionFactory.openSession();
             SubjectMapper subjectMapper = sqlSession.getMapper(SubjectMapper.class);
-//            subjects.forEach(subjectMapper::create); //todo
             subjectMapper.createAll(subjects);
             sqlSession.commit();
         }finally {

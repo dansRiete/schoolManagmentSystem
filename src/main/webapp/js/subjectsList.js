@@ -42,9 +42,10 @@ function addSubjectOnServer(form, locale) {
             console.log("add subject ajax done");
             if (data["status"] === 'success') {
                 console.log('server responds success');
-                subjectTitleDiv.attr('class', 'form-group row has-success');
+                $('#myModalAddSubject').modal('hide');
+                /*subjectTitleDiv.attr('class', 'form-group row has-success');
                 subjectTitleErrorSpan.attr('class', 'help-inline success-span');
-                subjectTitleErrorSpan.html(data["message"]);
+                subjectTitleErrorSpan.html(data["message"]);*/
             } else {
                 console.log('server responds error');
                 subjectTitleDiv.attr('class', 'form-group row has-error');

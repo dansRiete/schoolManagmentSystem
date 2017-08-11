@@ -4,7 +4,6 @@ import exceptions.AddingSubjectException;
 import exceptions.NoGradesException;
 import model.Grade;
 import model.Subject;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import services.GradesInMemoryService;

@@ -22,7 +22,7 @@ public interface GradeMapper {
             boolean ascending = ((Boolean) map.get("ascending"));
             String sql =    "SELECT * FROM " + TABLE_NAME +
                             " WHERE subject_id = "+ subject_id +
-                            " ORDER BY DATE" + (ascending ? "" : " DESC");
+                            " ORDER BY DATE" + (ascending ? "" : " DESC, id");
             return sql;
         }
 
@@ -33,7 +33,7 @@ public interface GradeMapper {
             int offset = ((Integer) map.get("offset"));
             String sql =    "SELECT * FROM " + TABLE_NAME +
                     " WHERE subject_id = "+ subject_id +
-                    " ORDER BY DATE" + (ascending ? "" : " DESC") + " LIMIT " + limit + " OFFSET " + offset;
+                    " ORDER BY DATE" + (ascending ? "" : " DESC") + ", id LIMIT " + limit + " OFFSET " + offset;
             return sql;
         }
 
@@ -45,7 +45,7 @@ public interface GradeMapper {
         }
     }
 
-    @Select("select id, subject_id, mark, date from grades where grades.id = #{id}")
+    @Select("SELECT id, subject_id, mark, date FROM grades WHERE grades.id = #{id} ORDER BY date DESC, id")
     @Results({
             @Result(id=true, property = "id", column = "id"),
             @Result(property = "mark", column = "mark"),
@@ -54,7 +54,7 @@ public interface GradeMapper {
     })
     Grade getById(Long id);
 
-    @Select("SELECT * FROM " + TABLE_NAME)
+    @Select("SELECT * FROM " + TABLE_NAME + " ORDER BY date DESC, id")
     @Results({
             @Result(id=true, property = "id", column = "id"),
             @Result(property = "mark", column = "mark"),
@@ -63,7 +63,7 @@ public interface GradeMapper {
     })
     List<Grade> getAll();
 
-    @Select("SELECT * FROM " + TABLE_NAME + " ORDER BY id LIMIT #{limit} OFFSET #{offset}")
+    @Select("SELECT * FROM " + TABLE_NAME + " ORDER BY date DESC, id LIMIT #{limit} OFFSET #{offset}")
     @Results({
             @Result(id=true, property = "id", column = "id"),
             @Result(property = "mark", column = "mark"),
@@ -72,7 +72,7 @@ public interface GradeMapper {
     })
     List<Grade> getAllLimit(@Param("limit") int limit, @Param("offset") int offset);
 
-    @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate}")
+    @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate} ORDER BY date DESC, id")
     @Results({
             @Result(id=true, property = "id", column = "id"),
             @Result(property = "mark", column = "mark"),
@@ -81,7 +81,7 @@ public interface GradeMapper {
     })
     List<Grade> getOnDate(LocalDate requestedDate);
 
-    @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate} ORDER BY id LIMIT #{limit} OFFSET #{offset}")
+    @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate} ORDER BY date DESC, id LIMIT #{limit} OFFSET #{offset}")
     @Results({
             @Result(id=true, property = "id", column = "id"),
             @Result(property = "mark", column = "mark"),
@@ -111,7 +111,7 @@ public interface GradeMapper {
             @Param("limit") int limit, @Param("offset") int offset
     );
 
-    @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate} AND subject_id = #{id}")
+    @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate} AND subject_id = #{id} ORDER BY date DESC, id")
     @Results({
             @Result(id=true, property = "id", column = "id"),
             @Result(property = "mark", column = "mark"),
@@ -120,7 +120,7 @@ public interface GradeMapper {
     })
     List<Grade> getOnDateAndSubject(@Param("id")long id, @Param("requestedDate")LocalDate requestedDate);
 
-    @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate} AND subject_id = #{id} ORDER BY id LIMIT #{limit} OFFSET #{offset}")
+    @Select("SELECT * FROM " + TABLE_NAME + " WHERE date = #{requestedDate} AND subject_id = #{id} ORDER BY date DESC, id LIMIT #{limit} OFFSET #{offset}")
     @Results({
             @Result(id=true, property = "id", column = "id"),
             @Result(property = "mark", column = "mark"),

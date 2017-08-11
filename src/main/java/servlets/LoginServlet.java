@@ -45,7 +45,7 @@ public class LoginServlet extends HttpServlet {
                 response.sendRedirect("/list/grades");
                 return;
             } else {
-                //todo log
+                logger.info("User with username " + username + " and password " + password + " doesn't exist");
             }
 
         request.getRequestDispatcher("/login.jsp").forward(request, response);

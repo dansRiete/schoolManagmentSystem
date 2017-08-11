@@ -48,6 +48,7 @@ public class GradesInMemoryService extends BaseGradesService {
 
     @Override
     public void addGrades(List<Grade> addedGrades) throws AddingGradeException {
+        logger.info("addGrades(List<Grade> addedGrades) was called");
         grades.addAll(addedGrades);
     }
 
@@ -61,6 +62,12 @@ public class GradesInMemoryService extends BaseGradesService {
         addedSubject.setId(getSubjectUId());
         this.subjects.add(addedSubject);
         logger.info("addSubject(String title) , subject successfully created");
+    }
+
+    @Override
+    public void addAllSubjects(List<Subject> subjects) {
+        logger.info("addAllSubjects(List<Subject> subjects) was called");
+        subjects.addAll(subjects);
     }
 
     @Override
