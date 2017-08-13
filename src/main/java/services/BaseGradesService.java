@@ -43,7 +43,7 @@ public abstract class BaseGradesService {
     public abstract double calculateAvgGrade(long subjectId, LocalDate selectedDate) throws NoGradesException;
     public abstract boolean isGraded(Subject subject, LocalDate date);
     public abstract boolean isSubjectExists(String subjectTitle);
-    public abstract void reloadCollectionFromJson(String json) throws IOException;
+    public abstract void reloadCollectionFromJson(String json) throws ReloadingJsonCollectionException;
     public abstract int availablePagesNumber(long requestedSubjectId, LocalDate requestedDate);
 
     void validateDate(LocalDate validatedDate) throws AddingGradeException {

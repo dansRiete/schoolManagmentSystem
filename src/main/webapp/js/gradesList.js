@@ -62,6 +62,30 @@ function addGrade(form) {
         });
 }
 
+function checkFilterConditions() {
+    let selectedSubjectId = $('#subjectsSelectId').val();
+    let selectedDate = $('#selectedDate').val();
+    let filterButton = document.getElementById("filterBtn");
+    let resetButton = document.getElementById("resetBtn");
+
+    if(
+        (serverSelectedSubjectId === null || serverSelectedSubjectId === undefined || serverSelectedSubjectId === '') &&
+        (serverSelectedDate === null || serverSelectedDate === undefined || serverSelectedDate === '')
+    ){
+        resetButton.disabled = true;
+    }else {
+        resetButton.disabled = false;
+    }
+
+    if(selectedDate === serverSelectedDate && selectedSubjectId === serverSelectedSubjectId){
+        filterButton.disabled = true;
+    }else {
+        filterButton.disabled = false;
+    }
+    // console.log("selectedSubjectId = " + selectedSubjectId + ' selectedDate = ' + selectedDate);
+    // console.log("requestSubjectId = " + serverSelectedSubjectId + ' requestDate = ' + serverSelectedDate);
+}
+
 function addGradeToServer(form, locale) {
     console.log("addGradeToServer(form, locale) called, locale = " + locale);
 

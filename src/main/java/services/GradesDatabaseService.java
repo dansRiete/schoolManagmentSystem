@@ -246,22 +246,28 @@ public class GradesDatabaseService extends BaseGradesService {
     }
 
     @Override
-    public void reloadCollectionFromJson(String json) throws IOException {
+    public void reloadCollectionFromJson(String json) throws ReloadingJsonCollectionException {
         logger.info("reloadCollectionFromJson(String json) was called json = " + json);
-        forceDeleteAllSubjects();
-        List<Grade> gradesFromJson = fromJson(json);
-        subjectDao.createAll(extractSubjects(gradesFromJson));
-        List<Subject> reloadedSubjects = subjectDao.getAll();
-        gradesFromJson.forEach(currentGrade -> {
-            final Subject[] currentSubject = {null};
-            reloadedSubjects.forEach(subject -> {
-                if(subject.getTitle().equals(currentGrade.getSubject().getTitle())){
-                    currentSubject[0] = subject;
-                }
+        try{
+            List<Grade> gradesFromJson = fromJson(json);
+            forceDeleteAllSubjects();
+            subjectDao.createAll(extractSubjects(gradesFromJson));
+            List<Subject> reloadedSubjects = subjectDao.getAll();
+            gradesFromJson.forEach(currentGrade -> {
+                final Subject[] currentSubject = {null};
+                reloadedSubjects.forEach(subject -> {
+                    if(subject.getTitle().equals(currentGrade.getSubject().getTitle())){
+                        currentSubject[0] = subject;
+                    }
+                });
+                currentGrade.setSubject(currentSubject[0]);
             });
-            currentGrade.setSubject(currentSubject[0]);
-        });
-        gradeDao.createAll(gradesFromJson);
+            gradeDao.createAll(gradesFromJson);
+        }catch (Exception e){
+            logger.error(e.getClass().getCanonicalName() + " " + e.getLocalizedMessage());
+            throw new ReloadingJsonCollectionException();
+        }
+
     }
 
 }

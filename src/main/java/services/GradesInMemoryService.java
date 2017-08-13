@@ -197,8 +197,14 @@ public class GradesInMemoryService extends BaseGradesService {
     }
 
     @Override
-    public void reloadCollectionFromJson(String json) throws IOException {
-        setGrades(fromJson(json));
+    public void reloadCollectionFromJson(String json) throws ReloadingJsonCollectionException {
+        try{
+            List<Grade> readGrades = fromJson(json);
+            setGrades(readGrades);
+        }catch (Exception e){
+            logger.error(e.getClass().getCanonicalName() + " " + e.getLocalizedMessage());
+            throw new ReloadingJsonCollectionException();
+        }
     }
 
     @Override

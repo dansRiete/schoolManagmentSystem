@@ -1,5 +1,6 @@
 package servlets;
 
+import exceptions.ReloadingJsonCollectionException;
 import org.apache.commons.io.IOUtils;
 import services.BaseGradesService;
 import utils.ServiceFactory;
@@ -48,8 +49,15 @@ public class ImportServlet extends HttpServlet {
             req.setAttribute("invalid_file_msg", resourceBundle.getString("result.inavalid_file"));
             req.getRequestDispatcher("/import.jsp").forward(req, resp);
         }else {
-            service.reloadCollectionFromJson(importedJson);
-            resp.sendRedirect("/list/grades");
+            try {
+                service.reloadCollectionFromJson(importedJson);
+                resp.sendRedirect("/list/grades");
+            } catch (ReloadingJsonCollectionException e) {
+                e.printStackTrace();
+                req.setAttribute("invalid_file_msg", resourceBundle.getString("result.json_reloading_failed"));
+                req.getRequestDispatcher("/import.jsp").forward(req, resp);
+            }
+
         }
 
     }

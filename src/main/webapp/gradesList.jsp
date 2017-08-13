@@ -9,10 +9,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="<c:url value="/css/bootstrap.min.css"/> " rel="stylesheet">
     <link href="<c:url value="/css/add-grades-list.css"/> " rel="stylesheet">
+    <script type="text/javascript">
+        var serverSelectedSubjectId = '${requestScope.selectedSubjectId}';
+        var serverSelectedDate = '${requestScope.selectedDate}';
+    </script>
     <title>Grades Web-Application</title>
 </head>
 
-<body>
+<body onload="checkFilterConditions()">
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -96,7 +100,7 @@
                     <form id="filterForm" class="navbar-form" >
                     <th>
                         <fmt:message key="entity.date"/>
-                        <input id="selectedDate"
+                        <input id="selectedDate" onchange="checkFilterConditions()"
                                placeholder="<fmt:message key="entity.all_dates"/>"
                                name="selectedDate" value="${requestScope.selectedDate}"
                                type="date"
@@ -104,7 +108,7 @@
                     </th>
                     <th>
                         <fmt:message key="entity.subject"/>
-                        <select id="subjectsSelectId" name="selectedSubjectId" class="form-control">
+                        <select id="subjectsSelectId" onchange="checkFilterConditions()" name="selectedSubjectId" class="form-control">
                         <c:forEach items="${requestScope.subjects}" var="subject">
                             <option <c:if test="${requestScope.selectedSubjectId == subject.id}">selected</c:if> value="${subject.id}">
                                 <c:choose>
@@ -122,8 +126,8 @@
                     <th><fmt:message key="entity.mark"/></th>
                     <th>
                         <fmt:message key="action.filter"/><br/>
-                        <input type="submit" class="btn btn-default" value="<fmt:message key="action.filter"/>"/>
-                        <input type="button" id="resetButton" class="btn btn-default" onclick="resetFilter()" value="<fmt:message key="action.reset"/>"/>
+                        <input type="submit" id="filterBtn" class="btn btn-default" value="<fmt:message key="action.filter"/>"/>
+                        <input type="button" id="resetBtn" <c:if test="${requestScope.selectedSubjectId != 0 || requestScope.selectedDate != null}">disabled</c:if>id="resetButton" class="btn btn-default" onclick="resetFilter()" value="<fmt:message key="action.reset"/>"/>
                     </th>
                     </form>
                 </tr>
